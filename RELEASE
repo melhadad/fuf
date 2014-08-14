@@ -1,0 +1,17 @@
+                                -------
+                                FUF 5.4
+                                -------
+
+This distribution contains FUF 5.4, a system of natural language generation
+based on the formalism of Functional Unification Grammars.
+It is dated August 15, 2014.
+
+This is the first update since 1996.
+It has been ported to "more recent CommonLisp": defsystem, defpackage.
+FUF and SURGE have been unified in a single package.
+
+The latest version in general will be found on <http://www.cs.bgu.ac.il/surge>
+
+Let me know what you do with FUF!
+Michael Elhadad
+elhadad@cs.bgu.ac.il
