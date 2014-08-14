@@ -1,0 +1,226 @@
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<link rel="stylesheet" href="nlp.css" type="text/css" media="all" />
+<title>Installing FUF and SURGE - NLP 2012 - Michael Elhadad</title>
+</head>
+
+<body>
+
+<h1>Installing FUF and SURGE</h1>
+
+This page explains how to install the FUF and SURGE text generation system (syntactic realization),
+with special attention to a Windows platform.
+
+<hr>
+<h2>Pre-requisites</h2>
+<ol>
+<li>Download the <a href="http://www.sbcl.org/platform-table.html">SBCL</a> Common Lisp compiler.
+  <ul>
+    <li>The download is about 10 MB - choose your platform (Windows, Linux, MacOS).
+    <li>Under Windows, just run the setup file (msi) -- it will install the system in a folder like: C:\Program Files\Steel Bank Common Lisp\1.1.0\
+    <li>Create a batch file to execute SBCL simply -- in a file sbcl.cmd located in a folder in your path such as C:\windows\sbcl.cmd:
+<pre>
+"C:\Program Files\Steel Bank Common Lisp\1.1.0\sbcl.exe" --core "C:\Program Files\Steel Bank Common Lisp\1.1.0\sbcl.core" %*
+</pre>
+  </ul>
+<li>If you are on Windows, download the <a href="http://ftp.gnu.org/gnu/emacs/windows/">Emacs</a> text editor (which is the best environment to program in Lisp).
+    If you are on MacOS or Linux, Emacs is most probably already installed.
+<li>Download the <a href="http://common-lisp.net/project/slime/">SLIME</a> emacs package.
+  <ul>
+    <li>Uncompress the contents of the slime.tgz file into a folder (for example "C:\documents and settings\USERNAME\application data\emacs\slime").
+    <li>Edit the file "~/.emacs" (in general located in c:\documents and settings\USERNAME\application data\.emacs -- and loaded by Emacs as ~/.emacs)
+    <li>Add these lines:
+<pre>
+(add-to-list 'load-path "~/emacs/slime-2011-03-24/")  ; your SLIME directory
+(setq inferior-lisp-program "sbcl") ; your Lisp system
+(require 'slime)
+(slime-setup '(slime-fancy))
+</pre>
+  </ul>
+<li>Download the <a href="http://beta.quicklisp.org/quicklisp.lisp">Quicklisp</a> installation package for CommonLisp into your home directory
+    (the same directory where ~/.emacs is located).
+<li>Install quicklisp:
+<pre>
+C:&gt; sbcl --load quicklisp.lisp
+</pre>
+Inside the CommonLisp shell type then:
+<pre>
+* (quicklisp-quickstart:install)
+
+* (ql:add-to-init-file)
+
+* (ql:quickload "quicklisp-slime-helper")
+</pre>
+<li>Add to your .emacs file the following line:
+<pre>
+  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+</pre>
+</ol>
+
+<h2>Installing FUF and SURGE</h2>
+
+<ol>
+<li>Download <a href="http://www.cs.bgu.ac.il/~elhadad/fuf54.zip">FUF</a>.
+<li>Extract the files of fuf in a folder such as ~/fuf.  It should have the following structure:
+    <ol>
+    <li>doc
+    <li>examples
+    <li>src
+    <li>surge
+        <ol>
+        <li>code
+        <li>doc
+        <li>inputs
+        </ol>
+    </ol>
+    Copying the files under your home folder (~/fuf) will make it easy by default for quicklisp to locate the package.
+<li>Instruct quicklisp where to find the system definition files to load fuf and dependent modules.
+    Create a file in this folder: ~/.config/common-lisp/source-registry.conf.d  with this content:
+<pre>
+(:tree (:home "fuf"))
+</pre>
+</ol>
+
+<h2>Loading and Testing FUF</h2>
+
+<ol>
+<li>Start emacs
+<li>Start lisp inside emacs: invoke the command "M-x slime" (that is, type "escape x slime enter")
+<li>Load FUF: (ql:quickload :fuf54)
+<li>Load FUF tests: (ql:quickload :fuf54-test)
+<li>Go into the FUF package: (in-package :fug5)
+</ol>
+
+<h2>Loading and Testing SURGE</h2>
+
+<ol>
+<li>Load SURGE: (ql:quickload :surge22)
+<li>Load FUF tests: (ql:quickload :surge22-test)
+<li>Go into the FUF package: (in-package :fug5)
+</ol>
+
+<h2>Running Specific FUF or SURGE Tests</h2>
+
+In general, when you use SURGE, you want to prepare input specifications for sentences.
+The following process can be used to prepare and test your input specifications:
+<ol>
+<li>Create input structures (best is to start from an example similar to one found in "surge/inputs")
+<li>The macro "def-test" is used to associate a SURGE input specification (an FD) with the expected sentence.
+    For example:
+<pre>
+(def-test t1
+  "This car is expensive."
+  ((cat clause)
+   (proc ((type ascriptive)
+	  (mode attributive)))        ;; default
+   (partic ((carrier ((lex "car")
+		      (cat common)
+		      (distance near)))
+	    (attribute ((lex "expensive")
+			(cat ap)))))))
+</pre>
+Keep your test pairs in a development file and add the line (in-package "FUG5") at the beginning of your file.
+<li>To test the interpretation of your input specification, use the "fug5:test" function:
+<pre>
+(fug5:test :item 't1)
+</pre>
+<li>If everything works fine, you will see the following input:
+<pre>
+CL-USER> (fug5:test :item 't1)
+
+====================
+FUG5::T1 --> "This car is expensive."
+
+[Used 88 backtracking points - 19 wrong branches - 8 undos]
+
+[Used 89 backtracking points - 19 wrong branches - 8 undos]
+OK
+====================
+
+1 test run - 1 correct.
+</pre>
+
+<li>If the name of the test you invoke does not exist (no correspond def-test was entered), you will see:
+<pre>
+(fug5:test :item 'd1)
+
+====================
+D1 --> NIL
+
+[Used 1 backtracking points - 0 wrong branches - 0 undos]
+
+[Used 1 backtracking points - 0 wrong branches - 0 undos]
+Expected NIL
+Instead  "&lt;fail&gt;"
+====================
+
+
+
+1 test run - 0 correct.
+The following tests are incorrect: (D1)
+</pre>
+
+<li>If the input specification is not good, you will see a message similar to this:
+<pre>
+FUG5::T146 --> "The Denver Nuggets surprisingly beat the Celtics."
+
+[Used 90 backtracking points - 21 wrong branches - 10 undos]
+
+[Used 110 backtracking points - 37 wrong branches - 14 undos]
+Expected "The Denver Nuggets surprisingly beat the Celtics."
+Instead  "Denver Nuggets surprisingly beat Celtics."
+====================
+
+</pre>
+
+<li>Sometimes, the grammar will get exhausted trying many alternatives without terminating the search process.
+The test macro limits the search space to up to 1000 backtracking points.  When the input you specified is too complex or causes the grammar to search over this limit, you will see the following message:
+
+<pre>
+====================
+FUG5::A4 --> "John takes a book from Mary."
+;;; Unification stopped after 1001 backtracking points.
+Expected "John takes a book from Mary."
+Instead  "Mary <unknown cat FUG5::VERB-GROUP: take><unknown cat FUG5::NP: book><unknown cat FUG5::PP: nil><unknown cat FUG5::PP: nil>."
+====================
+</pre>
+
+<li>At other times, the input you enter is not compatible with the expectations of SURGE.
+In this case, you will see:
+<pre>
+====================
+FUG5::T97 --> "The person to whom John will give a blue book."
+Expected "The person to whom John will give a blue book."
+Instead  "<fail>"
+====================
+</pre>
+
+
+<h2>Debugging your SURGE Input Specifications</h2>
+
+In any case when the input specification fails to produce the sentence you expect, you want to find out the reason for the failure.
+To get information on the unification process, use the function:
+
+<pre>
+(fug5:trace-on)
+</pre>
+
+And to remove the trace info, use:
+<pre>
+(fug5:trace-off)
+</pre>
+
+This produces lots of information.  You can control the verbosity of the trace by using:
+
+<pre>
+(fug5:trace-level 30)  ;; minimum level of trace detail
+...
+(fug5:trace-level 0)   ;; maximum level of trace detail
+</pre>
+
+
+<BR>
+<HR>
+        <I>Last modified October 29th 2012</I>
+</BODY>

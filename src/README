@@ -1,0 +1,34 @@
+                                -------
+                                FUF 5.4
+                                -------
+
+======================================================================
+All the material included in this package is Copyright (1987-2011) by
+          Michael Elhadad
+          Ben Gurion University
+          Dept. of Computer Science
+          Beer Sheva, 84105  ISRAEL
+          elhadad@cs.bgu.ac.il
+
+License agreement can be found in file LICENSE.
+======================================================================
+
+This is the Common Lisp source for the FUF interpreter.
+
+File graph3.l contains slight modifications to the main engine of the
+unifier to allow non-monotonic manipulations of FDs written by Charles
+Brendan (theorist@cs.utexas.edu).  These are not documented and include the
+special keywords "remove", "end-of-list" and the constructs ^n ^n+1 and
+^n-1 to add elements to lists encoded as FDs.
+
+File linearize2.l includes extensions to the linearizer to allow generation
+of HTML code.  Examples of usage are provided in file examples/html.l -
+usage is not explicitly documented otherwise.
+
+File linearize3.l includes extensions to the linearizer to support binding
+theory written by Yael Netzer (yaeln@cs.bgu.ac.il).
+
+2011 Update:
+
+The source code has been updated to run under SBCL and adapted to "modern" (aka 2011) 
+Common Lisp. Added defpackage and defsystem definitions.

@@ -1,0 +1,46 @@
+Mon Jul 17 15:57:53 1995  Michael Elhadad  <elhadad@cyan.bgu.ac.il>
+
+	* inputs/ir.l 
+	(t16): Added a comma 
+	(t16bis): Added a comma
+	(t19): Added (cat pp) under {qualifier partic location}
+	(t78): Added (restrictive no) and a comma.
+	(t79): Added (restrictive yes) and changed which to that.
+	(t80): Changed who to that.
+	(t83): Added (restrictive no) and a comma.
+	(t84): Added (restrictive no) and a comma.
+	(t85): Added (restrictive no) and a comma.
+	(t89): Changed which to that.
+	(t90): Added (location ((cat pp))) under {qualifier partic}
+	(t91): Added (restrictive no) and a comma.
+	(t92): Added a comma.
+	(t95): Added a comma.
+	(t96): Added (restrictive no) and a comma.
+	(t98): Changed which to that.
+	(t99): Added (restrictive no) and a comma.
+	(t99bis): Added (restrictive no) and a comma.
+	(t355): Added (restrictive no) and a comma.
+	(mine3): Added a comma after "In 1986".
+	(t364): Added commas around the relative.
+	(t373): Changed mood to possessive-relative and scope to
+	        {^ partic located} (without possessor).
+	(t374): Changed mood to possessive-relative and scope to
+	        {^ partic located} (without possessor).
+		Removed comment about missing comma.
+	(t402): Changed (cond-relater ...) to 
+	        (relaters ((cond ((lex "if"))))) 
+	(t403): Idem
+
+	* code/complex.l (complex): Added mood/generic-mood conflation
+	  This fixes the problem in t26, t27, t28
+	  (alt complex-populate-common (:index cat)
+	      (((cat clause)
+	        (common ((generic-mood {^2 generic-mood})
+		    	 ;; ME Added 17 Jul 95
+			 (mood {^ generic-mood})
+			 (scope {^2 scope})
+			 (restrictive {^2 restrictive}))))
+
+
+
+

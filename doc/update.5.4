@@ -1,0 +1,23 @@
+                                -------
+			  NEW FEATURES IN FUF 5.4
+                                -------
+
+This distribution contains FUF 5.4, a system of natural language generation
+based on Functional Unification Grammars.  It is dated Aug, 15 2014.
+
+New features of version 5.4:
+
+- Ported to "recent" CommonLisp - tested on SBCL.
+  Use defpackage, def-system, quicklisp.
+- New functions to facilitate testing:
+  uni-fd-string: returns the unified FD and the linearized string as 2 values.
+  test3: test a pair (fd, expected-string) defined by def-test and
+         store the resulting unified fd for further inspection.
+  get-test-result: retrieve the result unified FD of a test executed using test3.
+  draw-test: run a test defined by def-test using test3 and display the
+         structure of the unified FD as a tree of constituents using patterns.
+
+
+- The manual has not been updated.  It is still at level 5.2.
+
+

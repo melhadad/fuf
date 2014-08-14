@@ -1,0 +1,25 @@
+			 -------------------------
+			 DOCUMENTATION FOR FUF 5.4
+			 -------------------------
+
+
+This directory contains the documentation for FUF 5.4.  It includes the
+following parts:
+
+- Overview files: update.5.2 [New features in FUF 5.2]
+-                 update.5.3 [New features in FUF 5.3]
+-                 update.5.4 [New features in FUF 5.4]
+
+[NOTE: The user manual has not been updated since 5.2]
+- User manual: fuf5.2.ps [~150pp]
+  Source files in Scribe Format: fuf5.2.mss
+                                 fuf5.bib
+			 Figures:
+                                 bkclass1.ps
+                                 grammar-map.ps
+                                 graph12.ps
+                                 graph22.ps
+                                 graph32.ps
+                                 stack2.ps
+
+- Article on bk-class usage: bk-class.ps

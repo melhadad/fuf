@@ -1,0 +1,289 @@
+                                -------
+			  NEW FEATURES IN FUF 5.2
+                                -------
+
+This distribution contains FUF 5.2, a system of natural language generation
+based on Functional Unification Grammars.  It is dated Jun 15, 1993.
+
+New features of version 5.2:
+
+UNIFIER:
+
+- Modular definition of grammars with def-alt and def-conj.
+  Named disjunctions and conjunctions can be defined are used in a grammar 
+  by using the syntax (:! name) and (:& name) respectively.
+  Functions draw-grammar and fuf-postscript defined to graph the caller/callee
+  relations between named disjunctions and conjunctions.
+- Tracing for named disjunctions and conjunctions: trace-enable-alt and 
+  trace-disable-alt to enable/disable all tracing flags contained in a named
+  disjunction.
+- New tracing functions:
+  * trace-level: filter trace messages by level of importance (0 to 30).
+  * %break%: put break-points in the grammar.
+  * hyper-trace-category: print the value of all constituents of a category
+    before unifying them with the grammar.
+  * trace-wait: trace all freezing, forcing and thawing activity.
+  * trace-bk-class: trace all bk-class activity.
+  * trace-alts: trace failures of all branches of all alts.
+  * trace-cset: trace cset expansion.
+- Incremental cset: possibility to add or remove constituents to the cset
+  one by one.  Incremental directives are composed with the default cset
+  determined by FUF.  Complete syntax is:
+  (cset ((== b1...) (+ c1 ...) (- d1 ...) (= e1 ...)))
+  Where: + list is constituents to add to cset.
+         - list is constituents to remove from cset.
+         = list is complete cset (exact).
+         == list is basis cset (from which increments are computed).
+- Cset expansion is now smarter so that if x and y are conflated, and
+  (cset (- x)) is met, then y will not be a constituent either.
+- Cset is now an argument to the unification procedures in the same way as
+  cat is.  Different pairs of cat/cset can coexist in the same FD.
+- Strict-under values extend the under construct for typed values.
+  Synonyms #(< x) #(<= x) can also be used resp.
+- Interaction between wait and cset determination is now working
+  consistently.
+- Test facility with def-test and test.
+  Define tests for the grammar and run regression tests automatically.
+- Draw-types and types-postscript draw type hierarchy graph.
+- Better portability (thanks to Mark Evans for feedback on port to Poplog). 
+- Many bug fixes.
+
+
+GRAMMAR (SURGE):
+- Latest grammar now lives in directory grammar and is split in several files.
+- Grammar is now modular (using def-alt and def-conj).
+- Handling of long-distance dependencies.
+- Complete determiner grammar (with quantifiers).
+- Many examples added.
+- Many bug fixes (Thanks to John Hughes, James Lester, Charles Callaway for
+  many bug fixes). 
+
+
+DOCUMENTATION:
+The manual has been updated.  It is now at level 5.2.
+The new functions and macros are:
+
+1. Definition forms:
+--------------------
+
+(def-alt name <annotations> <branches>) ;; note has same syntax as alt.
+(def-conj name <pair> <pair> ...)
+
+;; Define a grammar: for the top level grammar and make it the default
+;; grammar. Body must evaluate to a grammar.
+(def-grammar name () <body>)            
+
+The named alts and conjs can be used in the grammar by using the notation:
+	(:! name) for an alt
+	(:& name) for a conj
+
+Each one stands for a pair in an FD as in:
+
+	((:! definite)
+	 (:& qualifier))
+
+
+(use-grammar g)            ;; set g as the default grammar.
+
+(clear-grammar)            ;; erase all traces of def-alt and def-conj
+
+
+
+Use-grammar actually expands all the :! and :& to their values at all
+levels.  It checks that there is no circular expansion and warns the user
+if definitions are missing.  When a def-alt or def-conj is redefined, the
+expansion is automatically triggered when the grammar is next used by any
+of the top level unification functions.  You should never have to call
+use-grammar explicitly.
+
+Cf directory grammar for example usage.
+
+
+2. Tracing functions:
+---------------------
+
+(trace-level <level>)      ;; Filter trace messages by level of importance.
+
+%break%                    ;; break point in the grammar.       
+
+(hyper-trace-category <c> &optional <on/off>) 
+			   ;; c can be a type.  Any constituent whose cat
+                           ;; matches c will be printed before starting
+                           ;; unification. 
+			   ;; on/off t by default. nil to untrace.
+
+(trace-wait)               ;; default is on
+(trace-wait nil)           ;; turn on and off tracing of wait activity
+
+(trace-bk-class)           ;; default is off
+(trace-bk-class nil)       ;; turn on and off tracing of bk-class
+
+(trace-alts)               ;; default is off
+(trace-alts nil)           ;; turn on and off tracing of alt failures
+
+(trace-cset)               ;; default is on
+(trace-cset nil)           ;; turn on and off tracing of cset expansion.
+
+(trace-enable-alt name)    ;; enable and disable all tracing flags 
+(trace-disable-alt name)   ;; appearing under a named alt.
+                           ;; can be used to trace whole constituents at once.
+
+3. Cset handling:
+-----------------
+
+cset-attribute now key argument to most top level unifier functions.
+
+Example: (uni fd :cset-attribute 'cset :cat-attribute 'cat)
+
+Incremental cset unification:
+Can now add or remove single constituents from the cset of an FD.
+Syntax is: (cset ((+ c1 ... cn)))  -> add c's to default cset.
+	   (cset ((- c1 ... cn)))  -> remove c's from default cset.
+           (cset ((= c1 ... cn)))  -> override default cset with c's.
+           (cset ((== c1 ... cn))) -> override default cset with c's but
+                                      also accept increments of +/- csets.
+Can be combined into one cset.
+Old syntax (cset (a b c)) is interpreted as (cset ((= a b c))).
+Default (implicit) cset is determined by: add all elements appearing in the
+pattern of the FD (if any) plus all sub-fds containing a cat feature.
+
+Interaction cset/wait:
+When an alt is delayed by wait, the top level control regime still
+continues.  So if at level {agent} an alt is delayed, {agent} completes
+except for the delayed alt.  At this point, the cset of {agent} is
+determined.  Another constituent is now unified (say {process}).  Later,
+the delayed alt is evaluated, and it adds a constituent {agent det} under
+det.  Unfortunately, the cset of {agent} has already been computed, and it
+did not include {agent det}!  
+This situation is now handled by a new version of determine (the function
+implementing the determination stage of the unification - test delayed
+constructs like test and any).  The new determine now retraverses the total
+fd from the top, recomputing the csets at all levels and making sure that
+all constituents are properly unified with the grammar.
+
+
+4. Drawing and Documentation functions:
+---------------------------------------
+
+The following functions produce maps of the definitions loaded in the
+environment.  
+
+(draw-grammar &optional (root *u-grammar*))  
+;; draw the system of def-alt/def-conj calls in a grammar starting at node
+;; root in a tty style.  
+
+Example of output:
+
+> (draw-grammar 'det)
+|- DET +
+       |- PRE-DET
+       |- DEICTIC2
+       |- ORDINAL
+       |- QUANTIFIER
+       |    +
+       |    |- QUANT-COUNT-PLURAL
+       |    |    +
+       |    |    |- QUANT-PARTITIVE
+       |    |    |- QUANT-PARTITIVE
+       |    |    
+       |    |- QUANT-MASS
+       |    |    +
+       |         |- QUANT-PARTITIVE
+       |         
+       |    
+       |- DET-TYPE +
+                   |- ARTICLE-DET
+                   |- POSSESSIVE-DET
+                   |- QUESTION-DET
+                   |- DEMONSTRATIVE-DET
+                   |- QUANTIFIER-DET
+                   
+       
+> 
+
+
+
+(draw-types &optional root) 
+;; draw the type hierarchy under root.  If root is not specified, all
+;; defined types are drawn.  Root can also be a list of types.
+
+Example of output:
+
+> (draw-types 'relation)
+|- RELATION +
+            |- ASCRIPTIVE
+            |- POSSESSIVE
+            |- LOCATIVE +
+                        |- SPATIAL
+                        |- TEMPORAL
+                        |- ACCOMPANIMENT
+                        |- EXISTENTIAL
+                        |- NATURAL-PHENOM
+                        
+            
+> 
+
+
+
+(fuf-postscript (root filename &key (shrink t) insert)
+(types-postscript (root filename &key (shrink t) insert)
+
+;; Draw the same diagrams in a fancy postscript format.
+;; Keyword: shrink -> make map fit on one page
+;;          insert -> generate encapsulated postscript
+;; Output to filename.
+;; Examples of maps can be found in files *ps in grammar directory.
+
+
+
+5. Type handling:
+-----------------
+
+
+Unification between typed atoms now works in configurations like:
+
+        A     B
+         \   /
+          \ /
+           C
+
+(u 'a 'b) -> c
+
+
+Forms #(< a) and synonyms #(sunder a) are now recognized.
+x unifies with #(< a) iff x is a specialization of a that is not a.
+Form #(<= a) is now recognized as a synonym of #(under a).
+
+
+
+6. Test facility:
+-----------------
+
+(def-test name result input) 
+;; Define a named test: test on input should produce result. 
+;; If result is a list, testing result can produce any one of the elements
+;; of result.
+
+(get-test name)
+;; Return the input for named test.
+
+(clear-tests)
+;; Remove all test definitions.
+
+(test &key from to item timed)
+;; Evaluate a sequence of tests.
+;; A test calls uni-string on input and compares the result with the test's
+;; result. 
+;; If timed is non-nil, time all tests.
+;; from and to identify first and last tests in order in which they have
+;; been defined.
+;; item: identify tests explicitly - either one name or a list of names.
+
+Examples:
+(def-test :from 't1 :to 't212)
+(def-test :item '(t6 t9 t45) :timed t)
+(def-test :item 't6)
+
+;; At the end of the testing session, test identifies the tests that have
+;; failed. 
+

@@ -1,0 +1,889 @@
+
+gcon3.lisp,58
+(defun fd-intersection 16,536
+(defun connectives 23,718
+
+gr0.lisp,19
+(defun gr0 16,438
+
+gr1.lisp,19
+(defun gr1 20,547
+
+gr10.lisp,2946
+(define-feature-type clause 42,1445
+(define-feature-type verb-group 43,1505
+(define-feature-type np 44,1577
+(define-feature-type pp 45,1625
+(define-feature-type ap 46,1673
+(define-feature-type noun 47,1721
+(define-feature-type adj 48,1775
+(define-feature-type simple-clause 50,1828
+(define-feature-type complex 54,2013
+(define-feature-type simple-np 57,2102
+(define-feature-type complex-np 58,2172
+(define-feature-type pronp 59,2227
+(define-feature-type det 63,2365
+(define-feature-type adv 64,2438
+(define-feature-type process-class 129,5271
+(define-feature-type simple-process 130,5334
+(define-feature-type event 131,5388
+(define-feature-type mental 132,5441
+(define-feature-type relation 133,5494
+(define-feature-type locative 134,5558
+(define-feature-type agent 138,5733
+(define-feature-type affected 139,5812
+(define-feature-type created 140,5882
+(define-feature-type carrier 141,5930
+(define-feature-type located 142,5980
+(define-feature-type possessor 143,6059
+(define-feature-type identified 145,6143
+(define-feature-type mood 201,8766
+(define-feature-type finite 202,8813
+(define-feature-type non-finite 203,8885
+(define-feature-type interrogative 205,8986
+(define-feature-type relative206,9034
+(define-feature-type modality 216,9389
+(define-feature-type epistemic-modality 217,9458
+(define-feature-type deontic-modality 218,9525
+(define-feature-type present 271,11944
+(define-feature-type past 272,11999
+(define-feature-type future 273,12048
+(define-feature-type past-perfect 274,12101
+(define-feature-type present-perfect 275,12159
+(define-feature-type future-perfect 276,12223
+(define-feature-type past-progressive 277,12285
+(define-feature-type present-progressive 278,12350
+(define-feature-type future-progressive 279,12421
+(define-feature-type tense-10 280,12490
+(define-feature-type tense-11 281,12550
+(define-feature-type tense-12 282,12601
+(define-feature-type tense-13 283,12651
+(define-feature-type tense-14 284,12727
+(define-feature-type tense-15 285,12786
+(define-feature-type tense-16 286,12844
+(define-feature-type tense-17 288,12936
+(define-feature-type tense-18 290,13034
+(define-feature-type tense-19 292,13131
+(define-feature-type tense-20 294,13224
+(define-feature-type tense-21 296,13323
+(define-feature-type tense-22 298,13420
+(define-feature-type tense-23 299,13476
+(define-feature-type tense-24 300,13535
+(define-feature-type tense-25 301,13593
+(define-feature-type tense-26 302,13657
+(define-feature-type tense-27 303,13724
+(define-feature-type tense-28 304,13790
+(define-feature-type tense-29 306,13899
+(define-feature-type tense-30 308,14014
+(define-feature-type tense-31 309,14083
+(define-feature-type tense-32 310,14150
+(define-feature-type tense-33 311,14220
+(define-feature-type tense-34 312,14289
+(define-feature-type tense-35 313,14364
+(define-feature-type tense-36 314,14442
+(defun aspect-choice-1 321,14685
+(defun gr11 337,15093
+
+gr2.lisp,19
+(defun gr2 20,617
+
+gr3.lisp,20
+(defun gr3 38,1199
+
+gr4.lisp,21
+(defun gr4 105,4936
+
+gr5.lisp,19
+(defun gr5 19,546
+
+gr6.lisp,573
+(define-feature-type mood 29,930
+(define-feature-type finite 30,977
+(define-feature-type non-finite 31,1049
+(define-feature-type interrogative 32,1125
+(define-feature-type relative33,1173
+(define-feature-type modality 43,1528
+(define-feature-type epistemic-modality 44,1597
+(define-feature-type deontic-modality 45,1664
+(define-feature-type process-type 59,2156
+(define-feature-type np 119,5236
+(define-feature-type pronp 120,5283
+(define-feature-type det 123,5396
+(define-feature-type possessive-det 124,5469
+(defun role-exists 137,5971
+(defun gr6 183,7353
+
+gr7.lisp,574
+(define-feature-type mood 29,967
+(define-feature-type finite 30,1014
+(define-feature-type non-finite 31,1086
+(define-feature-type interrogative 32,1162
+(define-feature-type relative33,1210
+(define-feature-type modality 43,1565
+(define-feature-type epistemic-modality 44,1634
+(define-feature-type deontic-modality 45,1701
+(define-feature-type process-type 59,2193
+(define-feature-type np 124,5574
+(define-feature-type pronp 125,5621
+(define-feature-type det 128,5734
+(define-feature-type possessive-det 129,5807
+(defun role-exists 142,6309
+(defun gr7 188,7691
+
+gr8.lisp,2846
+(define-feature-type clause 42,1371
+(define-feature-type verb-group 43,1431
+(define-feature-type np 44,1503
+(define-feature-type pp 45,1551
+(define-feature-type ap 46,1599
+(define-feature-type noun 47,1647
+(define-feature-type adj 48,1701
+(define-feature-type complex 52,1870
+(define-feature-type simple-np 55,1959
+(define-feature-type complex-np 56,2013
+(define-feature-type pronp 57,2068
+(define-feature-type det 61,2206
+(define-feature-type mood 74,2725
+(define-feature-type finite 75,2772
+(define-feature-type non-finite 76,2844
+(define-feature-type interrogative 78,2945
+(define-feature-type relative79,2993
+(define-feature-type modality 89,3348
+(define-feature-type epistemic-modality 90,3417
+(define-feature-type deontic-modality 91,3484
+(define-feature-type process-class 107,4091
+(define-feature-type material 108,4156
+(define-feature-type mental 109,4221
+(define-feature-type relational 110,4281
+(define-feature-type circumstantial 111,4353
+(define-feature-type ascriptive 112,4410
+(define-feature-type possessive 113,4466
+(define-feature-type locative 115,4549
+(define-feature-type temporal 116,4621
+(define-feature-type present 215,9386
+(define-feature-type past 216,9441
+(define-feature-type future 217,9490
+(define-feature-type past-perfect 218,9543
+(define-feature-type present-perfect 219,9601
+(define-feature-type future-perfect 220,9665
+(define-feature-type past-progressive 221,9727
+(define-feature-type present-progressive 222,9792
+(define-feature-type future-progressive 223,9863
+(define-feature-type tense-10 224,9932
+(define-feature-type tense-11 225,9992
+(define-feature-type tense-12 226,10043
+(define-feature-type tense-13 227,10093
+(define-feature-type tense-14 228,10169
+(define-feature-type tense-15 229,10228
+(define-feature-type tense-16 230,10286
+(define-feature-type tense-17 232,10378
+(define-feature-type tense-18 234,10476
+(define-feature-type tense-19 236,10573
+(define-feature-type tense-20 238,10666
+(define-feature-type tense-21 240,10765
+(define-feature-type tense-22 242,10862
+(define-feature-type tense-23 243,10918
+(define-feature-type tense-24 244,10977
+(define-feature-type tense-25 245,11035
+(define-feature-type tense-26 246,11099
+(define-feature-type tense-27 247,11166
+(define-feature-type tense-28 248,11232
+(define-feature-type tense-29 250,11341
+(define-feature-type tense-30 252,11456
+(define-feature-type tense-31 253,11525
+(define-feature-type tense-32 254,11592
+(define-feature-type tense-33 255,11662
+(define-feature-type tense-34 256,11731
+(define-feature-type tense-35 257,11806
+(define-feature-type tense-36 258,11884
+(defun aspect-choice-1 265,12127
+(defun role-exists 279,12535
+(define-bk-class 'transitive-class transitive-class319,13896
+(define-bk-class 'voice-class voice-class320,13946
+(defun gr9 323,13994
+
+gr9.lisp,2984
+(define-feature-type clause 43,1372
+(define-feature-type verb-group 44,1432
+(define-feature-type np 45,1504
+(define-feature-type pp 46,1552
+(define-feature-type ap 47,1600
+(define-feature-type noun 48,1648
+(define-feature-type adj 49,1702
+(define-feature-type complex 53,1871
+(define-feature-type simple-np 56,1960
+(define-feature-type complex-np 57,2014
+(define-feature-type pronp 58,2069
+(define-feature-type det 62,2207
+(define-feature-type process-class 127,5061
+(define-feature-type simple-process 128,5124
+(define-feature-type event 129,5178
+(define-feature-type mental 130,5231
+(define-feature-type relation 131,5284
+(define-feature-type locative 132,5348
+(define-feature-type agent 136,5523
+(define-feature-type affected 137,5602
+(define-feature-type created 138,5672
+(define-feature-type carrier 139,5720
+(define-feature-type located 140,5770
+(define-feature-type possessor 141,5849
+(define-feature-type identified 143,5933
+(define-feature-type mood 199,8556
+(define-feature-type finite 200,8603
+(define-feature-type non-finite 201,8675
+(define-feature-type interrogative 203,8776
+(define-feature-type relative204,8824
+(define-feature-type modality 214,9179
+(define-feature-type epistemic-modality 215,9248
+(define-feature-type deontic-modality 216,9315
+(define-feature-type present 266,11561
+(define-feature-type past 267,11616
+(define-feature-type future 268,11665
+(define-feature-type past-perfect 269,11718
+(define-feature-type present-perfect 270,11776
+(define-feature-type future-perfect 271,11840
+(define-feature-type past-progressive 272,11902
+(define-feature-type present-progressive 273,11967
+(define-feature-type future-progressive 274,12038
+(define-feature-type tense-10 275,12107
+(define-feature-type tense-11 276,12167
+(define-feature-type tense-12 277,12218
+(define-feature-type tense-13 278,12268
+(define-feature-type tense-14 279,12344
+(define-feature-type tense-15 280,12403
+(define-feature-type tense-16 281,12461
+(define-feature-type tense-17 283,12553
+(define-feature-type tense-18 285,12651
+(define-feature-type tense-19 287,12748
+(define-feature-type tense-20 289,12841
+(define-feature-type tense-21 291,12940
+(define-feature-type tense-22 293,13037
+(define-feature-type tense-23 294,13093
+(define-feature-type tense-24 295,13152
+(define-feature-type tense-25 296,13210
+(define-feature-type tense-26 297,13274
+(define-feature-type tense-27 298,13341
+(define-feature-type tense-28 299,13407
+(define-feature-type tense-29 301,13516
+(define-feature-type tense-30 303,13631
+(define-feature-type tense-31 304,13700
+(define-feature-type tense-32 305,13767
+(define-feature-type tense-33 306,13837
+(define-feature-type tense-34 307,13906
+(define-feature-type tense-35 308,13981
+(define-feature-type tense-36 309,14059
+(defun aspect-choice-1 316,14302
+(define-bk-class 'transitive-class transitive-class332,14720
+(define-bk-class 'voice-class voice-class333,14770
+(defun gr10 336,14818
+
+html.lisp,94
+(def-test t42225,920
+(def-test t423-a54,1840
+(def-test t42365,2157
+(def-test t424102,3327
+
+icon3.lisp,87
+(def-test a1 16,469
+(def-test a2 48,1335
+(def-test a3 68,1895
+(def-test a4 88,2428
+
+ir-bk-class.lisp,320
+(def-test t143 18,599
+(def-test t144 38,1137
+(def-test t145 56,1572
+(def-test t146 81,2202
+(def-test t147 104,2776
+(def-test t148 127,3366
+(def-test t149 152,4077
+(def-test t150 174,4669
+(def-test t151 197,5267
+(def-test t152 219,5836
+(def-test t153 244,6490
+(def-test t154 270,7200
+(def-test t155 295,7844
+
+ir0.lisp,81
+(defun ir01 17,480
+(defun ir02 25,640
+(defun ir03 34,876
+(defun ir04 42,1050
+
+ir1.lisp,81
+(defun ir11 20,535
+(defun ir12 29,721
+(defun ir13 37,913
+(defun ir14 48,1213
+
+ir10.lisp,3969
+(def-test t1 13,422
+(def-test t2 25,677
+(def-test t3 45,1207
+(def-test t4 62,1615
+(def-test t5 70,1809
+(def-test t6 78,2018
+(def-test t7 98,2813
+(def-test t8 114,3192
+(def-test t9 124,3446
+(def-test t10 134,3653
+(def-test t10bis 149,4028
+(def-test t11 165,4435
+(def-test t12 179,4807
+(def-test t13 200,5304
+(def-test t14 229,6079
+(def-test t15 242,6371
+(def-test t15-bis 260,6837
+(def-test t16 278,7345
+(def-test t16bis 292,7670
+(def-test t17 308,8064
+(def-test t18 323,8424
+(def-test t19 337,8755
+(def-test t20 353,9164
+(def-test t21 364,9380
+(def-test t22 378,9682
+(def-test t23 392,9989
+(def-test t24 402,10195
+(def-test t25 425,10762
+(def-test t26 450,11376
+(def-test t26-bis 462,11738
+(def-test t27 471,11926
+(def-test t28 486,12443
+(def-test t29 499,12815
+(def-test t30 512,13175
+(def-test t33 530,13574
+(def-test t34 540,13827
+(def-test t35 551,14106
+(def-test t36 565,14441
+(def-test t37 580,14843
+(def-test t38 599,15402
+(def-test t39 610,15714
+(def-test t40 631,16240
+(def-test t41 655,16872
+(def-test t42 675,17335
+(def-test t43 690,17726
+(def-test t44 720,18662
+(def-test t45 745,19330
+(def-test t46 757,19541
+(def-test t47 775,19921
+(def-test t48 794,20397
+(def-test t49 803,20655
+(def-test t50 812,20914
+(def-test t51 822,21195
+(def-test t52 859,22344
+(def-test t53 870,22569
+(def-test t54 888,22992
+(def-test t55 911,23571
+(def-test t56 923,23816
+(def-test t57 936,24283
+(def-test t58 948,24578
+(def-test t59 960,24875
+(def-test t60 972,25154
+(def-test t61 986,25479
+(def-test t62 995,25716
+(def-test t63 1004,25951
+(def-test t64 1014,26132
+(def-test t64bis 1024,26396
+(def-test t65 1036,26796
+(def-test t66 1048,27068
+(def-test t67 1060,27356
+(def-test t68 1069,27571
+(def-test t69 1080,27826
+(def-test t70 1091,28071
+(def-test t71 1103,28343
+(def-test t72 1121,28744
+(def-test t73 1136,29107
+(def-test t74 1157,29656
+(def-test t75 1166,29876
+(def-test t76 1177,30185
+(def-test t77 1194,30578
+(def-test t78 1214,31140
+(def-test t79 1224,31370
+(def-test t80 1236,31661
+(def-test t81 1250,32025
+(def-test t82 1265,32390
+(def-test t83 1279,32720
+(def-test t84 1296,33104
+(def-test t85 1308,33400
+(def-test t86 1319,33699
+(def-test t87 1331,33972
+(def-test t88 1343,34249
+(def-test t89 1361,34723
+(def-test t90 1375,35057
+(def-test t91 1390,35428
+(def-test t92 1404,35742
+(def-test t93 1417,36066
+(def-test t94 1431,36403
+(def-test t95 1446,36757
+(def-test t96 1466,37245
+(def-test t97 1483,37671
+(def-test t98 1503,38174
+(def-test t99 1515,38446
+(def-test t100 1537,39072
+(def-test t101 1547,39264
+(def-test t102 1562,39670
+(def-test t103 1571,39914
+(def-test t104 1582,40163
+(def-test t105 1594,40438
+(def-test t106 1602,40635
+(def-test t107 1613,40864
+(def-test t108 1621,41051
+(def-test t109 1634,41327
+(def-test t110 1645,41559
+(def-test t111 1654,41803
+(def-test t112 1666,42060
+(def-test t113 1678,42348
+(def-test t114 1687,42556
+(def-test t115 1698,42867
+(def-test t116 1707,43078
+(def-test t117 1718,43423
+(def-test t118 1728,43655
+(def-test t119 1737,43906
+(def-test t120 1745,44101
+(def-test t121 1753,44281
+(def-test t122 1771,44865
+(def-test t123 1785,45266
+(def-test t123-bis 1797,45665
+(def-test t124 1810,46096
+(def-test t125 1826,46571
+(def-test t126 1845,47104
+(def-test t127 1859,47441
+(def-test t128 1874,47816
+(def-test t129 1891,48208
+(def-test t130 1905,48545
+(def-test t131 1919,48888
+(def-test t132 1933,49248
+(def-test t133 1947,49587
+(def-test t134 1962,49964
+(def-test t140 1985,50645
+(def-test t141 2007,51227
+(def-test t142 2032,51909
+(def-test t143 2065,52806
+(def-test t144 2083,53296
+(def-test t145 2102,53767
+(def-test t146 2124,54349
+(def-test t147 2146,54936
+(def-test t148 2168,55492
+(def-test t149 2189,56053
+(def-test t150 2209,56548
+(def-test t151 2230,57089
+(def-test t152 2251,57655
+(def-test t153 2274,58248
+(def-test t154 2299,58891
+(def-test t155 2324,59533
+
+ir2.lisp,20
+(defun ir21 16,484
+
+ir3.lisp,82
+(defun ir30 16,460
+(defun ir31 26,688
+(defun ir32 41,1054
+(defun ir33 56,1414
+
+ir4.lisp,883
+(def-test t1 17,463
+(def-test t2 27,657
+(def-test t3 46,1078
+(def-test t4 65,1498
+(def-test t5 78,1762
+(def-test t6 88,1951
+(def-test t7 99,2168
+(def-test t8 119,2613
+(def-test t9 131,2867
+(def-test t10 148,3247
+(def-test t11 166,3702
+(def-test t12 184,4159
+(def-test t13 204,4690
+(def-test t14 241,5687
+(def-test t15 260,6092
+(def-test t16 284,6691
+(def-test t17 304,7148
+(def-test t18 323,7620
+(def-test t19 342,8066
+(def-test t20 364,8574
+(def-test t21 377,8824
+(def-test t22 392,9115
+(def-test t23 407,9442
+(def-test t24 417,9628
+(def-test t25 444,10275
+(def-test t26 473,10973
+(def-test t27 498,11574
+(def-test t28 523,12156
+(def-test t29 549,12795
+(def-test t30 570,13291
+(def-test t31 589,13781
+(def-test t32 616,14452
+(def-test t33 644,15141
+(def-test t34 663,15537
+(def-test t35 683,15960
+(def-test t36 704,16419
+(def-test t37 724,16854
+
+ir5.lisp,67
+(defun ir51 17,587
+(defun ir52 23,705
+(defun test-append 35,947
+
+ir6.lisp,940
+(def-test t117,485
+(def-test t227,674
+(def-test t346,1083
+(def-test t464,1489
+(def-test t577,1744
+(def-test t687,1924
+(def-test t798,2132
+(def-test t8118,2564
+(def-test t9130,2810
+(def-test t10144,3096
+(def-test t11159,3453
+(def-test t12174,3812
+(def-test t13191,4239
+(def-test t14224,5123
+(def-test t15238,5425
+(def-test t16257,5915
+(def-test t17274,6315
+(def-test t18290,6730
+(def-test t19306,7117
+(def-test t20326,7588
+(def-test t21338,7820
+(def-test t22350,8052
+(def-test t23362,8320
+(def-test t24370,8456
+(def-test t25391,8951
+(def-test t26414,9498
+(def-test t27436,10028
+(def-test t28458,10543
+(def-test t29479,11073
+(def-test t30497,11512
+(def-test t31516,11993
+(def-test t32541,12668
+(def-test t33566,13210
+(def-test t34582,13545
+(def-test t35599,13907
+(def-test t36617,14305
+(def-test t37636,14769
+(def-test t38656,15258
+(def-test t39675,15670
+(def-test t40700,16247
+(def-test t41730,16967
+
+ir7.lisp,103
+(def-test t115,455
+(def-test t234,934
+(def-test t453,1382
+(def-test t574,1866
+(def-test t694,2348
+
+ir8.lisp,1909
+(def-test t129,793
+(def-test t240,1012
+(def-test t358,1409
+(def-test t476,1839
+(def-test t588,2072
+(def-test t699,2282
+(def-test t7111,2520
+(def-test t8130,2942
+(def-test t9142,3193
+(def-test t10153,3405
+(def-test t11168,3858
+(def-test t12180,4129
+(def-test t13194,4453
+(def-test t14220,5154
+(def-test t15232,5400
+(def-test t16250,5856
+(def-test t17265,6207
+(def-test t18280,6573
+(def-test t19294,6910
+(def-test t20310,7300
+(def-test t21321,7515
+(def-test t22335,7816
+(def-test t23349,8122
+(def-test t24359,8325
+(def-test t25382,8891
+(def-test t26407,9504
+(def-test t27423,9877
+(def-test t28442,10352
+(def-test t29462,10853
+(def-test t30478,11245
+(def-test t31490,11546
+(def-test t32508,12068
+(def-test t33525,12452
+(def-test t34537,12695
+(def-test t35551,12984
+(def-test t36566,13312
+(def-test t37582,13706
+(def-test t38602,14253
+(def-test t39615,14552
+(def-test t40636,15024
+(def-test t41660,15570
+(def-test t41bis681,16042
+(def-test t42710,16944
+(def-test t43731,17585
+(def-test t44766,18691
+(def-test t45791,19452
+(def-test t46803,19660
+(def-test t47822,20055
+(def-test t48842,20551
+(def-test t49856,20854
+(def-test t50870,21158
+(def-test t51885,21486
+(def-test t52916,22218
+(def-test t53928,22456
+(def-test t54948,22892
+(def-test t55968,23328
+(def-test t56980,23535
+(def-test t57998,24040
+(def-test t581013,24342
+(def-test t591028,24637
+(def-test t601044,24965
+(def-test t611062,25343
+(def-test t621077,25630
+(def-test t631092,25914
+(def-test t641107,26213
+(def-test t64bis1120,26535
+(def-test t651139,27002
+(def-test t661153,27317
+(def-test t671174,27878
+(def-test t681188,28133
+(def-test t691203,28429
+(def-test t701217,28687
+(def-test t711232,28978
+(def-test t721252,29389
+(def-test t731271,29767
+(def-test t741292,30201
+(def-test t751304,30424
+(def-test t761322,30819
+(def-test t771340,31184
+(defun do-tenses 1353,31505
+
+ir9.lisp,3381
+(def-test t113,420
+(def-test t224,657
+(def-test t344,1186
+(def-test t461,1593
+(def-test t569,1786
+(def-test t677,1994
+(def-test t796,2733
+(def-test t8112,3111
+(def-test t9122,3364
+(def-test t10132,3570
+(def-test t10bis147,3944
+(def-test t11163,4350
+(def-test t12177,4721
+(def-test t13198,5225
+(def-test t14227,5999
+(def-test t15240,6290
+(def-test t15bis258,6755
+(def-test t16276,7261
+(def-test t16bis289,7584
+(def-test t17305,7977
+(def-test t18320,8336
+(def-test t19334,8666
+(def-test t20350,9074
+(def-test t21361,9289
+(def-test t22375,9590
+(def-test t23389,9896
+(def-test t24399,10099
+(def-test t25421,10664
+(def-test t26446,11277
+(def-test t26bis458,11638
+(def-test t27467,11824
+(def-test t28482,12340
+(def-test t29495,12711
+(def-test t30508,13070
+(def-test t33526,13468
+(def-test t34536,13720
+(def-test t35547,13998
+(def-test t36561,14332
+(def-test t37576,14731
+(def-test t38594,15294
+(def-test t39605,15605
+(def-test t40626,16130
+(def-test t41650,16761
+(def-test t42669,17222
+(def-test t43684,17612
+(def-test t44714,18547
+(def-test t45739,19214
+(def-test t46751,19424
+(def-test t47770,19821
+(def-test t48789,20296
+(def-test t49798,20553
+(def-test t50807,20811
+(def-test t51818,21113
+(def-test t52853,22259
+(def-test t53864,22483
+(def-test t54882,22905
+(def-test t55905,23483
+(def-test t56917,23728
+(def-test t57930,24195
+(def-test t58942,24490
+(def-test t59954,24787
+(def-test t60966,25066
+(def-test t61980,25391
+(def-test t62989,25627
+(def-test t63998,25861
+(def-test t641008,26042
+(def-test t64bis1018,26304
+(def-test t651030,26703
+(def-test t661042,26974
+(def-test t671054,27261
+(def-test t681063,27476
+(def-test t691074,27731
+(def-test t701085,27976
+(def-test t711097,28248
+(def-test t721115,28649
+(def-test t731130,29012
+(def-test t741151,29561
+(def-test t751160,29781
+(def-test t761172,30126
+(def-test t771189,30519
+(def-test t781209,31112
+(def-test t791219,31342
+(def-test t801231,31633
+(def-test t811245,31997
+(def-test t821260,32364
+(def-test t831274,32694
+(def-test t841291,33078
+(def-test t851303,33374
+(def-test t861314,33673
+(def-test t871326,33946
+(def-test t891337,34222
+(def-test t901351,34555
+(def-test t911366,34925
+(def-test t921380,35239
+(def-test t931393,35563
+(def-test t941407,35900
+(def-test t951421,36228
+(def-test t961441,36719
+(def-test t971458,37158
+(def-test t981478,37661
+(def-test t991490,37933
+(def-test t1001511,38560
+(def-test t1011522,38790
+(def-test t1021537,39188
+(def-test t1031546,39432
+(def-test t1041557,39681
+(def-test t1051569,39956
+(def-test t1061577,40153
+(def-test t1071588,40382
+(def-test t1081596,40569
+(def-test t1091609,40845
+(def-test t1101620,41077
+(def-test t1111629,41321
+(def-test t1121641,41578
+(def-test t1131653,41866
+(def-test t1141662,42074
+(def-test t1151673,42385
+(def-test t1161682,42596
+(def-test t1171693,42958
+(def-test t1181703,43190
+(def-test t1191712,43441
+(def-test t1201720,43636
+(def-test t1211728,43816
+(def-test t1221746,44393
+(def-test t1231760,44793
+(def-test t123bis1772,45207
+(def-test t124 1785,45656
+(def-test t125 1800,46130
+(def-test t126 1818,46662
+(def-test t127 1831,46998
+(def-test t128 1845,47372
+(def-test t129 1861,47763
+(def-test t130 1874,48099
+(def-test t131 1887,48442
+(def-test t132 1900,48801
+(def-test t133 1913,49139
+(def-test t134 1927,49515
+
+lattice.lisp,310
+(define-feature-type a 17,523
+(define-feature-type b 18,555
+(define-feature-type c 19,587
+(define-feature-type d 20,615
+(define-feature-type e 21,643
+(define-feature-type f 22,673
+(define-feature-type g 23,701
+(define-feature-type h 24,729
+(define-feature-type j 25,759
+(define-feature-type l 26,787
+
+test2.lisp,140
+(defun unify-numbers 14,406
+(define-procedural-type 'num num17,466
+(defun unify-lists 30,718
+(define-procedural-type 'list list35,813
+
+test4.lisp,339
+(define-feature-type x0 15,456
+(define-feature-type x1 16,492
+(define-feature-type x2 17,531
+(define-feature-type x3 18,566
+(defvar a 20,606
+(defvar z 25,757
+(defvar b0 30,913
+(defvar b1 31,935
+(defvar b2 32,957
+(defvar b3 33,980
+(defvar c 36,1004
+(defvar d0 39,1095
+(defvar d1 40,1116
+(defvar d2 41,1140
+(defvar d3 42,1161
+
+test5.lisp,131
+(defvar a 13,429
+(defvar b0 17,527
+(defvar b1 18,554
+(defvar b2 19,575
+(defvar b3 20,608
+(defvar c 23,643
+(defvar d0 28,732
+
+test6.lisp,40
+(defvar fd1 15,481
+(defvar fd2 19,564
+
+test7.lisp,49
+(defun input 16,585
+(def-grammar rules 40,1308
+
+test8.lisp,120
+(defvar t10 17,468
+(defvar t11 18,490
+(defvar t12 21,532
+(defvar t13 26,644
+(defvar t14 31,770
+(defvar t15 42,968
+
+tpat.lisp,1059
+(defvar *tpattern-max-refs* 53,2621
+(defvar *tpattern-ref-keywords* 55,2776
+(defvar *tpattern-debug* 56,2846
+(defun tpattern-reset-tpattern-ref-keywords 58,2877
+(defvar *tpattern-speech-time-keyword* 61,2998
+(defvar *tpattern-event-time-keyword* 62,3042
+(defvar *tpattern-reversable-operands* 63,3085
+(defun reset-tpattern-types 65,3147
+(defun tpattern-check-operand 71,3409
+(defun tpattern-check-operator 83,3844
+(defun tpattern-reset-graph 94,4184
+(defun tpattern-get-relation 101,4403
+(defun tpattern-set-relation 114,4957
+(defun tpattern-reversable-operand-p 129,5502
+(defun tpattern-unify-operands 133,5604
+(defun tpattern-unify-relation 148,6094
+(defun tpattern-graph 181,7297
+(defun tpattern-generate-new-mapping 216,8659
+(defun tpattern-find-unused-refs 221,8784
+(defun tpattern-fix-rts 239,9498
+(defun tpattern-merge 250,9768
+(defun tpattern-linearize 276,10931
+(defun tpattern-check-each-member 298,11848
+(defun tpattern-syntax 315,12424
+(defun tpattern-unify 329,12809
+(define-procedural-type 'tpattern tpattern340,13235
+
+test3.lisp,0
+
+test1.lisp,0

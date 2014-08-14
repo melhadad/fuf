@@ -1,0 +1,53 @@
+LY 326 - Friday 04:10
+
+FIXING GR10 
+-----------
+
+The following tests are incorrect: (T15-BIS)
+
+1. Problem is that modality is not merged with tense
+   Tense sets the "simple" attribute to indicate presence of aux
+   But modal feels later aux slot.
+   Modal should have its own slot in the verb sequence:
+   	 must do
+	 must be doing
+	 must have been doing
+	 must have done
+
+	 can be doing
+	 can have done	 
+	 can have been done
+	 
+	 but not with future: (will competes on modal slot)
+	 He will go
+	 * He must will go
+
+	 check with insistence
+
+   Need to analyze all verb sequence (negation / question fronting) accordingly
+
+2. Merge new tests of gr9 in gr10 (coverage of adjuncts / questions / relatives)
+
+3. Check coverage of new features in gr10:
+
+   Nominalized-ing: 
+     (define-feature-type simple-clause (nominalized-ing verbal-clause))
+     (define-feature-type simple-np (pronp common proper nominalized-ing))
+ 
+  Intensifier:
+     (define-feature-type adv (intensifier detensifier))
+
+  ;; cardinal:             an fd with ((value n) (digit yes/no))
+  ;; ordinal:              digit default is yes.
+  ;;                       distinguishes bet. "1st" and "first".
+
+  adv is not ignored
+ 
+  dative-move
+
+  lexical-roles
+
+  circum vs. adjuncts
+
+  verbal-clause
+

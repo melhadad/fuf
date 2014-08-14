@@ -1,0 +1,82 @@
+|- IDENTIFIED
+|    +
+|    |- LOCATED
+|    |- POSSESSOR
+|    |- AGENT-IDENTIFIED
+|    |- AFFECTED-IDENTIFIED
+|    
+|- IDENTIFIER
+|    +
+|    |- TIME
+|    |- LOCATION
+|    |- POSSESSED
+|
+|- ATTRIBUTE
+|    +
+|    |- TIME
+|    |- LOCATION
+|    |- POSSESSED
+|
+|- CARRIER +
+|          |- AGENT-CARRIER
+|          |- AFFECTED-CARRIER
+|          |- LOCATED +
+|          |          |- AGENT-CARRIER-LOCATED
+|          |          |- AFFECTED-CARRIER-LOCATED
+|          |          |- CREATED-CARRIER-LOCATED
+|          |          
+|          |- POSSESSOR
+|          |    +
+|               |- AGENT-CARRIER-POSSESSOR
+|               |- AFFECTED-CARRIER-POSSESSOR
+|               |- CREATED-CARRIER-POSSESSOR
+|               
+|          
+|- CREATED +
+|          |- CREATED-CARRIER +
+|          |                  |- CREATED-CARRIER-LOCATED
+|          |                  |- CREATED-CARRIER-POSSESSOR
+|          
+|- AFFECTED +
+|           |- AFFECTED-CARRIER +
+|           |                   |- AFFECTED-CARRIER-LOCATED
+|           |                   |- AFFECTED-CARRIER-POSSESSOR
+|           |- AFFECTED-IDENTIFIED +
+|           
+|- AGENT +
+|        |- AGENT-CARRIER
+|        |- THIRD-PARTY-AGENT
+|        |- AGENT-IDENTIFIED
+|        
+
+affected						
+affected carrier attribute				affected+carrier
+affected carrier attribute located location		affected+carrier-located attribute-location
+affected carrier attribute possessor possessed          affected+carrier-possessor attribute-possessed
+agent affected
+agent affected carrier attribute			
+							agent affected+carrier attribute 
+							agent+carrier affected attribute
+agent affected created range
+agent affected identified identifier			agent+identified affected identifier
+      	       		  				agent affected+identified identifier
+agent carrier attribute					agent+carrier attribute
+agent carrier attribute located location		agent+carrier-located attribute-location
+agent carrier attribute possessor possessed		agent+carrier-possessor attribute-possessed
+agent created
+agent created carrier attribute				agent+carrier created attribute
+      	      	      					agent created+carrier attribute
+agent identified identifier				agent+identified identifier
+agent range
+carrier attribute
+carrier attribute located location			carrier-located attribute-location
+carrier attribute located time				carrier-located attribute-time
+carrier attribute possessor possessed			carrier-possessor attribute-possessed
+carrier located	  	    				carrier-located
+created
+created carrier attribute				created+carrier attribute
+created carrier attribute located location		created+carrier-located attribute-location
+identifier identified located location			identified-located identifier-location
+identifier identified possessor possessed		identified-possessor identifier-possessed
+processor phenomenon  					
+sayer addressee verbalization

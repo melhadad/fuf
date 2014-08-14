@@ -1,0 +1,152 @@
+441 tests run - 18 incorrect.
+The following tests are incorrect: (MINE3 T355 T356 T364 T377 T390 T407BIS T409 T410 T412 T413 T414 T421 T422 C26 C33 C35 NP2)
+
+FUG5> (test :item '(MINE3 T355 T356 T364 T377 T407BIS T409 T410 T412 T413 T414 T421 T422 C26 C33 C35 NP2))
+
+====================
+
+MINE3 --> "In 1986, you filed late and failed to file an extension."
+
+[Used 479 backtracking points - 145 wrong branches - 63 undos]
+
+[Used 653 backtracking points - 198 wrong branches - 120 undos]
+Expected "In 1986, you filed late and failed to file an extension."
+Instead  "You filed late and failed to file an extension."
+====================
+
+T355 --> "The Denver Nuggets, who extended their losing streak to five games."
+
+[Used 245 backtracking points - 81 wrong branches - 46 undos]
+
+[Used 355 backtracking points - 125 wrong branches - 119 undos]
+Expected "The Denver Nuggets, who extended their losing streak to five games."
+Instead  "The Denver Nuggets, extended their losing streak to five games."
+====================
+
+T356 --> "The hapless Denver Nuggets who extended their losing streak to six games."
+
+[Used 251 backtracking points - 84 wrong branches - 46 undos]
+
+[Used 361 backtracking points - 128 wrong branches - 119 undos]
+Expected "The hapless Denver Nuggets who extended their losing streak to six games."
+Instead  "The hapless Denver Nuggets, extended their losing streak to six games."
+====================
+
+T364 --> "The highly respected Dr. Rufus T. Firefly gave Prof. Hugo Z. Hackenbush, who received the Turing award yesterday, his best regards."
+
+[Used 519 backtracking points - 167 wrong branches - 97 undos]
+
+[Used 627 backtracking points - 208 wrong branches - 170 undos]
+Expected "The highly respected Dr. Rufus T. Firefly gave Prof. Hugo Z. Hackenbush, who received the Turing award yesterday, his best regards."
+Instead  "The highly respected Dr. Rufus T. Firefly gave Prof. Hugo Z. Hackenbush, received the Turing award yesterday, his best regards."
+====================
+
+T377 --> "The Nuggets, who lost."
+
+[Used 125 backtracking points - 43 wrong branches - 22 undos]
+
+[Used 232 backtracking points - 86 wrong branches - 95 undos]
+Expected "The Nuggets, who lost."
+Instead  "The Nuggets, lost."
+====================
+
+T407BIS --> "The process continues, resulting in 4 haploid cells."
+Expected "The process continues, resulting in 4 haploid cells."
+Instead  "<fail>"
+====================
+
+T409 --> "Airplanes streak quickly across the sky."
+;;; Unification stopped after 1001 backtracking points.
+Expected "Airplanes streak quickly across the sky."
+Instead  "<unknown cat PP: nil>, <unknown cat NIL: airplane><unknown cat NIL: nil>quickly."
+====================
+
+T410 --> "The sun rises soon after the sky turns pink in the east."
+;;; Unification stopped after 1001 backtracking points.
+Expected "The sun rises soon after the sky turns pink in the east."
+Instead  "<unknown cat NIL: sun>Rises soon after."
+====================
+
+T412 --> "How to generate time adjuncts in SURGE must be discovered."
+
+[Used 407 backtracking points - 231 wrong branches - 185 undos]
+
+[Used 419 backtracking points - 237 wrong branches - 214 undos]
+Expected "How to generate time adjuncts in SURGE must be discovered."
+Instead  "How for to generate time adjuncts in SURGE must be discovered."
+====================
+
+T413 --> "Before we explain embryo sac formation, we must discover how to generate time adjuncts in SURGE."
+
+[Used 525 backtracking points - 164 wrong branches - 66 undos]
+
+[Used 539 backtracking points - 170 wrong branches - 95 undos]
+Expected "Before we explain embryo sac formation, we must discover how to generate time adjuncts in SURGE."
+Instead  "Before we explain embryo sac formation, we must discover how for to generate time adjuncts in SURGE."
+====================
+
+T414 --> "Before explaining embryo sac formation, we must discover how to generate time adjuncts in SURGE."
+
+[Used 490 backtracking points - 156 wrong branches - 55 undos]
+
+[Used 511 backtracking points - 168 wrong branches - 116 undos]
+Expected "Before explaining embryo sac formation, we must discover how to generate time adjuncts in SURGE."
+Instead  "Before explaining embryo sac formation, we must discover how for to generate time adjuncts in SURGE."
+====================
+
+T421 --> "I am not a smart man, but I know what love is."
+
+[Used 391 backtracking points - 118 wrong branches - 74 undos]
+
+[Used 408 backtracking points - 120 wrong branches - 74 undos]
+Expected "I am not a smart man, but I know what love is."
+Instead  "I am not a smart man, but I know what love is nil."
+====================
+
+T422 --> "<A HREF=\"http://www.film.com\">I am not a smart man, </A>but I know <B>what love is</B>."
+
+[Used 398 backtracking points - 119 wrong branches - 74 undos]
+
+[Used 406 backtracking points - 119 wrong branches - 74 undos]
+Expected "<A HREF=\"http://www.film.com\">I am not a smart man, </A>but I know <B>what love is</B>."
+Instead  "<A HREF=\"http://www.film.com\">I am not a smart man, </A>but I know <B>what love is sad </B>."
+====================
+
+C26 --> "Instead of panicking, when in doubt concerning his position, Bo cautiously retreated five miles towards where he came from."
+
+[Used 702 backtracking points - 241 wrong branches - 95 undos]
+
+[Used 899 backtracking points - 309 wrong branches - 181 undos]
+Expected "Instead of panicking, when in doubt concerning his position, Bo cautiously retreated five miles towards where he came from."
+Instead  "Cautiously, Bo retreated five miles towards where he came from when in doubt, concerning his position, rather than panicking."
+====================
+
+C33 --> "Although playing without Bo, the Raiders won as they did with him."
+;;; Unification stopped after 1001 backtracking points.
+Expected "Although playing without Bo, the Raiders won as they did with him."
+Instead  "Although playing without <unknown cat BASIC-PROPER: Bo>, the Raiders won as nil more of them did with nil it."
+====================
+
+C35 --> "They filled all their holes without a draft pick, by acquiring Bowman, whose passing game is exceptional for a seven footer, through free-agency in addition to trading for Ashbliss, who remains incomparable as a defensive stopper."
+;;; Unification stopped after 1001 backtracking points.
+Expected "They filled all their holes without a draft pick, by acquiring Bowman, whose passing game is exceptional for a seven footer, through free-agency in addition to trading for Ashbliss, who remains incomparable as a defensive stopper."
+Instead  "They filled their holes without a draft pick by acquiring Bowman, nil game is exceptional, for <unknown cat COMMON: seven footer>, through free agency in addition to trading for Ashbliss, <unknown cat VERB-GROUP: remain><unknown cat AP: incomparable>, <unknown cat PP: nil>."
+====================
+
+NP2 --> "[Such] examples [just] like the unary [ones]."
+
+[Used 112 backtracking points - 44 wrong branches - 25 undos]
+
+[Used 112 backtracking points - 44 wrong branches - 25 undos]
+Expected "[Such] examples [just] like the unary [ones]."
+Instead  "Examples like the unary ones."
+====================
+
+
+
+18 tests run - 0 correct.
+The following tests are incorrect: (T13 MINE3 T355 T356 T364 T377 T407BIS
+                                    T409 T410 T412 T413 T414 T421 T422 C26
+                                    C33 C35 NP2)
+; No value
+FUG5> 

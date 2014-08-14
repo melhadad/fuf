@@ -1,0 +1,244 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Abella}{1994}]{abella-phd}
+A.~Abella.
+\newblock {\em From imagery to salience: locative expressions in context}.
+\newblock PhD thesis, Computer Science Department, Columbia Universtity, New
+  York, NY, 1994.
+
+\bibitem[\protect\citeauthoryear{Allen}{1983}]{allen83}
+J.F Allen.
+\newblock Maintaining knowledge about temporal intervals.
+\newblock {\em Communications of the ACM}, 26(11):832--843, 1983.
+
+\bibitem[\protect\citeauthoryear{Elhadad and Robin}{1992}]{elhadad-robin92}
+M.~Elhadad and J.~Robin.
+\newblock Controlling content realization with functional unification grammars.
+\newblock In R.~Dale, H.~Hovy, D.~Roesner, and O.~Stock, editors, {\em Aspects
+  of automated natural language generation}, pages 89--104. Springer Verlag,
+  1992.
+
+\bibitem[\protect\citeauthoryear{Elhadad \bgroup \em et al.\egroup
+  }{1996}]{elhadad-et-al96}
+M.~Elhadad, K.~McKeown, and J.~Robin.
+\newblock Floatings constraints in lexical choice.
+\newblock {\em Computational Linguistics}, 1996.
+\newblock To appear.
+
+\bibitem[\protect\citeauthoryear{Elhadad}{1990}]{elhadad90}
+M.~Elhadad.
+\newblock Types in functional unification grammars.
+\newblock In {\em Proceedings of the 28th Annual Meeting of the Association for
+  Computational Linguistics}, Detroit, MI, 1990. ACL.
+
+\bibitem[\protect\citeauthoryear{Elhadad}{1993a}]{fuf-manual}
+M.~Elhadad.
+\newblock Fuf: The universal unifier - user manual, version 5.2.
+\newblock Technical Report CUCS-038-91, Columbia University, 1993.
+
+\bibitem[\protect\citeauthoryear{Elhadad}{1993b}]{elhadad-phd}
+M.~Elhadad.
+\newblock {\em Using argumentation to control lexical choice: a
+  unification-based implementation}.
+\newblock PhD thesis, Computer Science Department, Columbia University, 1993.
+
+\bibitem[\protect\citeauthoryear{Elhadad}{1996}]{elhadad-mt}
+Michael Elhadad.
+\newblock Lexical choice for complex noun phrases.
+\newblock {\em Submitted to Journal of Machine Translation}, 1996.
+
+\bibitem[\protect\citeauthoryear{Fawcett}{1987}]{fawcett}
+R.P. Fawcett.
+\newblock The semantics of clause and verb for relational processes in english.
+\newblock In M.A.K. Halliday and R.P. Fawcett, editors, {\em New developments
+  in systemic linguistics}. Frances Pinter, London and New York, 1987.
+
+\bibitem[\protect\citeauthoryear{Fries}{1970}]{fries}
+P.~Fries.
+\newblock {\em Tagmeme sequences in the English noun phrase}.
+\newblock Number~36 in Summer institute of linguistics publications in
+  linguistics and related fields. Benjamin F. Elson for The Church Press Inc.,
+  Glendale, CA, 1970.
+
+\bibitem[\protect\citeauthoryear{Gross}{1984}]{gross84}
+M.~Gross.
+\newblock Lexicon-grammar and the syntactic analysis of french.
+\newblock In {\em Proceedings of the 10th International Conference on
+  Computational Linguistics}, pages 275--282. COLING, 1984.
+
+\bibitem[\protect\citeauthoryear{Halliday}{1994}]{halliday94}
+M.A.K. Halliday.
+\newblock {\em An introduction to functional grammar}.
+\newblock Edward Arnold, London, 1994.
+\newblock 2nd Edition.
+
+\bibitem[\protect\citeauthoryear{Iordanskaja \bgroup \em et al.\egroup
+  }{1994}]{iordanskaja-et-al}
+L.~Iordanskaja, M.~Kim, R.~Kittredge, B.~Lavoie, and A.~Polgu\`ere.
+\newblock Generation of extended bilingual statistical reports.
+\newblock In {\em Proceedings of the 15th International Conference on
+  Computational Linguistics}. COLING, 1994.
+
+\bibitem[\protect\citeauthoryear{Kay}{1979}]{kay79}
+M.~Kay.
+\newblock Functional grammar.
+\newblock In {\em Proceedings of the 5th Annual Meeting of the Berkeley
+  Linguistic Society}, 1979.
+
+\bibitem[\protect\citeauthoryear{Knight and Hatzivassiloglou}{1995}]{knight-vh}
+K.~Knight and V.~Hatzivassiloglou.
+\newblock Two-levels, many-paths generation.
+\newblock In {\em Proceedings of the 33rd Annual Meeting of the Association for
+  Computational Linguistics}, pages 252--260, Boston, MA, 1995. ACL.
+
+\bibitem[\protect\citeauthoryear{Kukich \bgroup \em et al.\egroup
+  }{1994}]{plandoc-walker}
+K.~Kukich, K.~McKeown, J.~Shaw, J.~Robin, N.~Morgan, and J.~Phillips.
+\newblock User-needs analysis and design methodology for an automated document
+  generator.
+\newblock In A.~Zampolli, N.~Calzolari, and M.~Palmer, editors, {\em Current
+  Issues in Computational Linguistics: In Honour of Don Walker}. Kluwer
+  Academic Press, Boston, 1994.
+
+\bibitem[\protect\citeauthoryear{Lester}{1994}]{lester-phd}
+J.C. Lester.
+\newblock {\em Generating natural language explanations from large-scale
+  knowledge bases}.
+\newblock PhD thesis, Computer Science Department, Universtity of Texas at
+  Austin, New York, NY, 1994.
+
+\bibitem[\protect\citeauthoryear{Levi}{1978}]{levi}
+J.~Levi.
+\newblock {\em The syntax and semantics of complex nominals}.
+\newblock Academic Press, 1978.
+
+\bibitem[\protect\citeauthoryear{Levin}{1993}]{levin}
+B.~Levin.
+\newblock {\em English verb classes and alternations: a preliminary
+  investigation}.
+\newblock University of Chicago Press, 1993.
+
+\bibitem[\protect\citeauthoryear{Lyons}{1977}]{lyons77}
+J.~Lyons.
+\newblock {\em Semantics}.
+\newblock Cambridge University Press, 1977.
+
+\bibitem[\protect\citeauthoryear{Matthiessen}{1987}]{matthiessen87}
+C.M. Matthiessen.
+\newblock The organization of the environment of a text-generation grammar.
+\newblock In Gerard Kempen, editor, {\em Natural Language Generation: New
+  Results in Artificial Intellligence, Psychology and Linguistics}. Martinus
+  Ninjhoff Publishers, 1987.
+
+\bibitem[\protect\citeauthoryear{McKeown \bgroup \em et al.\egroup
+  }{1990}]{comet}
+K.~R. McKeown, M.~Elhadad, Y.~Fukumoto, J.G. Lim, C.~Lombardi, J.~Robin, and
+  F.A. Smadja.
+\newblock Text generation in comet.
+\newblock In R.~Dale, C.S. Mellish, and M.~Zock, editors, {\em Current Research
+  in Natural Language Generation}, pages 103--140. Academic Press, 1990.
+
+\bibitem[\protect\citeauthoryear{McKeown \bgroup \em et al.\egroup
+  }{1993}]{mckeown-et-al93}
+K.~McKeown, J.~Robin, and M.~Tanenblatt.
+\newblock Tailoring lexical choice to the user's vocabulary in multimedia
+  explanation generation.
+\newblock In {\em Proceedings of the 31st Annual Meeting of the Association for
+  Computational Linguistics}. ACL, 1993.
+
+\bibitem[\protect\citeauthoryear{Mel'cuk and Pertsov}{1987}]{melcuk-pertsov}
+I.A. Mel'cuk and N.V. Pertsov.
+\newblock {\em Surface-syntax of English, a formal model in the Meaning-Text
+  Theory}.
+\newblock Benjamins, Amsterdam/Philadelphia, 1987.
+
+\bibitem[\protect\citeauthoryear{Meteer \bgroup \em et al.\egroup
+  }{1987}]{mumble86}
+M.W. Meteer, D.D. McDonald, S.D. Anderson, D.~Forster, L.S. Gay, A.K. Huettner,
+  and P.~Sibun.
+\newblock Mumble-86: Design and implementation.
+\newblock Technical Report COINS 87-87, University of Massachussets at Amherst,
+  Ahmerst, Ma., 1987.
+
+\bibitem[\protect\citeauthoryear{Meteer}{1992}]{meteer-book}
+M.~Meteer.
+\newblock {\em Expressibility: The problem of efficient text planning}.
+\newblock Pinter, London, 1992.
+
+\bibitem[\protect\citeauthoryear{Passoneau \bgroup \em et al.\egroup
+  }{1996}]{flowdoc}
+R.~Passoneau, K.~Kukich, J.~Robin, and L.~Lefkowitz.
+\newblock Generating executive summaries of workflow diagrams, 1996.
+\newblock Submitted to the 8th International Workshop on Natural Language
+  Generation, Herstmonceux, UK.
+
+\bibitem[\protect\citeauthoryear{Pollard and Sag}{1994}]{pollard-sag94}
+Carl Pollard and Ivan~A. Sag.
+\newblock {\em Head Driven Phrase Structure Grammar}.
+\newblock University of Chicago Press, Chicago, 1994.
+
+\bibitem[\protect\citeauthoryear{Quirk \bgroup \em et al.\egroup
+  }{1985}]{quirk-et-al85}
+R.~Quirk, S.~Greenbaum, G.~Leech, and J.~Svartvik.
+\newblock {\em A comprehensive grammar of the English language}.
+\newblock Longman, 1985.
+
+\bibitem[\protect\citeauthoryear{Reiter}{1994}]{reiter94}
+E.B. Reiter.
+\newblock Has a consensus natural language generation architecture appeared and
+  is it psycholinguistically plausible?
+\newblock In {\em Proceedings of the 7th International Workshop on Natural
+  Language Generation}, pages 163--170, June 1994.
+
+\bibitem[\protect\citeauthoryear{Reiter}{1995}]{reiter95}
+Ehud Reiter.
+\newblock Nlg vs templates.
+\newblock In {\em Proceedings of the 5th European Workshop on Natural-Language
+  Generation (ENLGW-95)}, Leiden, The Netherlands, 1995.
+
+\bibitem[\protect\citeauthoryear{Robin}{1994}]{robin-phd}
+J.~Robin.
+\newblock Revision-based generation of natural language summaries providing
+  historical background: corpus-based analysis, design, implementation and
+  evaluation.
+\newblock Technical Report CU-CS-034-94, Computer Science Department, Columbia
+  Universtity, New York, NY, 1994.
+\newblock PhD. Thesis.
+
+\bibitem[\protect\citeauthoryear{Smadja and McKeown}{1991}]{smadja-ci}
+F.A. Smadja and K.~McKeown.
+\newblock Using collocations for language generation.
+\newblock {\em Computational Intelligence}, 7(4):229--239, December 1991.
+
+\bibitem[\protect\citeauthoryear{Thompson and
+  Longacre}{1985}]{thompson-longacre}
+S.A. Thompson and R.E. Longacre.
+\newblock Adverbial clauses.
+\newblock In T.~Shopen, editor, {\em Complex constructions}, volume~2 of {\em
+  Language typology and syntactic description}. Cambridge University Press,
+  1985.
+
+\bibitem[\protect\citeauthoryear{Vendler}{1968}]{vendler}
+Zeno Vendler.
+\newblock {\em Adjectives and Nominalizations}.
+\newblock Mouton, The Hague, Paris, 1968.
+
+\bibitem[\protect\citeauthoryear{Winograd}{1983}]{winograd}
+T.~Winograd.
+\newblock {\em Language as a cognitive process}.
+\newblock Addison-Wesley, 1983.
+
+\bibitem[\protect\citeauthoryear{Wittenburg}{1995}]{showbiz}
+K.~Wittenburg.
+\newblock Visual language parsing: if i has a hammer ...
+\newblock In {\em Proceedings of the International Conference on Cooperative
+  Multimodal Communication}, pages 17--33, Eindhoven, The Netherlands, 1995.
+
+\bibitem[\protect\citeauthoryear{Yang \bgroup \em et al.\egroup
+  }{1991}]{yang-et-al}
+G.~Yang, K.~McCoy, and K.~Vijay-Shanker.
+\newblock From functional specification to syntactic structure: systemic
+  grammar and tree adjoining grammars.
+\newblock {\em Computational Intelligence}, 7(4), December 1991.
+
+\end{thebibliography}

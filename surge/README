@@ -1,0 +1,37 @@
+                               ---------
+                               SURGE 2.2
+                               ---------
+
+======================================================================
+All the material included in this package is 
+    Copyright (C) 1987-2011 by
+          Michael Elhadad
+          Ben Gurion University
+          Dept. Computer Science
+          Beer Sheva, 84105  ISRAEL
+          <http://www.cs.bgu.ac.il/~elhadad/>
+          elhadad@cs.bgu.ac.il
+
+License agreement can be found in file LICENSE.
+======================================================================
+
+This distribution contains SURGE 2.2, a large generation grammar of English
+written in FUF.  The latest version of SURGE is available <http://www.cs.bgu.ac.il/surge/>. 
+SURGE is packaged with a FUF interpreter written in CommonLisp.
+
+============================================================
+Installation guide:
+-------------------
+
+- Make sure FUF is installed correctly.
+- After loading FUF in Common Lisp, load the surge system.
+
+
+============================================================
+Release Notes:
+--------------
+
+- binding contains code to add treatment of obligatory
+  pronominalization within a clause (examples like "John hates
+  himself").  Examples in binding-examples.l illustrate limitations.
+  This is work done by Yael Netzer (yaeln@cs.bgu.ac.il).

@@ -1,0 +1,209 @@
+NOTES ON CONTROL IN FUF5
+
+Pure functional unification can be too slow for practical tasks.  FUF 5
+offers several control tools that allow the grammar writer to make a
+grammar more efficient.  This document summarizes very briefly how control
+is specified in FUF 5.
+
+The approach has been to add annotations to the grammars that can be used
+by the unifier to improve performance.  In a sense, this annotation
+approach is similar to the "optional type declarations" in Common Lisp.  An
+important constraint that has been maintained is that the annotations
+do not change the semantics of the grammar, but uniquely the order in
+which the unifier processes it.
+
+All the control annotations are applied to disjunctions.  From the
+measurements made on FUF working on large grammars, it was found that
+optimization of conjunctions was not necessary, as the average length of
+conjunctions over the course of a unification is quite small (on the order
+of 10) and time spent processing them is quite small.  In contrast, the
+overhead associated with dealing with disjunctions is quite high.
+
+The control techniques for disjunctions implemented in FUF5 are the
+following:
+- indexing
+- dependency-directed backtracking
+- lazy-evaluation / freeze
+- conditional evaluation
+
+In addition to these control mechanisms, a series of "impure" mechanisms
+ease the integration of unification-based processing in a larger practical
+system:
+- type hierarchies and procedural typing
+- external functions
+- "given" checking.
+
+The manual provides complete description of all of these mechanisms.  This
+document is only intended to offer a brief presentation.
+
+
+1. Index:
+---------
+There are many occurrences of disjunctions where the choice between the
+different branches of the disjunction can be determined based on the value
+of a single "key" attribute.  For example:
+	(alt (
+	       ((person first)
+	        ...)
+               ((person second)
+                ...)
+               ((person third)
+                ...)
+             ))
+
+In this case, the "person" attribute can be used as a key to "jump" to the
+right branch when it is available.  To indicate such cases, FUF allows the
+use of the "index" annotation:
+
+	(alt (:index person) ...)
+
+The way it works is: if when the disjunction (alt) is unified the current
+input has an instantiated value for the attribute person, then based on
+this value the unifier will only consider the correct branch and will not
+use any backtracking point evaluating this disjunction.  
+If the value of person is not instantiated yet, then the disjunction is
+unified normally.
+
+That's an easy and trivial thing to say about grammars but it does boost
+the performance significantly (by about 20% consistent over all input
+configurations), as it avoids all the overhead associated with putting and
+removing backtracking points.
+
+Note that the index does not have to be at the toplevel of the branches
+(you can index on an embedded attribute, any path will do), and does not have
+to uniquely discriminate among the branches - if you have a disjunction 
+with projections {a,a,b,c,d} on the indexed attribute and the current value
+of the attribute is a then the disjunction will remain but will be filtered
+as just {a, a}.
+
+INDEX is used in all examples and is easy to add to existing grammars.  
+No grammar should be left without INDEX.
+
+
+2. Dependency-directed backtracking and bk-class:
+-------------------------------------------------
+
+Here the idea is to take advantage of the knowledge of where a failure
+occurs in the graph being unified to filter the stack of backtracking
+points.  Note that, by definition, a failure always happens at a leaf of
+the graph because of a conflict between two atomic values.  The path
+leading to the point of the failure is called the "failure address".
+
+Note also that backtracking points are all associated with a disjunction
+construct in the grammar.
+
+In FUF5, you can annotate each disjunction to either catch (restart) or
+ignore (propagate higher on the stack) failures occurring at certain
+pre-declared failure addresses.  
+
+The details are: 
+
+a. Define classes of failure addresses as regular expressions on paths.
+   These are called the bk-classes (for backtracking classes).
+   All failures that occur at an address which is not a member of any
+   bk-class are treated normally by all backtracking point.
+
+b. Annotate certain disjunctions (and therefore the backtracking points
+   they place on the stack) with the list of classes to which they are
+   allowed to respond:
+	(alt (:bk-class c1 ... cn) ...)
+
+c. During backtracking, a backtracking point checks if the failure address
+   is part of a bk-class, and if it is, whether it is a member of the 
+   bk-classes it is declared to process.  If it is, the b-point restarts
+   the computation (by proceeding to the next alternative in the disjunction),
+   otherwise it just ignores the failure and propagates it to the rest of
+   the stack.  
+
+Through this mechanism, only the decisions that are "relevant" to the
+current failure need to be undone.  
+
+In practice, this mechanism when it is applicable provides huge performance
+gains, but it is rarely applicable: the problem is to define the bk-classes
+and it is a difficult task.  You need to experiment a lot with it though as
+in general, bk-class has lots of potential.  The problem is deciding when
+it is applicable in the context of a big grammar.  
+
+Note that this mechanism relates to the "cut" of Prolog but it also has a
+big advantage: if the bk-class annotations are done consistently (which I
+cannot check automatically), then the semantics of the grammar is not
+modified by the annotation in the sense that all the results produced by
+the "pure grammar" would also be produced by the grammar with the
+annotation. 
+
+Note also that this mechanism is implemented in such a way that when it
+is not used in the grammar, there is very little overhead in processing
+time. 
+
+
+3. Lazy evaluation / freeze with wait:
+--------------------------------------
+
+The idea is to freeze a decision until enough information is gathered by
+the rest of the unification process to make the decision efficiently. 
+The annotation is:
+
+	(alt (:wait (<path1> <value1>) ...) ...)
+
+When the unifier meets such a disjunction, it first checks if all the
+<pathi> have a value which is instantiated (<valuei> is used with typed
+symbols).  If they are all instantiated, it proceeds as usual.
+If they are not, then the disjunction is put on hold (frozen) and the
+unification proceeds with the other constraints in the grammar.  
+Whenever a toplevel disjunction is entered, the unifier checks if one of
+the frozen disjunctions can be thawed.  If all the decisions to be made are
+frozen, any one is forced. 
+
+[NOTE: These 2 issues require further optimization: when do you awake a
+frozen disjunction and which one do you force first can be decided by some
+sort of dependency analysis, but one that can be done statically by
+building incrementally a complex data-structure, otw the cost of the
+analysis would not be justified.  Practically, the first issue is most
+important: it determines how much overhead is added on ALL disjunctions
+when freeze is used.  I am experimenting currently with a "granularity"
+control system, which controls how often the agenda of frozen disj. is
+checked.  This is currently not implemented.]
+
+The main benefit of wait is that it allows to order the decisions
+dynamically based on what the input contains.  Another way to look at wait
+is that it implements a form of "active constraint" or "daemon" on the
+features which are monitored.
+
+
+4. Conditional-evaluation with ignore:
+--------------------------------------
+
+The idea is to just ignore certain decisions when either there is not
+enough information, there is already enough information, or there is not
+enough resources.  The 3 cases correspond to the annotations:
+
+	(alt (:ignore-when <path> ...) ...)
+	(alt (:ignore-unless <path> ...) ...)
+	(alt (:ignore-after <number>) ...)
+
+Ignore-when is triggered when the paths are already instantiated.  
+This is used when the input already contains information and the grammar
+does not have to re-derive it.
+
+Ignore-unless is triggered when a path is not instantiated.
+This is used when the input does not contain enough information at all, and
+the grammar can just choose an arbitrary default.
+
+Ignore-after is triggered after a certain number of backtracking points
+have been consumed.  This indicates that the decision encoded by the
+disjunction is a detail refinement that is not necessary to the completion
+of the unification, but would just add to its appropriateness or value.
+IGNORE-AFTER IS NOT IMPLEMENTED IN FUF5.2.
+
+The main problem with these annotations is that their evaluation depends on
+the order in which evaluation proceeds, and that this order is not known to
+the grammar writer.  But in conjunction with wait, this issue is not
+necessarily a problem as "wait" establishes constraints on when a decision
+is evaluated.  Note however that a wait annotation has priority over an
+ignore one when both occur in the same alt.  Adding a wait annotation can
+often ensure that the ignore annotation will only be considered when it is
+relevant.
+
+EXTERNAL, TYPES and PROCEDURAL UNIFICATION are explained in more details in
+the manual and in the bk-class paper in the doc directory.
+

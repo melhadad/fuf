@@ -1,0 +1,465 @@
+;;; -*- Mode:Lisp; Syntax:Common-Lisp; -*-
+;;; ------------------------------------------------------------
+;;; File        : inputex.lisp
+;;; Description : Some complex examples
+;;; Author      : Jacques Robin
+;;; Created     : 11/1/91
+;;; Modified    : 
+;;; Language    : FUF
+;;; ------------------------------------------------------------
+
+(in-package :fug5)
+
+;; needs to include:
+;; - a composite process
+;; - a lexical process ''i bet you $40 that houston is going to win tonight''
+;;                     4 roles so really does not match anything
+;;                     ''they charged me $40 for the room''
+;; - a subordinated clause w/ controlled subject 
+;; - a binded object or complement 
+;; - 1 pred-modif & 1 circum w/ same semantic label
+;; - 1 complex np, eg, "a playoff record 6th 4th quarter 3 pointers"
+;; - 1 complex det "lots of shots" or "too many shots"
+
+;; alternations on the basic example:
+;; - one involving complex syntactic inference
+;;   "they required the draft to be handed by her to the editor"
+;; - one involving long distance dependency w/ binding
+;;  "who do you think bet me $40 that houston is going to win tonight" 
+
+(def-test ja
+  "Michael Jordan scored two-thirds of his 36 points with 3 point shots, to enable Chicago to hand New York a season high sixth straight loss." 
+  ((cat clause)
+   (process ((type material) (effect-type creative) (lex "score") (tense past)))
+   (partic ((agent ((cat proper)
+		    (head ((cat person-name) 
+			   (first-name ((lex "michael")))
+			   (last-name ((lex "jordan")))))))
+	    (created ((cat np)
+		      (fraction ((num 2) (den 3)))
+		      (possessor ((cat personal-pronoun) (gender masculine)))
+		      (cardinal ((value 36)))
+		      (head ((lex "point")))))))
+   (pred-modif ((instrument ((np ((classifier ((cat measure) 
+					       (quantity ((value 3) 
+							  (digit yes)))
+					       (unit ((lex "point")))))
+				  (number plural)
+				  (definite no)
+				  (head ((lex "shot")))))))))
+   (circum 
+    ((result 
+      ((cat clause)
+       (mood to-infinitive)
+       (process ((type lexical) 
+		 (lex "enable")
+		 (tense past)
+		 (subcat ((1 {^3 lex-roles influence})
+			  (2 {^3 lex-roles influenced})
+			  (3 {^3 lex-roles soa})
+			  (2 ((cat np)))
+			  (3 ((cat clause) 
+			      (mood to-infinitive)
+			      (oblique ((1 ((index {^4 2 index})))))))))))
+       (lex-roles 
+	((influence ((cat proper) 
+		     (head ((cat person-name) 
+			    (first-name ((lex "michael")))
+			    (last-name ((lex "jordan")))))))
+	 (influenced ((lex "chicago")
+		      (cat trivial-proper)
+		      (index {^2 soa partic agent index})))
+	 (soa ((cat clause)
+	       (process ((type composite) 
+			 (relation-type possessive) 
+			 (lex "hand")))
+	       (partic 
+		((agent ((cat trivial-proper) (lex "chicago")))
+		 (affected ((cat trivial-proper) (lex "new york")))
+		 (possessor {^ affected})
+		 (possessed 
+		  ((cat common)
+		   (definite no)
+		   (classifier ((cat noun-compound)
+				(classifier ((lex "season")))
+				(head ((lex "high")))))
+		   (head ((cat measure) 
+			  (quantity ((cat compound-ordinal)
+				     (numeral ((cat ordinal) (value 6)))
+				     (complement ((lex "straight")))))
+			  (unit ((lex "loss")))))))))))))))))))
+
+
+(def-test jb
+  "Michael Jordan scored two-thirds of his 36 points with 3 point shots, to enable a season high sixth straight loss to be handed by Chicago to New York." 
+  ((cat clause)
+   (process ((type material) (effect-type creative) (lex "score") (tense past)))
+   (partic ((agent ((cat proper)
+		    (head ((cat person-name) 
+			   (first-name ((lex "michael")))
+			   (last-name ((lex "jordan")))))))
+	    (created ((cat np)
+		      (fraction ((num 2) (den 3)))
+		      (possessor ((cat personal-pronoun) (gender masculine)))
+		      (cardinal ((value 36)))
+		      (head ((lex "point")))))))
+   (pred-modif ((instrument ((np ((classifier ((cat measure) 
+					       (quantity ((value 3) 
+							  (digit yes)))
+					       (unit ((lex "point")))))
+				  (number plural)
+				  (definite no)
+				  (head ((lex "shot")))))))))
+   (circum 
+    ((result 
+      ((cat clause)
+       (mood to-infinitive)
+       (process ((type lexical) 
+		 (lex "enable")
+		 (tense past)
+		 (subcat 
+		  ((1 {^3 lex-roles influence})
+		   (2 {^3 lex-roles influenced})
+		   (3 {^3 lex-roles soa})
+		   (2 ((cat np)))
+		   (3 ((cat clause) 
+		       (mood to-infinitive)
+		       (synt-roles ((subject ((index {^4 2 index})))))))))))
+       (lex-roles 
+	((influence ((cat proper)
+		     (head ((cat person-name) 
+			    (first-name ((lex "michael")))
+			    (last-name ((lex "jordan")))))))
+	 (influenced ((cat common)
+		      (definite no)
+		      (index ((concept season-high1)))
+		      (classifier ((cat noun-compound)
+				   (classifier ((lex "season")))
+				   (head ((lex "high")))))
+		      (head ((cat measure) 
+			     (quantity ((cat compound-ordinal)
+					(numeral ((cat ordinal) 
+						  (value 6)))
+					(complement ((lex "straight")))))
+			     (unit ((lex "loss")))))))
+	 (soa ((cat clause)
+	       (process ((type composite) 
+			 (agentless no)
+			 (relation-type possessive) 
+			 (lex "hand")))
+	       (partic ((agent ((cat trivial-proper) (lex "chicago")
+				(index ((concept chicago)))))
+			(affected ((cat trivial-proper) (lex "new york")
+				   (index ((concept ny)))))
+			(possessor {^ affected})
+			(possessed ((index {^4 influenced index})))))))))))))))
+
+
+(def-test jc
+ "Who do you think scored two-thirds of his 36 points with 3 point shots, to enable Chicago to hand New York a season high sixth straight loss?"
+  ((cat clause)
+   (mood wh)
+   (scope {^ partic phenomenon partic agent})
+   (proc ((type mental) 
+	  (object-clause that) 
+	  (lex "think"))) 
+   (partic 
+    ((processor ((cat personal-pronoun) (animate yes) (person second)))
+     (phenomenon 
+      ((cat clause)
+       (process ((type material) 
+		 (effect-type creative) 
+		 (lex "score") 
+		 (tense past)))
+       (partic ((agent ((cat proper)
+			(head ((cat person-name) 
+			       (first-name ((lex "Michael")))
+			       (last-name ((lex "Jordan")))))))
+       (created ((cat np)
+		 (fraction ((num 2) (den 3)))
+		 (possessor ((cat personal-pronoun) (gender masculine)))
+		 (cardinal ((value 36)))
+		 (head ((lex "point")))))))
+       (pred-modif ((instrument ((np ((cat np)
+				      (classifier ((cat measure) 
+						   (quantity ((value 3) 
+							      (digit yes)))
+						   (unit ((lex "point")))))
+				      (number plural)
+				      (definite no)
+				      (head ((lex "shot")))))))))
+       (circum 
+	((result 
+	  ((cat clause)
+	   (mood to-infinitive)
+	   (process ((type lexical) 
+		     (lex "enable")
+		     (tense past)
+		     (subcat ((1 {^3 lex-roles influence})
+			      (2 {^3 lex-roles influenced})
+			      (3 {^3 lex-roles soa})
+			      (2 ((cat np)
+				  (index s1)))
+			      (3 ((cat clause) 
+				  (mood to-infinitive)
+				  (synt-roles ((subject ((index {^4 2 index})))))))))))
+	   (lex-roles 
+	    ((influence ((cat proper) 
+			 (head ((cat person-name) 
+				(first-name ((lex "Michael")))
+				(last-name ((lex "Jordan")))))))
+	     (influenced ((lex "Chicago")
+			  (cat trivial-proper)
+			  (index {^2 soa partic AGENT index})))
+	     (soa ((cat clause)
+		   (process ((type composite) 
+			     (relation-type possessive) 
+			     (lex "hand")))
+		   (partic 
+		    ((agent ((cat trivial-proper) (lex "Chicago")))
+		     (affected ((cat trivial-proper) (lex "New York")))
+		     (possessor {^ affected})
+		     (possessed 
+		      ((cat common)
+		       (definite no)
+		       (classifier ((cat noun-compound)
+				    (classifier ((lex "season")))
+				    (head ((lex "high")))))
+		       (head ((cat measure) 
+			      (quantity ((cat compound-ordinal)
+					 (numeral ((cat ordinal) (value 6)))
+					 (complement ((lex "straight")))))
+			      (unit ((lex "loss")))))))))))))))))))))))
+
+
+(def-test j1
+  "Chicago handed New York a season high sixth straight loss."
+  ((cat clause)
+   (tense past)
+   (process ((type composite) (relation-type possessive) (lex "hand")))
+   (partic ((agent ((cat trivial-proper) (lex "Chicago")
+		    (index ((concept chicago)))))
+	    (affected ((cat trivial-proper) (lex "New York")
+		       (index ((concept ny)))))
+	    (possessor {^ affected})
+	    (possessed ((cat common)
+			(definite no)
+			(index ((concept season-high1)))
+			(classifier ((cat noun-compound)
+				     (classifier ((lex "season")))
+				     (head ((lex "high")))))
+			(head ((cat measure) 
+			       (quantity ((cat compound-ordinal)
+					  (numeral ((cat ordinal) (value 6)))
+					  (complement ((lex "straight")))))
+			       (unit ((lex "loss")))))))))))
+
+
+(def-test j2a
+  "Michael Jordan enabled Chicago to hand New York a season high sixth straight loss." 
+  ((cat clause)
+   (process ((type lexical) 
+	     (lex "enable")
+	     (tense past)
+	     (subcat ((1 {^3 lex-roles influence})
+		      (2 {^3 lex-roles influenced})
+		      (3 {^3 lex-roles soa})
+		      (2 ((cat np)))
+		      (3 ((cat clause) 
+			  (mood to-infinitive)
+			  (synt-roles ((subject ((index {^4 2 index})))))))))))
+   (lex-roles 
+    ((influence ((cat proper) 
+		 (head ((cat person-name) 
+			(first-name ((lex "Michael")))
+			(last-name ((lex "Jordan")))))))
+     (influenced ((lex "Chicago")
+		  (cat trivial-proper)
+		  (index {^2 soa partic AGENT index})))
+     (soa ((cat clause)
+	   (process ((type composite) 
+		     (relation-type ascriptive) 
+		     (lex "hand")))
+	   (partic ((agent ((cat trivial-proper) (lex "Chicago")))
+		    (affected ((cat trivial-proper) (lex "New York")))
+		    (carrier {^ affected})
+		    (attribute 
+		     ((cat common)
+		      (definite no)
+		      (classifier ((cat noun-compound)
+				   (classifier ((lex "season")))
+				   (head ((lex "high")))))
+		      (head ((cat measure) 
+			     (quantity ((cat compound-ordinal)
+					(numeral ((cat ordinal) 
+						  (value 6)))
+					(complement ((lex "straight")))))
+			     (unit ((lex "loss")))))))))))))))
+
+
+(def-test j2b
+  "Michael Jordan enabled a season high sixth straight loss to be handed by Chicago to New York."
+  ((cat clause)
+   (process ((type lexical) 
+	     (lex "enable")
+	     (tense past)
+	     (subcat ((1 {^3 lex-roles influence})
+		      (2 {^3 lex-roles influenced})
+		      (3 {^3 lex-roles soa})
+		      (2 ((cat np)))
+		      (3 ((cat clause) (mood to-infinitive)
+			  (synt-roles ((subject ((index {^4 2 index})))))))))))
+   (lex-roles
+    ((influence ((cat proper)
+		 (head ((cat person-name) 
+			(first-name ((lex "Michael")))
+			(last-name ((lex "Jordan")))))))
+     (influenced ((cat common)
+		  (definite no)
+		  (index ((concept season-high1)))
+		  (classifier ((cat noun-compound)
+			       (classifier ((lex "season")))
+			       (head ((lex "high")))))
+		  (head ((cat measure) 
+			 (quantity ((cat compound-ordinal)
+				    (numeral ((cat ordinal) 
+					      (value 6)))
+				    (complement ((lex "straight")))))
+			 (unit ((lex "loss")))))))
+     (soa ((cat clause)
+	   (process ((type composite) 
+		     (agentless no)
+		     (relation-type possessive) 
+		     (lex "hand")))
+	   (partic ((agent ((cat trivial-proper) (lex "Chicago")
+			    (index ((concept chicago)))))
+		    (affected ((cat trivial-proper) (lex "New York")
+			       (index ((concept ny)))))
+		    (possessor {^ affected})
+		    (possessed ((index {^4 influenced index})))))))))))
+
+
+(def-test j3
+  "Michael Jordan scored two-thirds of his 36 points with 3 point shots."
+  ((cat clause)
+   (process ((type material) (effect-type creative) (lex "score") (tense past)))
+   (partic ((agent ((cat proper)
+		    (head ((cat person-name) 
+			   (first-name ((lex "Michael")))
+			   (last-name ((lex "Jordan")))))))
+	    (created ((cat np)
+		      (fraction ((num 2) (den 3)))
+		      (possessor ((cat personal-pronoun) (gender masculine)))
+		      (cardinal ((value 36)))
+		      (head ((lex "point")))))))
+   (pred-modif ((instrument ((np ((classifier ((cat measure) 
+					       (quantity ((value 3) 
+							  (digit yes)))
+					       (unit ((lex "point")))))
+				  (number plural)
+				  (definite no)
+				  (head ((lex "shot")))))))))))
+
+
+(def-test j3-0
+  "Michael Jordan scored 36 points."
+  ((cat clause)
+   (process ((type material) (effect-type creative) (lex "score") (tense past)))
+   (partic ((agent ((cat proper)
+		    (head ((cat person-name) 
+			   (first-name ((lex "Michael")))
+			   (last-name ((lex "Jordan")))))))
+	    (created ((cat np)
+		      (cardinal ((value 36)))
+		      (definite no)
+		      (head ((lex "point")))))))))
+
+(def-test j3-1
+  "Michael Jordan scored two-thirds of his 36 points with 3 point shots."
+  ((cat clause)
+   (process ((type material) (effect-type creative) (lex "score") (tense past)))
+   (partic ((agent ((cat proper)
+		    (index ((concept mj1) (gender masculine)))
+		    (head ((cat person-name) 
+			   (first-name ((lex "Michael")))
+			   (last-name ((lex "Jordan")))))))
+	    (created ((cat np)
+		      (fraction ((num 2) (den 3)))
+		      (possessor ((cat personal-pronoun) (gender masculine)))
+		      (cardinal ((value 36)))
+		      (head ((lex "point")))))))
+   (pred-modif ((instrument ((np ((classifier ((cat measure) 
+					       (quantity ((value 3) 
+							  (digit yes)))
+					       (unit ((lex "point")))))
+				  (number plural)
+				  (definite no)
+				  (head ((lex "shot")))))))))))
+
+(def-test j4
+ "Who do you think scored two-thirds of his 36 points with 3 point shots?"
+  ((cat clause)
+   (mood wh)
+   (scope {^ partic phenomenon partic agent})
+   (proc ((type mental) 
+	  (object-clause that) 
+	  (lex "think"))) 
+   (partic 
+    ((processor ((cat personal-pronoun) (animate yes) (person second)))
+     (phenomenon 
+      ((cat clause)
+       (process ((type material) (effect-type creative) 
+		 (tense past) (lex "score")))
+       (partic ((agent ((cat proper)
+			(head ((cat person-name) 
+			       (first-name ((lex "Michael")))
+			       (last-name ((lex "Jordan")))))))
+		(created ((cat np)
+			  (fraction ((num 2) (den 3)))
+			  (possessor ((cat personal-pronoun) 
+				      (gender masculine)))
+			  (cardinal ((value 36)))
+			  (head ((lex "point")))))))
+       (pred-modif ((instrument ((cat pp)
+				 (np ((number plural)
+				      (definite no)
+				      (classifier ((cat measure) 
+						   (quantity ((value 3)
+							      (digit yes)))
+						   (unit ((lex "point")))))
+				      (head ((lex "shot")))))))))))))))
+
+
+(def-test j4-1
+ "What do you think Michael Jordan scored with 3 point shots?"
+  ((cat clause)
+   (mood wh)
+   (scope {^ partic phenomenon partic created})
+   (proc ((type mental) 
+	  (object-clause that) 
+	  (lex "think"))) 
+   (partic 
+    ((processor ((cat personal-pronoun) (animate yes) (person second)))
+     (phenomenon 
+      ((cat clause)
+       (process ((type material) (effect-type creative) 
+		 (tense past) (lex "score")))
+       (partic ((agent ((cat proper)
+			(head ((cat person-name) 
+			       (first-name ((lex "Michael")))
+			       (last-name ((lex "Jordan")))))))
+		(created ((cat np)
+			  (fraction ((num 2) (den 3)))
+			  (possessor ((cat personal-pronoun) 
+				      (gender masculine)))
+			  (cardinal ((value 36)))
+			  (head ((lex "point")))))))
+       (pred-modif ((instrument ((cat pp)
+				 (np ((number plural)
+				      (definite no)
+				      (classifier ((cat measure) 
+						   (quantity ((value 3)
+							      (digit yes)))
+						   (unit ((lex "point")))))
+				      (head ((lex "shot")))))))))))))))
+

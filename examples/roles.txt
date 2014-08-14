@@ -1,0 +1,40 @@
+role accompaniment
+role agent
+role at-loc 
+role at-time
+role attribute
+role behalf
+role carrier
+role from-loc
+role identifier
+role in-loc
+role instrument
+role located
+role location
+role manner
+role on-loc
+role phenomenon
+role possessed
+role possessor
+role processor
+role purpose
+role reason
+role time
+role to-loc 
+
+Circums:
+
+accompaniment-comp
+at-loc-comp
+behalf-comp
+from-loc-comp
+in-loc-comp
+instrument-comp
+on-loc-comp
+purpose-comp
+reason-comp
+time-comp
+to-loc-comp
+
+Participants:
+

@@ -1,0 +1,778 @@
+
+alt.lisp,501
+(defun alt-trace-expr 51,2482
+(defun alt-trace-flag 55,2586
+(defun alt-index-expr 60,2675
+(defun alt-index-attr 63,2753
+(defun alt-demo-expr 66,2806
+(defun alt-bk-class-expr 69,2890
+(defun alt-bk-class-class 72,2974
+(defun show-demo-msg 86,3320
+(defun find-alt-annotation 114,4478
+(defun branches 129,4999
+(defun option 164,6468
+(defun find-good-branches 186,7314
+(defun opt-unify 206,7893
+(defun alt-unify 238,9106
+(defun alt-unify-simple 322,12582
+(defun alt-unify-indexed 371,14407
+
+backtrack.lisp,351
+(defun signal-stop 59,3084
+(defun define-bk-class 65,3293
+(defun clear-bk-class 71,3583
+(defun member-or-inter 77,3713
+(defun adjoin-or-union 90,4170
+(defun input-pair 106,4719
+(defun get-bk-class 112,4832
+(defun match-bk-class 128,5345
+(defun update-pair 195,7662
+(defun enrich 218,8556
+(defun undo-list 238,9327
+(defun undo-one 244,9577
+
+checker.lisp,544
+(defmacro fd-p-test 48,2458
+(defmacro fd-p-err-msg 52,2577
+(defun how-many 59,2795
+(defun fd-syntax 88,3963
+(defun fd-p-p 95,4207
+(defun fd-p-pair 121,5375
+(defun fd-p-flag 353,13577
+(defun fd-sem 365,14025
+(defmacro fd-sem-err-msg 384,14678
+(defun fd-sem1 393,14914
+(defun fd-sem-pair 405,15361
+(defun fd-not-none 485,18107
+(defun check-index 523,19413
+(defun grammar-p 557,20558
+(defun fd-p 607,22350
+(defun normalize-fd 630,23218
+(defun alt-gdp 642,23602
+(defun go-down-one-level 688,25459
+(defun get-error-pair 707,26009
+
+complexity.lisp,138
+(defun complexity 29,1255
+(defun complexity1 45,1948
+(defun avg-complexity 62,2459
+(defun avg 90,3627
+(defun avg-complexity1 96,3734
+
+continue.lisp,151
+(defun u-exhaust 36,1787
+(defun default-continuation2 52,2473
+(defun u-exhaust-top 58,2665
+(defun u-exhaust-top-2 85,3759
+(defun uni-num 118,5107
+
+control.lisp,91
+(defun filter-macro-char 64,2718
+(defun control-unify 76,3125
+(defun test-unify 91,3715
+
+define.lisp,496
+(defun clear-grammar 27,1267
+(defmacro def-alt 32,1372
+(defmacro def-conj 40,1664
+(defmacro def-grammar 48,1948
+(defun use-grammar 55,2112
+(defun get-grammar 68,2427
+(defun get-fd 89,3040
+(defun refresh-fug 95,3229
+(defun fd-children 185,6273
+(defun fug-children 196,6545
+(defun draw-grammar 235,8117
+(defun draw-types 257,8829
+(defun type-roots 268,9160
+(defun types-postscript 278,9621
+(defun fuf-postscript 305,10739
+(defmacro while 331,11805
+(defun print-structure 333,11871
+
+determine.lisp,258
+(defun determine 111,5149
+(defun det-any 150,6617
+(defun det-tests 184,7968
+(defun det-agenda 207,8809
+(defun det-constituents 237,10141
+(defun filter-nones 293,11972
+(defun filter-nils 309,12467
+(defun filter-flags 327,13026
+(defun any-p 349,13820
+
+external.lisp,110
+(defun external-get-function 38,1850
+(defun call-external 48,2129
+(defun default-external-function 55,2316
+
+fd-to-graph.lisp,1649
+(defun ph 15,623
+(defparameter *smaller-path-fct* 23,1015
+(defvar *path-table* 44,1723
+(defparameter *unbound* 48,1910
+(defstruct path-entry51,1999
+(defun find-entry 57,2087
+(defun add-entry 61,2196
+(defun path-to-id 68,2502
+(defun path-to-id2 81,3024
+(defun find-id 87,3224
+(defun id-to-path 93,3434
+(defvar *new-physical-path* 102,3777
+(defun get-new-physical-path 105,3913
+(defun record-new-physical-path 108,4001
+(defun quotient-set 124,4645
+(defun smaller-path 151,5782
+(defun between 168,6451
+(defun find-cues 180,6952
+(defun cue-rank 184,7080
+(defun innermost-ls 189,7293
+(defun rep 295,10932
+(defun get-class 301,11183
+(defun path-equiv 308,11457
+(defun g-get-class 334,12456
+(defun build-id-table 357,13444
+(defun build-id-table-aux 378,14390
+(defun merge-ids 448,17316
+(defun add-chain 477,18179
+(defun real-leaf-p 496,18880
+(defun relocate 510,19375
+(defun relocpairs 530,20250
+(defun relocpair 539,20544
+(defun in-scope 589,22434
+(defun relocated-rep 602,22980
+(defun longest-common-prefix 624,23843
+(defun strip-prefix 632,24156
+(defun make-relative-path 636,24293
+(defun insert-fd 667,25245
+(defun insert-empty-fd 681,25741
+(defun insert-patch 694,26195
+(defun insert-patch-pair 699,26347
+(defun compare-features 717,26967
+(defun outgoing-arcs 720,27067
+(defun ext-equal 723,27117
+(defun ext-equal2 732,27443
+(defun unfold 742,27818
+(defun unfold-aux 748,28032
+(defun ext2int 768,28612
+(defun ext2int-aux 776,28977
+(defun s-ext2int 787,29373
+(defun s-ext2int-aux 798,29788
+(defun ban-path-as-total 812,30320
+(defun top-gdc 818,30535
+(defun gdc 820,30617
+(defun phys-rep 944,35838
+
+fd-to-graph2.lisp,415
+(defun relocate 36,1301
+(defun relocpair 40,1438
+(defun relocpairs 72,2611
+(defun insert-fd 96,3324
+(defun insert-empty-fd 105,3634
+(defun insert-patch 118,4088
+(defun insert-patch-pair 123,4240
+(defun longest-common-prefix 137,4685
+(defun strip-prefix 145,4998
+(defun make-relative-path 149,5135
+(defun ban-path-as-total 170,5836
+(defun top-gdc 176,6051
+(defun gdc 178,6133
+(defun phys-rep 302,11354
+
+fdlist.lisp,203
+(defun FD-to-list 28,1231
+(defun FD-to-list-aux 34,1486
+(defun top-fd-to-list 42,1792
+(defun FD-to-prolog 47,1908
+(defun FD-to-prolog-aux 54,2182
+(defun list-to-FD 66,2557
+(defun print-fd 83,3020
+
+findcset.lisp,143
+(defun find-fset 26,1107
+(defun find-cset 59,2774
+(defun pair-path-value 103,4658
+(defun clean-cset 129,5602
+(defun pair-has-cat 140,6082
+
+fset.lisp,68
+(defun fset-unify 40,1794
+(defun fset-check-existing-atts 72,2962
+
+fug54.lisp,211
+(defpackage "FUG5"36,1833
+(defun pwd 277,5307
+(defun cd 281,5403
+(defun compile-fug5 285,5531
+(defun reload-fug5 321,6722
+(defun reload-fug5-src 355,7447
+(defun warranty 389,8311
+(defun license 416,9602
+
+generator.lisp,467
+(defvar *the-empty-generator* 44,1993
+(defvar *no-first* 45,2049
+(defun displace 47,2127
+(defun force 53,2218
+(defun list->gen 60,2416
+(defun gen-first 68,2663
+(defun next 75,2832
+(defun first-if 81,3013
+(defun next-if 88,3199
+(defun filter 93,3378
+(defun exhaust 102,3645
+(defun set-of 109,3910
+(defun mapgen 116,4118
+(defun concatgen 125,4345
+(defun multiplygen 133,4605
+(defun appendgen 145,5136
+(defun integers 154,5408
+(defun powerset 158,5494
+
+graph.lisp,196
+(defun empty-fd 62,3090
+(defun unify-leaf12 103,4451
+(defun unify-leaf2 148,6064
+(defun unify-leaf1 201,7944
+(defun unify 273,10292
+(defun unify-pairs 320,12270
+(defun unify-path 467,17717
+
+graph2.lisp,196
+(defun empty-fd 63,3164
+(defun unify-leaf12 104,4525
+(defun unify-leaf2 149,6138
+(defun unify-leaf1 202,8018
+(defun unify 274,10366
+(defun unify-pairs 322,12417
+(defun unify-path 532,20288
+
+graph3.lisp,315
+(defun empty-fd 66,3348
+(defun copy-special-pair 98,4279
+(defun copy-special 104,4449
+(defun unify-leaf12 131,5409
+(defun unify-leaf2 182,7237
+(defun unify-leaf1 242,9349
+(defun unify 314,11697
+(defun unify-pairs 362,13679
+(defun unify-path 538,20537
+(defun degrade 604,23162
+(defun list-to-FD 614,23547
+
+ignore.lisp,70
+(defun check-ignore-unless 47,2081
+(defun check-ignore-when 62,2586
+
+lexicon.lisp,208
+(defun lexfetch 156,5118
+(defun lexstore 166,5455
+(defun store-plurals 175,5820
+(defun store-verbs 179,5916
+(defun store-adjs 188,6206
+(defun store-pronouns 195,6381
+(defun initialize-lexicon 215,6949
+
+linearize.lisp,1294
+(defun call-linearizer 58,2993
+(defun CAPITALIZE 77,3617
+(defun punctuation 83,3863
+(defun bracket-open-char 86,3938
+(defun bracket-close-char 89,4015
+(defun bracket-char 92,4093
+(defun VOWEL 96,4192
+(defun consonant-dipthong 99,4254
+(defun last-char 103,4374
+(defun butlast-char 106,4431
+(defun PUNCTUATE 117,4828
+(defun linearize 180,6729
+(defun list-if-atom 231,8508
+(defun MORPH 235,8642
+(defun morphology-help 288,10607
+(defun CHECK-PERSON 315,11841
+(defun CHECK-TENSE 320,11987
+(defun CHECK-NUMBER 325,12118
+(defun CHECK-CASE 330,12271
+(defun CHECK-GENDER 335,12431
+(defun CHECK-DISTANCE 340,12584
+(defun CHECK-ANIMATE 345,12719
+(defun CHECK-A-AN 350,12842
+(defun CHECK-RESTRICTIVE 355,12960
+(defun MORPH-NOUN 364,13305
+(defun mark-noun-as-an 381,14005
+(defun unmark-noun-as-an 384,14080
+(defun noun-marked-as-an 387,14153
+(defun MORPH-NUMBER 392,14307
+(defun MORPH-VERB 403,14619
+(defun MORPH-BE 425,15562
+(defun FORM-PRESENT-VERB 443,15946
+(defun FORM-PAST 458,16304
+(defun FORM-ING 479,17136
+(defun MORPH-DETERMINER 496,17835
+(defun MORPH-PRONOUN 507,18253
+(defun format-ordinal 557,19996
+(defun MORPH-NUMERIC 573,20411
+(defun MORPH-FRACTION 596,21207
+(defun list-punctuation 626,22014
+(defun trim-lstring 653,23096
+(defun PLURALIZE 660,23336
+
+linearize2.lisp,1454
+(defun call-linearizer 59,3114
+(defun CAPITALIZE 78,3738
+(defun punctuation 87,4098
+(defun bracket-open-char 90,4173
+(defun bracket-close-char 93,4254
+(defun bracket-char 96,4336
+(defun VOWEL 100,4435
+(defun last-char 103,4497
+(defun butlast-char 106,4554
+(defun punctuation-word 109,4618
+(defun PUNCTUATE 122,5069
+(defmacro string-append 188,6995
+(defun linearize 192,7092
+(defun html-tag 257,9880
+(defun html-tag-att 277,10669
+(defun html-tag-att-format 298,11505
+(defun list-if-atom 325,12563
+(defun MORPH 329,12697
+(defun morphology-help 390,14904
+(defun CHECK-PERSON 417,16138
+(defun CHECK-TENSE 422,16284
+(defun CHECK-NUMBER 427,16415
+(defun CHECK-CASE 432,16568
+(defun CHECK-GENDER 437,16728
+(defun CHECK-DISTANCE 442,16881
+(defun CHECK-ANIMATE 447,17016
+(defun CHECK-A-AN 452,17139
+(defun CHECK-HTML 457,17257
+(defun CHECK-RESTRICTIVE 462,17365
+(defun MORPH-NOUN 471,17710
+(defun mark-noun-as-an 488,18410
+(defun unmark-noun-as-an 491,18485
+(defun noun-marked-as-an 494,18558
+(defun MORPH-NUMBER 499,18712
+(defun MORPH-VERB 510,19024
+(defun MORPH-BE 532,19967
+(defun FORM-PRESENT-VERB 550,20351
+(defun FORM-PAST 565,20709
+(defun FORM-ING 586,21541
+(defun MORPH-DETERMINER 603,22240
+(defun MORPH-PRONOUN 614,22658
+(defun format-ordinal 661,24312
+(defun MORPH-NUMERIC 677,24727
+(defun MORPH-FRACTION 700,25471
+(defun list-punctuation 730,26278
+(defun trim-lstring 757,27360
+(defun PLURALIZE 764,27600
+
+linearize3.lisp,1750
+(defun call-linearizer 61,3297
+(defun CAPITALIZE 80,3921
+(defun punctuation 89,4281
+(defun bracket-open-char 92,4356
+(defun bracket-close-char 95,4437
+(defun bracket-char 98,4519
+(defun VOWEL 102,4618
+(defun last-char 105,4680
+(defun butlast-char 108,4737
+(defun punctuation-word 111,4801
+(defun PUNCTUATE 124,5252
+(defmacro string-append 192,7261
+(defun linearize 196,7358
+(defun html-tag 269,10621
+(defun html-tag-att 289,11410
+(defun html-tag-att-format 310,12246
+(defun list-if-atom 337,13304
+(defun MORPH 341,13438
+(defun morphology-help 407,15981
+(defun CHECK-PERSON 435,17267
+(defun CHECK-TENSE 440,17413
+(defun CHECK-NUMBER 445,17544
+(defun CHECK-CASE 450,17697
+(defun CHECK-GENDER 455,17857
+(defun CHECK-DISTANCE 460,18010
+(defun CHECK-ANIMATE 465,18145
+(defun CHECK-A-AN 470,18268
+(defun CHECK-HTML 475,18386
+(defun CHECK-RESTRICTIVE 480,18494
+(defun CHECK-DIGIT 485,18636
+(defun check-reflexive-type 492,18779
+(defun check-superlative 498,19014
+(defun check-comparative 503,19161
+(defun check-inflection 508,19309
+(defun MORPH-NOUN 514,19593
+(defun morph-binding 532,20283
+(defun morph-anaphor 562,21660
+(defun mark-noun-as-an 588,22554
+(defun unmark-noun-as-an 591,22629
+(defun noun-marked-as-an 594,22702
+(defun MORPH-NUMBER 599,22856
+(defun MORPH-VERB 610,23168
+(defun MORPH-BE 632,24111
+(defun FORM-PRESENT-VERB 650,24495
+(defun FORM-PAST 665,24853
+(defun FORM-ING 687,25686
+(defun MORPH-DETERMINER 704,26385
+(defun MORPH-PRONOUN 715,26803
+(defun format-ordinal 762,28457
+(defun MORPH-NUMERIC 779,28990
+(defun MORPH-FRACTION 802,29734
+(defun MORPH-ADJ 829,30458
+(defun FORM-ADJ 838,30854
+(defun list-punctuation 865,32047
+(defun trim-lstring 892,33129
+(defun PLURALIZE 899,33369
+
+macros.lisp,721
+(defmacro safe-assoc 43,2222
+(defmacro safe-second 47,2341
+(defmacro backtrack 61,2696
+(defmacro make-failure 113,4969
+(defmacro *restart* 118,5132
+(defmacro *fail* 130,5651
+(defmacro empty 145,6113
+(defmacro freeze 149,6203
+(defmacro cons-gen 153,6295
+(defmacro trace-indent 165,6587
+(defmacro trace-format 171,6737
+(defmacro trace-demo 180,7049
+(defmacro control-demo 190,7430
+(defmacro tracing-flag 206,8003
+(defmacro cFormat 218,8403
+(defmacro subtype 236,8916
+(defmacro subtype-fctn 240,9000
+(defmacro attr-p 253,9277
+(defmacro special-p 259,9429
+(defmacro leaf-p 265,9562
+(defmacro fd-boundp 274,9820
+(defmacro externalp 285,10052
+(defmacro underp 296,10345
+(defmacro under-symbol 302,10467
+
+path.lisp,923
+(defun path-null 68,3482
+(defun path-car 71,3531
+(defun path-cdr 74,3578
+(defun path-cons 77,3640
+(defun path-last 80,3708
+(defun path-extend 83,3757
+(defun path-reverse 87,3892
+(defun path-push 91,4022
+(defun path-pop 95,4135
+(defun path-append 99,4219
+(defun path-butlast 103,4345
+(defun path-nthcdr 107,4470
+(defun path-len 110,4542
+(defun path-prefix 113,4592
+(defun path-relative-p 116,4678
+(defun the-last-arc-of-path 123,4909
+(defun absolute-path 133,5188
+(defun absolute-path-from-relative 145,5686
+(defun safe-path-extend 159,6189
+(defun make-absolute 170,6730
+(defun gdp 296,12058
+(defun gdpp 314,12664
+(defun add-missing 320,12910
+(defun fptl 413,16453
+(defun fptl-aux 421,16769
+(defun build-fd-from-path 441,17354
+(defun build-path 452,17791
+(defun incr-gdp 482,18949
+(defun top-gdp 498,19576
+(defun top-gdpp 503,19701
+(defun path-value 511,20002
+(defun set-path-value 516,20158
+
+pattern.lisp,690
+(defun pattern-unify 170,8253
+(defun one-pattern-unify 210,10031
+(defun up 261,12263
+(defun empty-pattern 278,12929
+(defun poundp 282,13073
+(defun constraint->fd 296,13639
+(defun constraints->fd 303,13995
+(defun marked-mergeable 314,14361
+(defun mark-mergeable 319,14532
+(defun unmark-mergeable 323,14616
+(defun mergeablep 328,14762
+(defun mergeable 333,14937
+(defun post-process-patterns 338,15112
+(defun pre-process-patterns 353,15519
+(defun dotspound->pounddots 371,16051
+(defun clean-pattern 382,16442
+(defun possible-mins 395,16901
+(defun necessary-mins 421,17910
+(defun stream-of-mins 444,18653
+(defun remove-min-pattern 459,19366
+(defun unify-patterns 478,20010
+
+psgraph.lisp,1040
+(defstruct psnode19,830
+(defvar max-psnodes 30,956
+(defvar extra-x-spacing 31,982
+(defvar extra-y-spacing 32,1010
+(defvar fontname 33,1037
+(defvar fontsize 34,1067
+(defvar second-fontname 35,1088
+(defvar second-fontsize 36,1133
+(defvar boxgray 37,1160
+(defvar boxkind 38,1212
+(defvar edgewidth 39,1277
+(defvar edgegray 40,1342
+(defvar edgecap 41,1404
+(defvar textgray 42,1454
+(defvar pageheight 43,1501
+(defvar pagewidth 44,1525
+(defvar boxradius 45,1560
+(defvar boxedge 46,1598
+(defvar chunksize 47,1634
+(defvar num-psnodes)49,1658
+(defvar narray)50,1679
+(defvar psnode-index)51,1695
+(defvar child-function)52,1717
+(defvar info-function)53,1741
+(defvar top-sort)54,1764
+(defvar maximum-y)55,1782
+(defvar minimum-y)56,1801
+(defvar rows)57,1820
+(defvar y-offset)58,1834
+(defvar psnodes-at-y)59,1852
+(defvar ancestor-cache)60,1874
+(defun psgraph 62,1899
+(defun walk-graph 437,14978
+(defun top-sort-node 468,16221
+(defun top-sort-parent 485,16776
+(defun related-classes 497,17113
+(defun ancestor 503,17208
+
+ralt.lisp,34
+(defun ralt-unify-simple 41,2028
+
+relocate.lisp,118
+(define-procedural-type 'surfmap-cset surfmap-cset13,409
+(define-procedural-type 'deepmap-cset deepmap-cset15,512
+
+test-wait.lisp,24
+(def-grammar gr 13,419
+
+test.lisp,218
+(defmacro def-test 28,1237
+(defun get-test 37,1538
+(defun clear-tests 40,1594
+(defun uni-string-limit 48,1805
+(defun test 51,1866
+(defun extract-list 94,3168
+(defun test-with 110,3763
+(defun do-tenses 138,4702
+
+top.lisp,936
+(defun clean-fd 83,4305
+(defun fu 86,4363
+(defun funi 89,4410
+(defun uni 104,5041
+(defun uni-string 128,5990
+(defun uni-fd 147,6628
+(defun unif 164,7244
+(defun list-cats 172,7596
+(defmacro toplevel-uni 181,7890
+(defun default-continuation 215,9443
+(defun default-fail 220,9565
+(defun u-disjunctions 225,9628
+(defun u 255,10662
+(defun u-rel 273,11243
+(defun nurel 293,11917
+(defun unify-top 331,13320
+(defun prep-input 369,14774
+(defun PRINT-SENTENCE 410,15912
+(defun unify-cat 421,16249
+(defun freeze-on-cat 487,18748
+(defun categories-not-unified 494,19051
+(defun register-categories-not-unified 497,19173
+(defun register-category-not-unified 504,19398
+(defun unregister-category-not-unified 513,19809
+(defun mark-arc 518,20014
+(defun mark-arc2 526,20326
+(defun arc-is-marked 534,20665
+(defun arc-is-marked-after-wait 539,20777
+(defun unify-sub-constituents 551,21187
+(defun unify-breadth-first 575,22041
+
+trace.lisp,951
+(defun internal-trace-on 53,2528
+(defun internal-trace-off 54,2579
+(defun trace-on 56,2634
+(defun trace-off 60,2740
+(defun trace-level 64,2818
+(defun trace-determine 77,3343
+(defun trace-bk-class 81,3481
+(defun trace-wait 85,3590
+(defun trace-cset 89,3678
+(defun trace-alts 93,3766
+(defun trace-bp 97,3862
+(defun trace-category 110,4276
+(defun hyper-trace-category 140,5572
+(defun handle-trace 166,6562
+(defun trace-enabled 196,7667
+(defun trace-enable 201,7815
+(defun trace-disable 214,8286
+(defun trace-enable-all 229,8846
+(defun trace-disable-all 235,9055
+(defun trace-disable-match 242,9348
+(defun trace-enable-match 252,9753
+(defun trace-enable-alt 260,10095
+(defun trace-disable-alt 268,10376
+(defun match-symbols 279,10757
+(defun all-tracing-flags 291,11144
+(defun enabled-tracing-flags 296,11381
+(defun disabled-tracing-flags 300,11567
+(defun walk-fd 324,12597
+(defun walk-alt 345,13262
+(defun walk-opt 355,13529
+
+type.lisp,1151
+(defmacro define-feature-type 55,2802
+(defun subsume 66,3247
+(defun reset-typed-features 79,3635
+(defun bf-search 92,4016
+(defun remove-all-marks 102,4278
+(defun unify-lattice 108,4442
+(defun define-procedural-type 168,6907
+(defun reset-procedural-type 191,7851
+(defun reset-procedural-types 198,8151
+(defun register-special-attribute 204,8348
+(defun register-special-unif-function 209,8526
+(defun special-unif-function 212,8626
+(defun register-special-syntax-function 215,8700
+(defun special-syntax-function 218,8804
+(defun register-special-copier-function 221,8882
+(defun special-copier-function 224,8986
+(defun register-special-relocater-function 227,9064
+(defun special-relocater-function 230,9174
+(defun special-unify 237,9381
+(defun copy-special-pair 320,12555
+(defun copy-special 326,12725
+(defun relocate-special 342,13175
+(defun relocate-pattern 367,14218
+(defun unify-cset 396,15287
+(defun set-equal 435,16719
+(defun check-old-cset 441,16936
+(defun new-cset-syntax 446,17088
+(defun check-cset 454,17344
+(defun positive-cset 462,17600
+(defun relocate-cset 465,17705
+(define-procedural-type 'cset cset478,18077
+
+vars.lisp,2785
+(defstruct frame 41,1982
+(defstruct test48,2288
+(defstruct (path 57,2690
+(defun print-path 62,2774
+(defun copy-path 66,2887
+(defun path-equal 69,2956
+(defun equality 73,3070
+(defun curly-brace->path-reader 78,3150
+(defun normalize-path 87,3488
+(defmethod make-load-form 128,4958
+(defvar *fuf-dir* 135,5191
+(defvar *fuf-src-dir* 138,5326
+(defvar *u-grammar* 141,5435
+(defvar *conflate-leaves* 143,5487
+(defvar *disjunctive-attributes* 146,5588
+(defvar *special-attributes* 150,5757
+(defvar *lexical-categories* 155,5971
+(defvar *top* 160,6133
+(defvar *input* 162,6185
+(defvar *cat-attribute* 164,6207
+(defvar *cset-attribute* 167,6305
+(defvar *added-cset* 170,6397
+(defvar *fail* 173,6479
+(defvar *same* 175,6532
+(defvar dummy-frame 178,6637
+(defvar *bk-classes* 182,6814
+(defvar *is-bk-failure* 183,6854
+(defvar *failure-address* 184,6883
+(defvar *class-of-failure* 185,6922
+(defvar *changes-made* 186,6954
+(defvar *ignore-control* 188,6983
+(defvar *any-at-unification* 191,7110
+(defvar *use-given* 194,7222
+(defvar *use-any* 197,7358
+(defvar *use-wait* 200,7480
+(defvar *agenda-policy* 202,7557
+(defvar *input-pair* 208,7758
+(defvar *fuf-systems* 212,7915
+(defvar *fuf-conjs* 215,8011
+(defvar *fuf-need-refresh* 218,8107
+(defvar *fuf-refreshed* 222,8232
+(defvar *default-external-function*)225,8326
+(defvar *dictionary* 227,8364
+(defvar *irreg-plurals* 228,8404
+(defvar *irreg-verbs* 230,8485
+(defvar *irreg-adjs* 233,8639
+(defvar *pronouns-person* 235,8734
+(defvar *pronouns-number* 236,8765
+(defvar *pronouns-gender* 237,8796
+(defvar *pronouns-case* 238,8827
+(defvar *indefinite-article* 242,8995
+(defvar *a-an-marker* 245,9132
+(defvar *restart* 249,9252
+(defvar *linelength* 251,9281
+(defvar *filelinelength* 252,9306
+(defvar *position* 253,9335
+(defvar *max-name-length* 255,9358
+(defvar *tests* 258,9442
+(defvar *ordered-tests* 260,9520
+(defvar *trace-marker* 263,9624
+(defvar *all-trace-off* 264,9699
+(defvar *all-trace-on* 265,9771
+(defvar *trace-break* 266,9838
+(defvar *global-tracing* 267,9889
+(defvar *bigtracing* 268,9955
+(defvar *trace-determine* 269,10009
+(defvar *trace-disabled* 270,10077
+(defvar *local-tracing* 271,10140
+(defvar *traced-categories* 273,10222
+(defvar *hyper-traced-categories* 275,10361
+(defvar *trace-bk-class* 278,10526
+(defvar *bk-frames-skipped* 279,10586
+(defvar *trace-wait* 280,10657
+(defvar *trace-cset* 281,10703
+(defvar *trace-alts* 282,10749
+(defvar *trace-bp* 283,10788
+(defvar *trace-bp-freq* 284,10845
+(defvar *level-tracing* 285,10920
+(defvar *typed-features* 294,11372
+(defvar *warn-type-redefinition* 297,11440
+(defvar *agenda* 300,11539
+(defvar *agenda-id* 303,11612
+(defvar *constituent-agenda* 306,11681
+(defvar *constituent-agenda-id* 310,11792
+
+wait.lisp,850
+(defstruct agenda-item 86,4235
+(defun gen-agenda-id 102,4703
+(defun add-agenda 105,4750
+(defun find-agenda 125,5251
+(defun empty-agenda 128,5351
+(defun remove-agenda 134,5496
+(defun normalize-wait 152,6189
+(defun canonical-wait-form 156,6319
+(defun wait-pair-p 163,6553
+(defun check-wait 186,7363
+(defun get-thaw-candidate 205,7876
+(defun get-active-agenda 220,8357
+(defun check-agenda 237,8853
+(defun filter-agenda 282,10426
+(defun fd-adjoin 316,11645
+(defun force-agenda 329,12065
+(defstruct constituent-agenda-item 400,14745
+(defun gen-constituent-agenda-id 407,14839
+(defun add-constituent-agenda 410,14898
+(defun find-constituent-agenda 421,15253
+(defun empty-constituent-agenda 425,15388
+(defun remove-constituent-agenda 431,15581
+(defun get-active-constituent-agenda 440,15957
+(defun force-constituent-agenda 449,16216
+
+copypath.lisp,0

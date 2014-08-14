@@ -1,0 +1,1156 @@
+\include{epsf}
+\documentstyle[named,10pt,twocolumn]{article}
+
+\topmargin 0pt
+\headheight 0pt
+\headsep 0pt
+\textheight 9in
+\textwidth 6.5in
+\evensidemargin 0pt
+\oddsidemargin 0pt
+\marginparwidth 0pt
+\marginparsep 0pt
+
+\newenvironment{zitemize}%
+{\parskip=0.25\parskip \begin{itemize} \itemsep=0.25\itemsep \parsep=0pt}%
+{\end{itemize} \parskip = 4\parskip}
+
+\newenvironment{zenumerate}%
+{\parskip=0.25\parskip \begin{enumerate}\itemsep=0.25\itemsep\parsep=0pt}%
+{\end{enumerate} \parskip = 4\parskip}
+
+\newcommand{\m}[3]{\multicolumn{#1}{#2}{#3}}
+\renewcommand{\topfraction}{.85}
+\renewcommand{\textfraction}{.15}
+\renewcommand{\bottomfraction}{.85}
+
+\begin{document}
+\title{{\bf An Overview of SURGE: a Reusable\\ Comprehensive Syntactic
+Realization Component}\\\vspace{.75cm}{\small Technical Report 96-03}\\
+{\small Mathematics and Computer Science Deptartment}\\
+{\small  Ben Gurion University in the Negev}} 
+\vspace{1.25cm}
+\author{{\bf Michael Elhadad}\\
+{\small \tt http://www.cs.bgu.ac.il/\~{}elhadad}\\
+{\small \tt elhadad@cs.bgu.ac.il}\\
+{\small Mathematics and Computer Science Dept.}\\
+{\small Ben Gurion University in the Negev}\\
+{\small Beer Sheva, 84105 Israel}\\
+{\small Fax: +972-7 472-909}
+\and {\bf Jacques Robin}\\
+{\small \tt http://www.di.ufpe.br/\~{}jr}\\
+{\small \tt jr@di.ufpe.br}\\
+{\small Departamento de Inform\'atica}\\
+{\small Universidade Federal de Pernambuco}\\
+{\small Av. Prof. Luiz Freire s/n Cidade Universit\'aria}\\
+{\small Recife, PE 50740-540 Brazil}\\
+{\small Fax: +55-81 271-4925 (or 4281)}
+}
+
+\date{}
+\maketitle
+
+\begin{abstract}
+  This paper describes {\sc surge}, a syntactic realization front-end for
+  natural language generation systems.  By gradually integrating
+  complementary aspects of various linguistic theories within the
+  computational framework of functional unification, {\sc surge} has
+  evolved to be one of the most comprehensive grammars of English for
+  language generation available today. It has been successfully re-used in
+  a variety of generators, with very different architectures and
+  application domains.
+\end{abstract}
+
+\section{Introduction} 
+
+This paper is an overview of {\sc surge} (Systemic Unification Realization
+Grammar of English) a syntactic realization front-end for natural language
+generation systems. Developed over the last seven years\footnote{The research
+presented in this paper started out while the authors were doing their PhD. at
+Columbia University, New York. We are both indebted to Kathleen McKeown for her
+guidance and support during those years.} it embeds one of the most
+comprehensive computational grammar of English for generation available to
+date. It has been successfully re-used in eight generators, that have little in
+common in terms of architecture.  It has also been used for teaching natural
+language generation at several academic institutions.
+
+We first define the task of a stand-alone syntactic realization component
+within the overall generation process and provide criteria for its
+evaluation.  We then briefly survey the computational formalism underlying
+the implementation of {\sc surge} as well as the syntactic theories that it
+integrates.  We then describe in more details the structure of the grammar
+and its coverage. Finally, we review the application domains across which
+{\sc surge} has been re-used, compare it with other syntactic realization
+front-ends for generation and discuss its current limitations.
+
+\section[Reusable Realization Component for NLG]{Reusable
+Realization\\Component for NLG} 
+
+Natural language generation has been traditionally divided into three
+successive tasks \cite{reiter94}: (1) content determination, (2) content
+organization, and (3) linguistic realization. The goal of a re-usable
+realization component is to encapsulate the domain-independent part of this
+third task. The input to such component should thus be as high-level as
+possible without hindering portability.  Independent efforts to define such an
+input \cite{comet} \cite{matthiessen87} \cite{yang-et-al} \cite{meteer-book}
+have crystalized around a skeletal, partially lexicalized thematic tree
+specifying the semantic roles, open-class lexical items and top-level syntactic
+category of each constituents. An example {\sc surge} input with the
+corresponding sentence is given in Fig.~\ref{example-input}.
+
+\begin{figure}[t]
+\rule[.3cm]{.48\textwidth}{.01in}
+\scriptsize
+Input Specification ($I_1$): 
+\[ \left[ \begin{array}{ll}
+   cat & clause\\
+   process & \left[ \begin{array}{ll}
+             type & composite\\
+             relation & possessive\\
+             lex & ``hand''
+             \end{array} \right] \\
+   partic  & \left[ \begin{array}{ll}
+             agent & \left[ \begin{array}{ll}
+                     cat & pers\_pro\\
+                     gender & feminine
+                     \end{array} \right] \\
+             affected & \fbox{1} \left[ \begin{array}{ll}
+                        cat & np\\
+                        lex & ``editor''
+%                        head & \left[ \begin{array}{ll}
+%                               lex & ``editor''
+%                               \end{array} \right] \\
+                        \end{array} \right] \\
+             possessor & \fbox{1}\\
+             possessed & \left[ \begin{array}{ll}
+                         cat & np\\
+                         lex & ``draft''\\
+%                         head & \left[ \begin{array}{ll}
+%                                lex & ``draft''
+%                                \end{array} \right] \\
+                         \end{array} \right] \\
+             \end{array} \right] \\
+\end{array} \right] \]                         
+
+Output Sentence ($S_1$): 
+``She hands the draft to the editor''
+\caption{An example {\sc surge} I/O}
+\label{example-input}
+\rule{.48\textwidth}{.01in}
+\end{figure}
+
+\paragraph{The Syntactic Realization Subtask} 
+The task of the realization component is to map such skeletal tree onto a
+natural language sentence. It involves the following sub-tasks:
+\begin{zenumerate} 
+\item {\em Map thematic structure onto syntactic roles}: {\em e.g.,} {\tt
+    agent}, {\tt process}, {\tt possessed} and {\tt possessor} onto {\tt
+    subject}, {\tt verb-group}, {\tt direct-object} and {\tt indirect-object}
+    (respectively) in $S_1$.
+
+\item {\em Control syntactic paraphrasing and alternations} \cite{levin}:
+  {\em e.g.,} adding the {\tt (dative-move yes)} feature to $I_1$ would
+  result in the generation of the paraphrase ($S_2$): {\em ``She hands the
+    editor the draft''}.
+
+\item {\em Prevent over-generation}: 
+{\em e.g.,} fail when adding the same {\tt (dative-move yes)} feature to an
+  input similar to $I_1$ except that the {\tt possessed} role is filled by {\tt
+  ((cat pers-pro))} (for personal pronoun) to avoid the generation of ($S_3$) *
+  {\em ``She hands the editor it''}.
+
+\item {\em Provide defaults for syntactic features}: {\em e.g.,} {\tt
+    definite} for the NPs of $S_1$.
+
+\item {\em Propagate agreement features}, providing enough input to the
+  morphology module: {\em e.g.,} after the {\tt agent} and {\tt process}
+  thematic roles have been mapped to the {\tt subject} and {\tt verb-group}
+  syntactic roles (respectively), propagate the default {\tt (person
+    third)} feature added to the {\tt subject} filler to the {\tt
+    verb-group} filler; without such a propagation the morphology module
+  would not be able to inflect the verb {\em ``to hand''} as {\em
+    ``hands''} in $S_1$.
+
+\item {\em Select closed-class words}: {\em e.g.,} {\em ``she''}, {\em
+    ``the''} and {\em ``to''} in $S_1$.
+
+\item {\em Provide linear precedence constraints} among syntactic
+  constituents: {\em e.g.,} {\tt subject} $>$ {\tt verb-group} $>$ {\tt
+    indirect-object} $>$ {\tt direct-object} once the default active voice
+  has been chosen for $S_1$.
+
+\item {\em Inflect open-class words} (morphological processing): {\em
+    e.g.,} the verb {\em ``to hand''} as {\em ``hands''} in $S_1$.
+
+\item {\em Linearize the syntactic tree into a string of inflected words}
+following the linear precedence constraints.
+
+\item {\em Perform syntactic inference}: As an example of syntactic
+  inference, suppose that $I_1$ is embedded within a clause as follows:
+\end{zenumerate}
+
+\[ \left[ \scriptsize \begin{array}{ll}
+cat & clause\\
+process & \left[ \begin{array}{ll}
+          lex & ``require''\\
+          \end{array} \right] \\
+partic &  \left[ \begin{array}{ll}
+          soa & ($I1$)\\
+          influenced & \fbox{1}\\
+          influence & \left[ \begin{array}{ll}
+                      cat & pers\_pro\\
+                      number & plural
+                      \end{array} \right] \\
+             \end{array} \right] \\
+\end{array} \right] \]                         
+
+$I_1$ fills the {\tt soa (state-of-affair)} role of ``to require'' and the
+{\tt influenced} role is co-referent with the {\tt affected} role of $I_1$.
+>From this co-reference constraint and the subcategorization constraint of
+``to require'' (provided in the lexicon), {\sc surge} deduces that the {\tt
+  affected} role of the subordinated clause should be {\em controlled}
+\cite{pollard-sag94} (Chap. 7) by the {\tt influenced} role of the matrix
+clause and therefore be mapped onto the {\tt subject} syntactic role. This
+inferred constraint in turn triggers the choice of the passive voice for
+the subordinated clause, resulting in ($S_4$): {\em ``They required the
+  draft to be handed by her to the editor.''}
+
+
+\paragraph{Evaluation Criteria}
+
+A re-usable syntactic realization component (or grammar for short) for language
+generation should thrive to satisfy the following properties:
+\begin{zenumerate}
+\item {\em Comprehensive coverage}: it should be able to generate a large
+  set of valid syntactic forms and to output many alternate syntactic forms
+  from a single input.
+
+\item {\em Prevention of over-generation}: it should generate only
+  grammatical outputs (the counter-part of the previous criterion).
+
+\item {\em Encapsulation of syntactic knowledge}: it should accept inputs
+  that can be prepared by the client program or user with as little
+  knowledge of syntax as possible.
+
+\item {\em Regular input}: it should require inputs whose structure is
+  well-defined and regular, and thus easily producible by a recursive
+  client program.
+
+\item {\em Partially canned input}: it should accept inputs where canned
+  phrases can co-exist with individual words \cite{reiter95}, to be
+  usable across the granularity gradient from simple template systems to
+  fully compositional generation systems.
+
+\item {\em Compact input}: it should provide appropriate defaults for all
+  syntactic features, so that the input can contain only the few features
+  that have non-default values.
+
+\item {\em Extensibility}: it should be easy to add new syntactic
+  constructs, and quickly verify their interaction with the rest of the grammar.
+
+\item {\em Efficiency}: it should generate a sentence from the input
+  specification as fast as possible.
+
+\item {\em Robustness}: it should be able to generate grammatical fragments
+  from ill-formed or incomplete inputs.
+
+\item {\em User-friendliness}: it should be easy to use for computational
+  linguists not familiar with the implementation details and easy to learn for
+  users with little knowledge of linguistic theory.
+
+\item {\em Versatility}: it should be usable in a wide variety of  
+  system architectures and application domains.
+\end{zenumerate}
+
+We come back to these criterion in Section~\ref{related-work} when we compare
+{\sc surge} with other syntactic realization components.
+
+
+\section{The {\sc fuf/surge} package}
+
+{\sc surge} is implemented in the special-purpose programming language {\sc
+  fuf} \cite{fuf-manual} \cite{elhadad-phd} and it is distributed as a
+package with a {\sc fuf} interpreter.  This interpreter has two components:
+\begin{zitemize}
+\item The {\em functional unifier} that fleshes out the input skeletal tree
+  with syntactic features from the grammar.
+
+\item The {\em linearizer} that inflects each word at the bottom of the
+  fleshed out tree and prints them out following the linear precedence
+  constraints indicated in the tree.
+\end{zitemize}
+
+\paragraph{Underlying Formalism}
+
+{\sc fuf} is an extension of the original functional unification formalism
+put forward by Kay \cite{kay79}. It is based on two powerful concepts:
+encoding knowledge in recursive sets of attribute value pairs called {\em
+  Functional Descriptions} (FD) and uniformly manipulating these FDs
+through the operation of unification.
+
+Both the input and the output of a {\sc fuf} program are FDs, while the
+program itself is a meta-FD called a {\em Functional Grammar} (FG). An FG
+is an FD with disjunctions and control annotations. Control annotations are
+used in {\sc fuf} for two distinct purposes:
+\begin{zitemize}
+\item To control recursion on linguistic constituents: the skeletal tree of
+  the input FD is fleshed out in top-down fashion by re-unifying each of its
+  sub-constituent with the FG.
+ 
+\item To reduce backtracking when processing disjunctions.
+\end{zitemize}
+
+The key extensions of {\sc fuf} over Kay's original formalism are its
+wide range of control annotations \cite{elhadad-robin92} and its special
+constructs to define subsumption among atomic values \cite{elhadad90}.  The
+main advantages of {\sc fuf} over {\sc prolog} for
+natural language generation are:  
+\begin{zitemize} 
+\item Partial knowledge assumption (a consequence of relying neither on
+  predicate arity nor on attribute order when encoding information in FDs).
+
+\item Default control flow adapted to generation 
+(top-down breadth-first recursion on linguistic constituents) and possibility
+  to fine-tune it (indexing on grammatical features and dependency-directed
+  backtracking and goal freezing on uninstantiated features).
+
+\item Built-in linearizer and morphology component.
+\end{zitemize}
+
+
+\paragraph{Linguistic Framework} 
+
+{\sc surge} represents our own synthesis, within a single working system
+and computational framework, of the descriptive work of several
+(non-computational) linguists. We took inspiration principally:
+\begin{zitemize}
+\item From \cite{halliday94} and \cite{winograd} for the overall
+  organization of the grammar and the core of the clause and nominal
+  sub-grammars.
+
+\item From \cite{fawcett} and \cite{lyons77} for the semantic aspects of
+  the clause.
+
+\item From \cite{pollard-sag94} for the treatment of long-distance
+  dependencies.
+
+\item From \cite{quirk-et-al85} for the many linguistic phenomena not
+  mentioned in other works, yet encountered in many generation application
+  domains.
+\end{zitemize}
+
+Since many of these sources belong to the {\em systemic} linguistic school,
+{\sc surge} is mostly a functional unification implementation of systemic
+grammar rules. In particular, the type of FD that it accepts as input specifies
+a ``process'' in the systemic sense: it can be an event, a relation, or state
+in addition to a ``process'' in its most common, aspectually restricted
+sense. The hierarchy of general process types defining the thematic structure
+of a clause (and the associated semantic class of its main verb) in the current
+implementation is compact and able to cover many clause structures. Yet, the
+argument structure and/or semantics of many English verbs do not fit neatly in
+any element of this hierarchy \cite{levin}. To overcome this difficulty, {\sc
+surge} also includes {\em lexical processes} inspired by {\em lexicalist}
+grammars such as the Meaning-Text Theory \cite{melcuk-pertsov} and HPSG
+\cite{pollard-sag94}.
+
+A lexical process is a shallower and less semantic form of input, where the
+sub-categorization constraints and the mapping from the thematic roles to
+the oblique roles \cite{pollard-sag94} are already specified (instead of being
+automatically computed by the grammar as is the case for general process
+types). The use of specific lexical processes to complement general process
+types is an example of the type of theory integration that we were forced
+to carry out during the development of {\sc surge}. In the current state of
+linguistic research, with each theory focusing on a small set of linguistic
+phenomena, such an heterogeneous approach is the best practical strategy to
+provide broad coverage.
+
+
+\section{Organization and Coverage}
+
+At the top-level, {\sc surge} is organized into sub-grammars, one for each
+syntactic category. Each sub-grammar encapsulates the relevant part of the
+grammar to access when recursively unifying an input sub-constituent of the
+corresponding category. For example, generating the sentence {\em ``James buys
+the book''} involves successively accessing the sub-grammars for the clause,
+the verb group, the nominal group (twice) and the determiner sequence.  Each
+sub-grammar is then divided into a set of {\em systems} (in the systemic
+sense), each one encapsulating an orthogonal set of decisions, constraints and
+features. The main top-level syntactic categories used in {\sc surge} are:
+clause, nominal group (or NP), the determiner sequence, the verb group, the
+adjectival phrase and the PP. We now describe the systems and coverage
+currently implemented in {\sc surge} for each of these categories.
+
+\subsection{The Clause} 
+
+Following \cite{halliday94}, the {\em thematic} roles accepted by {\sc surge}
+in input clause specifications first divide into: {\em nuclear} and {\em
+satellite} roles.  Nuclear roles, answer the questions ``who/what was
+involved?'' about the situation described by the clause.  They include the {\em
+process} itself, generally surfacing as the {\tt verb}\footnote{Or as {\tt
+direct-object} in the case of clauses headed by support-verbs \cite{gross84}.}
+and its associated {\em participants} surfacing as verb arguments.
+%and surfacing as
+%one of the standard syntactic roles ({\em i.e.,} {\tt verb}, {\tt
+%subject}, {\tt direct-object}, {\tt indirect-object}, {\tt
+%subject-complement}, {\tt object-complement}, {\tt by-object} and {\tt
+%dative-object}).
+Satellite roles (also called {\em adverbials}) answer the questions
+``when/where/why/how did it happen?'' and surface as the remaining clause
+complements.
+
+Semantically, participants are tightly associated with specific nodes in the
+process type hierarchy, while satellites are versatile roles compatible with
+virtually any process type. Syntactically, participants can be distinguished
+from satellites in that\footnote{While each of these three tests has a number
+of exceptions, taken together they are very reliable.}: (1) they surface as
+{\tt subject} for at least one syntactic alternation \cite{levin}, (2) they
+can neither be moved around in the clause nor (3) omitted from the clause while
+preserving its grammaticality. 
+
+Following this sub-division of thematic roles, the clause sub-grammar is
+divided into four orthogonal systems:
+\begin{zitemize}
+\item {\em Transitivity}, which handles mapping of nuclear thematic roles
+  onto a default core syntactic structure for main assertive clauses.
+
+\item {\em Voice}, which handles departures from the default core syntactic
+  structure triggered by the use of syntactic alternations ({\em e.g.,}
+  passive or dative moves).
+
+\item {\em Mood}, which handles departures from the default core syntactic
+  structure triggered by variations in terms speech acts ({\em e.g.,}
+  interrogative or imperative clause) and syntactic functions ({\em e.g.,}
+  matrix {\em vs.} subordinate clause).
+
+\item {\em Adverbial}, which handles mapping of satellite roles onto the
+  peripheral syntactic structure.
+\end{zitemize}
+
+
+\paragraph{The Transitivity System}
+
+\begin{figure*} [p]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|ccc|}\hline
+\m{4}{|c|}{\bf Process type specialization} & 
+\m{3}{|c|}{\bf Example sentence} \\\hline
+event & material & Agentive & simple & Michael & squats &\\
+& & non-effective & & {\em Agent} & & \\\cline{4-7} 
+& & & with range & Michael & takes & a shower\\
+& & & & {\em Agent} & & {\em Range}\\\cline{3-7}
+& & agentive & creative & Michael & makes & falafels\\
+& & effective & & {\em Agent} & & {\em Created}\\\cline{4-7}
+& & & dispositive & Michael & eats & falafels\\
+& & & & {\em Agent} & & {\em Affected}\\\cline{3-3}\cline{5-7}
+& & effective & & Falafels & cook &\\
+& & non-agentive & & {\em Affected} & &\\\cline{4-7}
+& & & creative & Windows & pop &\\
+& & & & {\em Created} & &\\\cline{2-7}
+& \m{3}{|l|}{mental} & Francisco & thinks &\\
+& \m{3}{|l|}{} & {\em Processor} & &\\\cline{5-7}
+& \m{3}{|l|}{} & Francisco & liked & how he won\\
+& \m{3}{|l|}{} & {\em Processor} & & {\em Phenomenon}\\\cline{2-7}
+& \m{3}{|l|}{verbal} & Michael & speaks &\\
+& \m{3}{|l|}{} & {\em Sayer} & &\\\cline{5-7}
+& \m{3}{|l|}{} & Michael & talked & to Cathie\\
+& \m{3}{|l|}{} & {\em Sayer} & & {\em Addressee}\\\cline{5-7}
+& \m{3}{|l|}{} & Michael & said & strange stuff\\
+& \m{3}{|l|}{} & {\em Sayer} & & {\em Verbalization}\\\hline
+relation & \m{2}{|l|}{ascriptive} & attributive & Michael & is & very busy\\
+& \m{2}{|l|}{} & & {\em Carrier} & & {\em Attribute}\\\cline{4-7}
+& \m{2}{|l|}{} & equative & The hunter & is & the hunted\\
+& \m{2}{|l|}{} & & {\em Identified} & & {\em Identifier}\\\cline{2-3}\cline{5-7}
+& \m{2}{|l|}{possessive} & & Francisco & owns & a big boat\\
+& \m{2}{|l|}{} & & {\em Possessor} & & {\em Possessed}\\
+& \m{2}{|l|}{} & & {\em Identified} & & {\em Identifier}\\\cline{4-7}
+& \m{2}{|l|}{} & attributive & Francisco & has & long hair\\
+& \m{2}{|l|}{} & & {\em Possessor} & & {\em Possessed}\\
+& \m{2}{|l|}{} & & {\em Carrier} & & {\em Attribute}\\\cline{2-7}
+& locative & \m{2}{|l|}{natural} & It & rains &\\
+& & \m{2}{|l|}{} & $\emptyset$ & &\\\cline{3-7}
+& & \m{2}{|l|}{existential} & There & is & a catch\\
+& & \m{2}{|l|}{} & $\emptyset$ & & {\em Located}\\\cline{3-7}
+& & \m{2}{|l|}{accompaniment} & Michael & is & with his wife\\
+& & \m{2}{|l|}{} & {\em Located} & & {\em Accompaniment}\\\cline{3-7}
+& & \m{2}{|l|}{temporal} & The end & is & soon\\
+& & \m{2}{|l|}{} & {\em Located} & & Time\\\cline{3-7}
+& & spatial & attributive & Michael & is & far away\\
+& & & & {\em Located} & & {\em Location}\\
+& & & & {\em Carrier} & & {\em Attribute}\\\cline{4-7}
+& & & equative & The tree & reaches & the roof\\
+& & & & {\em Located} & & {\em Location}\\
+& & & & {\em Identified} & & {\em Identifier}\\\hline
+\end{tabular}\\\\\\
+\caption{Hierarchy of simple processes}
+\label{simple-proc}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+\begin{figure*} [p]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|cccc|}\hline
+\m{2}{|l|}{\bf Event Type} & \m{2}{|l|}{\bf Relation Type} & 
+\m{4}{|l|}{\bf Example sentence}\\\hline 
+agentive & non-effective & ascriptive & attributive & Johnson & became & rich
+&\\ 
+& & & & {\em Agent} & & &\\
+& & & & {\em Carrier} & & {\em Attribute} &\\\cline{4-8}
+& & & equative & The Bulls & became & the Champs &\\
+& & & & {\em Agent} & & &\\  
+& & & & {\em Identified} & & {\em Identifier} &\\\cline{3-8}
+& & possessive & attributive & Orlando & picked & Shaquille &\\
+& & & & {\em Agent} & & &\\
+& & & & {\em Carrier} & & {\em Attribute} &\\\cline{3-3}\cline{5-8}
+& & locative & & Seikaly & went & to Miami &\\
+& & & & {\em Agent} & & &\\
+& & & & {\em Carrier} & & {\em Located} &\\\cline{2-3}\cline{5-8}
+& dispositive & ascriptive & & Riley & made & New York & a good team\\
+& & & & {\em Agent} & & {\em Affected} &\\
+& & & & & & {\em Carrier} & {\em Attribute}\\\cline{5-8}
+& & & & Riley & made & New York & a good coach\\
+& & & & {\em Agent} & & {\em Affected} &\\
+& & & & {\em Carrier} & & & {\em Attribute}\\\cline{4-8}
+& & & equative & The Nets & made & Coleman & the richest\\
+& & & & {\em Agent} & & {\em Affected} &\\  
+& & & & & & {\em Identified} & {\em Identifier}\\\cline{3-8}
+& & possessive & attributive & The Nets & gave & Coleman & more money\\
+& & & & {\em Agent} & & {\em Affected} &\\
+& & & & & & {\em Possessor} & {\em Possessed}\\\cline{3-3}\cline{5-8}
+& & locative & & Price & threw & the ball & out of bounds\\
+& & & & {\em Agent} & & {\em Affected} &\\
+& & & & & & {\em Located} & {\em Location}\\\cline{2-3}\cline{5-8}
+& creative & ascriptive & & Peter & brews & his beer & very strong\\
+& & & & {\em Agent} & & {\em Created} &\\
+& & & & & & {\em Carrier} & {\em Attribute}\\\cline{3-3}\cline{5-8}
+& & locative & & Michael & opened & windows & on the screen\\
+& & & & {\em Agent} & & {\em Created} &\\
+& & & & & & {\em Located} & {\em Location}\\\cline{1-3}\cline{5-8}
+non-agentive & dispositive & ascriptive & & The game & turned & wide open &\\ 
+& & & & {\em Affected} & & &\\
+& & & & {\em Carrier} & & {\em Attribute} &\\\cline{3-3}\cline{5-8}
+& & possessive & & Coleman & received & an offer &\\ 
+& & & & {\em Affected} & & &\\
+& & & & {\em Carrier} & & {\em Attribute} &\\\cline{3-3}\cline{5-8}
+& & locative & & Coleman & fell & on the floor &\\
+& & & & {\em Affected} & & &\\
+& & & & {\em Located} & & {\em Location} &\\\cline{2-2}\cline{5-8}
+& creative & & & The windows & popped & on the screen &\\ 
+& & & & {\em Created} & & &\\
+& & & & {\em Located} & & {\em Location} &\\\hline
+\end{tabular}\\\\\\
+\caption{Hierarchy of composite processes}
+\label{compound-proc}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+Following \cite{fawcett}, we distinguish among {\em simple} (either event or
+relation) and {\em composite} processes (di-transitive, complex-transitive
+\cite{quirk-et-al85} (p.721) and causative constructs). For example, we view
+the clause {\em ``She gives it to him''} as the conflation of two simple
+processes: (1) a simple event {\em ``She gives it''} and (2) the resulting
+possessive relation {\em ``It belongs to him''}.  The description of composite
+processes is useful to account for alternations like dative move
+\cite{levin} (pp.45-49) when the relation is {\tt possessive, locative}
+(pp.49-55), {\tt creation} (pp.55-58), {\tt causative} (pp.25-32) and others.
+
+The subtasks of the transitivity system are: (1) to provide an interface to the
+semantic encoding used in the client program, (2) to determine which
+combinations of predicates are mergeable as composite processes, (3) to
+constrain syntactic alternations and (4) to constrain the syntactic realization
+of each participant.  {\sc surge} currently covers 21 simple process types and
+15 composite process types, thus accepting 36 different nuclear thematic
+structures as input.
+
+Figures \ref{simple-proc} and \ref{compound-proc} summarize the set of
+participant configurations implemented in Surge.  The main function of the
+grammar in this system is (1) to provide an interface to the semantic
+encoding used in the client program, (2) determine which combinations of
+predicates are expressible as composite processes, (3) encode the relevant
+syntactic alternations and (4) constrain the types of fillers for each
+participant and their syntactic realization.
+
+
+\paragraph{The Mood System}
+
+\begin{figure*} [t]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|}\hline
+\m{3}{|l|}{\bf Mood features} & {\bf Example sentence}\\\hline
+finite & declarative & & {\em The Knicks won the game}\\\cline{2-4}
+& interrogative & yes-no & {\em Did the Knicks win the game?}\\\cline{3-4}
+& & wh & {\em Who won?}\\\cline{3-4}
+& & wh-partial & {\em Whose shirt did they wash?}\\\cline{2-4}
+& bound & nominal & {\em That the Knicks won the game} was
+expected\\\cline{3-4} 
+& & adverbial & Ewing scored 28 points {\em as the Knicks won the
+game}\\\cline{2-4}
+& relative & simple & the game {\em that the Knicks won}\\\cline{3-4}
+& & embedded & the team {\em against which the Knicks won the game}\\\hline
+non-finite & imperative & & {\em Win that game!}\\\cline{2-4}
+& participle & present & The Knicks celebrated {\em after winning the
+game}\\\cline{3-4} 
+& & past & {\em Once the game won}, the Knicks celebrated\\\cline{2-4} 
+& infinitive & to & The Knicks are able {\em to win the game}\\\cline{3-4}
+& & bare & Ewing helped the Knicks {\em win the game}\\\cline{3-4}
+& & for-to & Ewing must dominate {\em for the Knicks to win the
+game}\\\cline{2-4} 
+& verbless & & {\em Although without Ewing}, the Knicks won the
+game\\\cline{1-4}  
+\end{tabular}
+\caption{Mood hierarchy}
+\label{mood}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+The subtasks of the mood system are: (1) to provide an interface to the
+specification of speech acts and interpersonal constraints in the client
+program ({\em e.g.,} imperative mood to express a request to a
+subordinate), (2) to account for hypotactic relations among clauses ({\em
+  e.g.,} subordination, embedding) and (3) to constrain to use of
+abbreviated forms ({\em e.g.,} participle and verbless clauses). The mood
+of dependent clauses is often inferred by {\sc surge} from its syntactic
+function in the matrix and the head verb of the matrix.  {\sc surge}
+currently covers 15 different moods illustrated in Fig.\ref{mood}.
+
+\paragraph{The Adverbial System}
+
+\begin{figure*} [p]
+\rule[.3cm]{\textwidth}{.01in}
+\centerline{
+\epsfysize=.2\textheight
+\epsfbox{shell.ps}}
+\caption{Nuclearity of clause constituents}
+\rule{\textwidth}{.01in}
+\label{const-nuclearity}
+\end{figure*}
+
+\begin{figure*} [p]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|l|r|}\cline{1-6}
+\m{3}{|c|}{\bf Semantic} & \m{1}{|c|}{\bf Syntactic} & 
+\m{1}{|c|}{\bf Example sentence} & \\\cline{1-3}\cline{6-6}
+\m{1}{|c|}{\bf class} & \m{1}{|c|}{\bf role} & \m{1}{|c|}{\bf feature} &
+\m{1}{|c|}{\bf category} & & \\\cline{1-6}   
+Locative & Location & & Adverb & Bo kissed her {\bf there}. & 1 \\\cline{4-6}
+& & & PP & Bo kissed her {\bf on the cheek}. & 2 \\\cline{4-6}
+& & & finite S & Bo kissed her {\bf where she wanted}. & 3 \\\cline{4-6}
+& & & verbless S & Bo kept the keys {\bf where convenient}. & 4 \\\cline{2-6}
+& Direction & & Adverb & Bo slid {\bf down}. & 5 \\\cline{4-6}
+& & & NP & Bo drove {\bf this way}. & 6 \\\cline{4-6}
+& & & PP & Bo ran {\bf up the hill}. & 7 \\\cline{2-6}
+& Destination & & Adverb & Bo went {\bf home}. & 8 \\\cline{4-6}
+& & & PP & Bo sent the letter {\bf to LA}.& 9 \\\cline{4-6}
+& & & finite S & She sent Bo back {\bf where he belongs}. & 10 \\\cline{2-6}
+& Path & & PP & Bo traveled {\bf via Denver}. & 11 \\\cline{2-6}
+& Distance & & NP & Bo came {\bf a long way}. & 12 \\\cline{1-6}
+Temporal & Duration & & Adverb & Bo stayed there {\bf forever}. & 13 \\\cline{4-6}
+& & & NP & Bo stayed there {\bf a long time}. & 14 \\\cline{1-6}
+Process & Manner & & PP & Bo kiss her {\bf with love}. & 15 \\\cline{2-6}
+& Means & & Adverb & Bo was treated {\bf surgically}. & 16 \\\cline{4-6}
+& & & PP & Bo was treated {\bf by surgery}. & 17 \\\cline{2-6}
+& Instrument & polar+ & PP & Bo pushed him {\bf with both hands}. &
+18 \\\cline{3-6}  
+& & polar- & PP & Bo negotiated {\bf without an agent}. & 19 \\\cline{2-6} 
+& Comparison & & finite S & Bo went there, {\bf as he did
+yesterday}. & 20 \\\cline{4-6}  
+& & & infinitive S & Bo played hard, {\bf as if to send the fans a
+message}. & 21 \\\cline{4-6} 
+& & & -ing S & Bo played great, {\bf as if peeking on schedule}. &
+22 \\\cline{4-6}  
+& & & -ed S & Bo played hard, {\bf as if not bothered by his knee}. &
+23 \\\cline{4-6}   
+& & & verbless S & Bo played great, {\bf as if in great form}. & 24 \\\cline{1-6}
+Respect & Matter & & PP & Bo talked {\bf about his contract}. & 25 \\\cline{1-6}
+Domain & Score & & Score & New York beat Indiana {\bf 90-87}. & 26 \\\cline{1-6}
+\end{tabular}\\\\\\
+\caption{Predicate Adjuncts}
+\label{pred-adjuncts}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+\begin{figure*} [p]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|l|r|c}\cline{1-6}
+\m{3}{|c|}{\bf Semantic} & \m{1}{|c|}{\bf Syntactic} & 
+\m{1}{|c|}{\bf Example sentence} & \\\cline{1-3}\cline{6-6}
+\m{1}{|c|}{\bf class} & \m{1}{|c|}{\bf role} & \m{1}{|c|}{\bf feature} & 
+\m{1}{|c|}{\bf category} &
+& \\\cline{1-6}    
+Locative & Location & & Adverb & {\bf There}, Bo kissed her. & 1 \\\cline{4-6}
+& & & PP & {\bf On the platform}, Bo kissed her. & 2 \\\cline{2-6}
+& Origin & & PP & {\bf From Kansas City}, Bo called Gwen. & 3 & \\\cline{2-6} 
+& Distance & & PP & {\bf For a few miles}, the road is damaged. & 
+4 \\\cline{1-6} 
+Temporal & Time & & Adverb & {\bf Yesterday}, Bo triumphed. & 5 &
+\\\cline{4-6} 
+& & & NP & {\bf Last year}, Bo triumphed. & 6 \\\cline{4-6}
+& & & PP & {\bf On Monday}, Bo triumphed. & 7 & \\\cline{4-6}
+& & & finite S & {\bf As he received the ball}, Bo smiled. & 8 &
+\\\cline{4-6} 
+& & & -ing S & {\bf After receiving the ball}, Bo smiled. & 9 &
+\\\cline{4-6} 
+& & & -ed S & {\bf Once injured}, Bo grimaced. & 10 & \\\cline{4-6}
+& & & verbless S & {\bf Once on the floor}, Bo grimaced. & 11 \\\cline{2-6}
+& Duration & & PP & {\bf For a long time}, Bo stayed here. & 12 \\\cline{4-6}
+& & & finite S & {\bf Until Bo recovered}, they waited for him. &
+13 \\\cline{4-6}  
+& & & -ing S & {\bf Since joining the Raiders}, Bo shines. & 14 \\\cline{4-6}
+& & & -ed S & {\bf Until forcibly removed}, they will stay. & 15 \\\cline{4-6}
+& & & verbless S & {\bf As long as necessary}, they will stay here. &
+16 \\\cline{2-6}   
+& Frequency & & Adverb & {\bf Often}, Bo scored twice. & 17 \\\cline{4-6}
+& & & NP & {\bf Twice a week}, Bo runs 10 miles. & 18 \\\cline{4-6}
+& & & PP & {\bf On Sundays}, Bo run 10 miles. & 19 \\\cline{1-6}
+Causative & Reason & & PP & {\bf Because of injury}, Bo did not play. & 20
+& \\\cline{4-6}
+& & & finite S & {\bf Because he was injured}, Bo did not play. & 21
+& \\\cline{2-6}  
+& Purpose & & PP & {\bf For enough money}, Bo would play anywhere. & 22
+ & \\\cline{4-6}
+& & & finite S & {\bf So he would get a raise}, Bo held out. & 23  \\\cline{4-6}
+& & & infinitive S & {\bf To gain free-agency}, Bo held out. & 24
+ & \\\cline{2-6}
+& Behalf & & PP & {\bf For the Raiders,} Bo scored twice. & 24 &
+\\\cline{1-6} 
+Determinative & Addition & & -ing S & {\bf In addition to trading Bo}, they
+waived Mike. & 25 \\\cline{2-6}
+& Accomp- & polar+ & PP & {\bf With her}, Bo would go
+anywhere. & 26 & \\\cline{3-6}
+& -animent & polar- & & {\bf Without her}, Bo wouldn't go anywhere. & 
+27 \\\cline{2-6}
+& Opposition & & PP & {\bf Against the Knicks}, the Nets are 3-1. & 
+28 \\\cline{1-6}
+Process & Manner & & Adverb & {\bf Tenderly}, Bo kissed her. & 
+29 & \\\cline{2-6}            
+& Means & & -ing S & {\bf By acquiring Bo}, they strengthen their
+defense. & 30 \\\cline{2-6}
+& Comparison & polar+ & PP & {\bf Like Mike}, Bo soared above the rim. &
+31 \\\cline{3-6} 
+& & polar- & PP & {\bf Unlike Mike}, Bo can bat. & 32 \\\cline{1-6}
+\end{tabular}\\\\\\
+\caption{Sentence Adjuncts}
+\label{sent-adjuncts}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+\begin{figure*} [p]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|l|r|c}\cline{1-6}
+\m{3}{|c|}{\bf Semantic} & \m{1}{|c|}{\bf Syntactic} & 
+\m{1}{|c|}{\bf Example sentence} & \\\cline{1-3}\cline{6-6} 
+\m{1}{|c|}{\bf class} & \m{1}{|c|}{\bf role} & \m{1}{|c|}{\bf feature} &
+\m{1}{|c|}{\bf category} & & \\\cline{1-6}    
+Temporal & Co-Event & habit+ & finite S & {\bf Whenever you hurt}, call me. &
+1 \\\cline{3-6}   
+Causative & & habit- & -ing S & {\bf With his knees hampering him}, 
+Bo's defense is sloppy. & 2 \\\cline{4-6}
+Blend & & & ed S & {\bf Injured against the Giants}, Bo didn't play. & 3 
+ \\\cline{4-6}  
+& & & verbless S & {\bf Unable to play due to injury}, Bo stayed home.
+& 4  \\\cline{3-6}  
+& & habit+ & verbless S & {\bf Whenever in doubt}, call me. & 5  \\\cline{1-6}
+Causative & Reason & & finite S & {\bf Since he was injured}, Bo did not play. &
+6  \\\cline{2-6} 
+& Result & & finite S & They wouldn't give him a raise, {\bf so Bo held
+out}. & 7 \\\cline{4-6} 
+& & & infinitive S & They waived Bo, {\bf only to see him flourish
+elsewhere}. & 8 \\\cline{1-6}
+Conditional & Condition & polar+ & finite S & {\bf If he is fully fit}, Bo will
+play. & 9 \\\cline{4-6} 
+& & & -ed S & {\bf If well-conditioned}, Bo will play. & 10 \\\cline{4-6}
+& & & verbless S & {\bf If in great shape}, Bo will play. &
+11 \\\cline{3-6}
+& & polar- & finite S & {\bf Unless he is fully fit}, Bo won't play. &
+12 \\\cline{4-6}  
+& & & -ed S & {\bf Unless well-conditioned}, Bo won't play. &
+13 \\\cline{4-6} 
+& & & verbless S & {\bf Unless in great shape}, Bo won't play. &
+14 \\\cline{2-6}
+& Concessive & & finite S & {\bf Even if he is fully fit}, Bo won't play. &
+15 \\\cline{4-6}  
+& Condition & & -ed S & {\bf Even if well-conditioned}, Bo won't play. &
+16 \\\cline{4-6} 
+& & & verbless S & {\bf Even if in great shape}, Bo won't play. & 
+17 \\\cline{2-6}
+& Concession & & PP & {\bf In spite of his injury}, Bo played. & 18 \\\cline{4-6}
+& & & finite S & {\bf Although he was injured}, Bo played. & 19 \\\cline{4-6}
+& & & -ed S & {\bf Although injured}, Bo played. & 20 \\\cline{4-6}
+& & & -ing S & {\bf Although hurting}, Bo played. & 21 \\\cline{4-6}
+& & & verbless S & {\bf Although out of shape}, Bo played. & 22 \\\cline{1-6}
+Determinative & Contrast & & PP & {\bf As opposed to many others}, 
+Bo never held out. & 23 \\\cline{4-6}
+& & & finite S & {\bf Whereas Mike keeps shooting}, Bo prefers passing. &
+24 \\\cline{2-6}
+& Exception & & PP & {\bf Except Laettner}, all Olympian were pros. &
+25 \\\cline{4-6} 
+& & & -ing S & {\bf Except for blocking shots}, Bo can do it all. &
+26 \\\cline{2-6} 
+& Inclusion & & PP & Bo scored 30 points, {\bf including 5 three-pointers}. &
+27 \\\cline{4-6}
+& & & -ing S & Bo can do it all, {\bf including blocking shots}. &
+28 \\\cline{4-6}  
+& & & verbless S & Bo played everywhere, {\bf including in New York}. & 
+29 \\\cline{2-6} 
+& Substitution & & PP & {\bf Instead of Mike}, they picked Bo. & 30 \\\cline{4-6}
+& & & -ing S & {\bf Rather than drafting Mike}, they picked Bo. &
+31 \\\cline{4-6} 
+& & & infinitive S & {\bf Rather than shoot}, Bo made the perfect pass. & 32\\
+& & & (bare) & &  \\\cline{2-6}   
+& Addition & & PP & They picked Bo, {\bf as well as Mike}. & 33 \\\cline{1-6}
+Respect & Matter & & PP & {\bf Concerning Bo}, they were wrong. & 
+34 \\\cline{2-6}
+& Standard & & PP & {\bf For a center}, Bo is very quick. & 35 \\\cline{2-6}
+& Perspective & & PP & {\bf As a scorer}, Bo remains prolific. & 36
+\\\cline{1-6}           
+\end{tabular}\\\\\\
+\caption{Disjuncts}
+\label{disjuncts}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+The main tasks of the adverbial system are: (1) to provide an interface to
+the semantic encoding used in the client program, (2) to determine the
+relative ordering of adverbials within the clause, (3) to restrict possible
+co-occurrences of adverbials, (4) to restrict the syntactic realization of
+adverbials and (5) to provide default closed-class words ({\em e.g.,}
+prepositions such as ``for'' or subordinating conjunctions such as
+``when'').
+
+The adverbial system encodes a more subtly constrained mapping from
+thematic structures to syntactic roles than the transitivity system. While
+nuclear roles surface as mutually exclusive core syntactic functions ({\em
+  e.g,} each clause can only have one subject and one direct object),
+satellite roles surface as one of three peripheral syntactic functions,
+{\em predicate adjuncts}, {\em sentence adjuncts} and {\em disjuncts}
+following \cite{quirk-et-al85} (pp. 504-505), with potentially multiple
+instances of each. The adjuncts {\em vs.} disjuncts distinction is purely
+syntactic and accounts for general alternations ({\em e.g.,} only adjuncts
+can be clefted or appear in alternative questions). The distinction between
+predicate and sentence adjunct is semantic: the former modifies only the
+{\em process} of the clause, while the latter elaborates on the entire
+situation described by the clause.  It has subtle repercussions in terms of
+syntactic alternations, possible positions and co-occurrence ({\em e.g.,}
+predicate adjuncts cannot be fronted). {\sc surge} reflects this distinction
+in input where satellite roles can be either {\tt predicate-modifier} which
+get mapped onto predicate adjuncts and {\tt circumstancials} which get
+mapped onto either sentence adjuncts or disjuncts (depending on semantic
+label, syntactic category and lexical content).  The relative distance of
+different types of complements from the process is illustrated in
+Fig.\ref{const-nuclearity}.
+
+Integrating descriptions by \cite{quirk-et-al85}, \cite{thompson-longacre}
+\cite{halliday94}, {\sc surge} can currently map 13 predicate modifiers
+onto 26 syntactic realizations of predicate adjuncts and 34 circumstancials
+onto 32 syntactic realizations of sentence adjuncts and 36 syntactic
+realizations of disjuncts.  Figures \ref{pred-adjuncts},
+\ref{sent-adjuncts} and \ref{disjuncts} list the types of predicate
+adjuncts, sentential adjuncts and disjuncts are available in {\sc surge}.
+
+
+\subsection{Nominals} 
+
+\begin{figure*} [t]
+\rule[.3cm]{\textwidth}{.01in}
+\begin{tabular}{|l|l|l|}\hline
+{\bf Grammatical} & {\bf Syntactic} & {\bf Example NP}\\
+{\bf function}    & {\bf category}  &\\\hline
+Pre-Determiner & - & {\bf all of} his first ten points\\\hline
+Determiner & article & {\bf a} victory\\\cline{2-3}
+& demonstrative Pronoun & {\bf this} victory\\\cline{2-3}
+& question Pronoun & {\bf what} victory?\\\cline{2-3}
+& possessive Pronoun & {\bf their} victory\\\cline{2-3}
+& NP & {\bf New York's} victory\\\hline
+Ordinal & Simple Numeral & the {\bf third} victory\\\cline{2-3}
+& Numeral Phrase & their {\bf third straight} victory\\\cline{2-3}
+& Discontinuous Numeral Phrase & their {\bf third} victory {\bf in a row}\\\hline
+Cardinal & simple Numeral & {\bf seven} victories\\\hline
+Quantifier & - & Twice as {\bf many} points\\\hline
+Describer & Adjective & an {\bf easy} victory\\\cline{2-3}
+& Present Participle & a {\bf smashing} victory\\\cline{2-3}
+& Past Participle & a {\bf hard fought} victory\\\hline
+Classifier & Noun & a {\bf road} victory\\\cline{2-3}
+& Adjective & a {\bf presidential} victory\\\cline{2-3}
+& Present Participle & a {\bf winning} streak\\\cline{2-3}
+& Noun compound & a {\bf franchise record} victory\\\cline{2-3}
+& Measure & a {\bf 33 point} performance\\\hline
+Head & common Noun & a {\bf victory}\\\cline{2-3}
+& Proper Noun & the hapless {\bf Denver Nuggets} who lost again\\\cline{2-3}
+& Noun compound & his league {\bf season high}\\\cline{2-3}
+& Measure & a career high {\bf 33 points}\\\cline{2-3}
+& Partitive & a season best {\bf 12 of 16 shots}\\\hline
+Qualifier & PP & a victory {\bf over the Nets}\\\cline{2-3}
+& Relative S & a victory {\bf that will be remembered}\\\cline{2-3}
+& To-infinitive S & a victory {\bf to be remembered}\\\cline{2-3}
+& For-to-infinitive S & a victory {\bf for them to grab}\\\cline{2-3}
+& Present-participle S & a victory {\bf invigorating the Knicks}\\\cline{2-3}  
+& Past-participle S & a victory {\bf hard-fought until the end}\\\hline
+\end{tabular}
+\caption{Syntactic functions inside the NP}
+\label{synt-fcts-in-NP}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+Nominals are an extremely versatile syntactic category, and except for
+limited cases (cf. \cite{vendler}, \cite{levi}, \cite{fries}), no
+linguistic semantic classification of nominals has been provided.
+Consequently, while for clauses input can be provided in thematic form, for
+nominals it must be provided directly in terms of syntactic roles.  The
+task of mapping domain-specific thematic relations to the syntactic slots
+in an NP is therefore left to the client program ({\em cf.}
+\cite{elhadad-mt} for a discussion of this process).
+
+\paragraph{Nominal Types}
+
+{\sc surge} distinguishes among the following nominal types: {\em common
+  nouns, proper nouns, pronouns, measures, noun-compounds} and {\em
+  partitives}.  Noun-compounds can have a deep embedded structure.
+Measures have a very specific syntactic behavior (when used as classifiers
+the head noun of the measure does not take a number inflection, {\em e.g.,
+  ``a 3 meter boat'' vs. ``the boat measures 3 meters''}).
+
+\paragraph{NP Structure and Functions}
+
+The specific syntactic roles accepted by {\sc surge} for nominal
+description are (given in their partial order of precedence):\\ {\em
+  determiner-sequence, describer, classifier, head}, and {\em qualifier}.
+
+There are two types of pre-modifiers: describers, which can also appear
+as subject complements ({\em e.g., ``a blue book''} = {\em ``the book is
+  blue}) and classifiers which cannot \cite{winograd}, since they are an
+abbreviated form of an indirect relation \cite{levi} ({\em e.g., ``a theory
+  book''} $\neq$ {\em ? ``the book is theory''} but rather {\em ``a theory
+  book''} = {\em ``the book is \underline{about} theory''}). {\sc surge}
+currently covers a total of 28 syntactic realizations for the 5 functions
+above ({\em cf.} \cite{robin-phd} for examples of each), illustrated in 
+Fig.~\ref{synt-fcts-in-NP}.
+
+
+\paragraph{Determiner Sequence}
+
+\begin{figure*} [t]
+\rule[.3cm]{\textwidth}{.01in}
+\small
+\begin{tabular}{|l|l|l|l|}\hline
+{\bf Definite} & yes & no & \\ \hline
+{\bf Countable} & yes & no & \\ \hline
+{\bf Partitive} & yes & no & \\ \hline
+{\bf Interrogative} & yes & no &\\ \hline
+{\bf Possessive} & yes & no & \\ \hline
+{\bf Number} & singular & dual & plural\\ \hline 
+{\bf Reference-number} & singular & dual & plural\\ \hline
+{\bf Distance} & far & near & \\ \hline
+{\bf Selective} & yes & no & \\ \hline
+{\bf Total} & + & - & no\\ \hline
+{\bf Exact} & yes & no & \\ \hline
+{\bf Orientation} & + & - & none\\ \hline
+{\bf Degree} & + & - & none\\ \hline
+{\bf Evaluative} & yes & no & \\ \hline
+{\bf Evaluation} & + & - & \\ \hline
+{\bf Status} & none & same & different...\\ \hline
+{\bf Case} & objective & subjective & genitive\\ \hline
+{\bf Head-cat} & pronoun & common & proper\\ \hline
+{\bf denotation-class} & quantity & season & institution...\\ \hline
+{\bf Comparative} & yes & no & \\ \hline
+{\bf Superlative} & yes & no & \\ \hline
+{\bf Cardinal} & number & & \\ \hline
+{\bf Ordinal} & number & last & next (+) or previous (-)\\ \hline
+{\bf Fraction} & numerator & denominator & \\ \hline
+\end{tabular}
+\caption{Features controlling the determiner sequence}
+\label{detseq}
+\rule{\textwidth}{.01in}
+\end{figure*}
+
+The determiner-sequence is itself decomposed into the following elements:\\ 
+{\tt pre-determiner, determiner, ordinal, cardinal, quantifier}.  This
+sub-grammar is special in that it is mainly a closed system, {\em i.e.,}
+all lexical differences must be determined by some configuration of
+syntactic features.  The determiner sequence sub-grammar currently covers
+24 features controlling 109 decision points, illustrated in
+Fig.\ref{detseq}. 
+
+\subsection{The Verb Group}
+
+The verb group grammar decomposes in three major systems: {\em tense}, {\em
+  polarity} and {\em modality}. {\sc surge} implements the full 36 English
+tenses identified in \cite{halliday94} pp.198-207 It provides an interface
+to the client program is in terms Allen's temporal relations \cite{allen83}
+({\em e.g.,} to describe a past event, the client provides the feature {\tt
+  (tpattern (:et :before :st))}, specifying that the event time (et)
+precedes the speech time (st)).
+
+
+\section{Implemented Applications}
+
+{\sc surge} has already been successfully re-used by at least\footnote{It
+  is also currently used by several other systems not mentioned here either
+  because they are still in preliminary stages or because we have little
+  information about them .} eight generators.  The practical usability and
+versatility of {\sc surge} is demonstrated by the fact that these systems
+differ widely in their application domains, their research emphasis and the
+strategy they use to generate the skeletal thematic trees that they pass on
+to {\sc surge}.
+
+{\sc cook} \cite{smadja-ci} generates stock market reports from
+  semantic messages summarizing the daily fluctuations of several financial
+  indexes. It focuses on the semi-automatic acquisition of a declarative
+  lexicon including collocations and idioms statistically compiled from a
+  large textual corpus. It composes a {\sc surge} input by using {\sc fuf}
+  to unify this declarative lexicon with the input semantic message. It
+  relies on a fixed, bottom-up control strategy driven by output syntactic
+  function: first choose the verb arguments, then the verb and finally the
+  adjuncts.
+
+  {\sc advisor-II} \cite{elhadad-phd} generates query responses in an
+  interactive student advising system. It focuses on presenting the same
+  underlying content as argument towards different conclusions and on
+  expressing the same piece of content across linguistic ranks (from
+  complex clause down to the determiner sequence). It composes a {\sc
+    surge} input by using {\sc fuf} to unify an input semantic network
+  (enriched with argumentative constraints) with a declarative, word-based
+  lexicon. It relies on a complex, input driven control strategy involving
+  goal freezing and dependency-directed backtracking.
+
+{\sc comet} \cite{mckeown-et-al93} generates natural language
+  explanations coordinated with graphics in an multi-media tutorial and
+  troubleshooting system for a military radio. It focuses on combining an
+  wide variety of constraints on lexical choice, including the accompanying
+  illustration, the user's vocabulary and previous discourse in addition to
+  the usual syntax and domain semantics. It composes a {\sc surge} input by
+  using {\sc fuf} to unify text plan fragments with a word-based lexicon.
+  It relies on a co-routine control strategy allowing the lexicon to
+  request partial re-planning of textual fragments when it reaches an
+  impasse while combining constraints.
+
+{\sc streak} \cite{robin-phd} generates newswire style summaries of
+  basketball games from game statistics and related historical data. It
+  focuses on usage of concise linguistic forms, generation of very complex
+  sentences, high paraphrasing power and empirical evaluation of
+  architecture and knowledge structures based on corpus analysis. It
+  incrementally composes the {\sc surge} input using a revision-based
+  control strategy.  It first composes a draft of this input by using {\sc
+  fuf} to unify a semantic network of obligatory facts with a phrase
+  planner and then a lexicon. This draft is then incrementally revised (at
+  times non-monotonically) to opportunistically incorporate as many
+  optional or background fact that can fit under corpus-observed space and
+  linguistic complexity limits.
+
+{\sc plandoc} \cite{plandoc-walker} generates documentation of telephone
+  network extension and upgrade proposals by planning engineers, from the
+  trace of the simulation system that they use to come-up with their
+  proposals.  Its focuses on high paraphrasing power and on aggregation of
+  related semantic messages into complex clauses. It composes {\sc surge}
+  inputs using a strategy similar to {\sc advisor-II}, but using
+  constraints derived from the extended discourse instead of argumentative
+  orientation.
+
+{\sc flowdoc} \cite{flowdoc} generates executive summaries of workflow diagrams
+  acquired and displayed using the {\sc showbiz} \cite{showbiz} graphical
+  business re-engineering tool. It focuses on pointing out characteristics of
+  the workflow relevant to re-engineering but obscured by the diagram
+  complexity. It composes {\sc surge} inputs using a strategy similar to {\sc
+  streak}'s initial draft building stage, except for the combination
+  of compositional generation from a word-based lexicon of general workflow
+  terms together with canned phrases for task-specific operations (entered
+  by the user during workflow acquisition).
+
+{\sc knight} \cite{lester-phd} generates paragraph-long explanations of
+  scientific processes from a large knowledge base in biology. It focuses on
+  the robustness of the generator when used in a vast domain and the evaluation
+  of the produced output. It composes {\sc surge} inputs procedurally by
+  filling FD templates using information extracted from the knowledge base.
+
+Abella's system \cite{abella-phd} generates visual scene descriptions from
+camera input in two domains: map-aided navigation and kidney X-rays
+analysis. Its strategy to compose {\sc surge} inputs is entirely geared toward
+its very specific research focus: validating a fuzzy lexical semantic model of
+English spatial prepositions.  It thus first performs visual reasoning to pick
+the prepositions best describing the main spatial relations among the input
+picture landmarks and then procedurally fills locative clause FD templates
+associated with each chosen preposition.
+
+% *** BOY: Apres un talk avec Shimei, j'ai appris que Kathy et al ont encore
+% rien ecrit sur Magic et ce qui tourne c'est encore la copie de PLANdoc que
+% j'avais pondu en 15j avant de % partir, pourquoi James est fort? Alors j'ai
+% commenter out (saves space) 
+%
+% {\sc magic} \cite{magic} generates multimedia summaries of ICU patient
+% condition coordinating written text, speech and graphics.  It focuses on
+% producing summaries tailored to various types of users ({\em e.g.,}
+% specialist, intern, nurse, administrator}) and on the complex temporal and
+% spatial coordination of the various media. 
+
+
+\section{Related Work} 
+\label{related-work}
+
+Three other available systems provide reusable surface realization components:
+{\sc mumble} \cite{mumble86}, {\sc nigel} \cite{matthiessen87} and the systems
+developed at Cogentex (e.g., \cite{iordanskaja-et-al}). These three systems
+differ from {\sc surge} in that they are all developed within a single
+linguistic theory (TAGs for {\sc mumble}, systemic functional for {\sc nigel}
+and Meaning-Text Theory (MTT) \cite{melcuk-pertsov} for Cogentex's systems),
+whereas {\sc surge} integrates several ones. Each system also puts the emphasis
+on different dimensions resulting in different strengths and weaknesses.
+
+{\sc mumble}'s determinism (motivated on cognitive grounds) makes it very
+efficient. Another of its strengths is the regular input provided by
+Meteer's text-structure \cite{meteer-book}. {\sc nigel}'s strengths are
+comprehensive coverage and encapsulation of syntactic knowledge through the
+inquiry mechanism.  However, the procedural implementation of both these
+systems make them weak on extensibility and user-friendliness. In addition,
+{\sc nigel} also has a tendency to over-generate. This last weakness has
+however recently being turned into a strength by the addition of a
+post-processor that filters outputs using a statistical language model
+\cite{knight-vh}. This post-processor allows {\sc nigel}'s output to nicely
+degrades in the face of ill-formed or incomplete input, making it more
+robust than other systems.
+
+MTT-based syntactic realization components are strong on extensibility
+(declarative {\sc prolog} implementation) and comprehensive coverage. But the
+fact that they must work in tandem with an MTT-based lexicon (the Explanatory
+Combinatorial Dictionary) make them weak on versatility and encapsulation of
+syntactic knowledge. {\sc surge}'s strengths are comprehensive coverage,
+encapsulation of syntactic knowledge, the extensibility and user-friendliness
+of its purely declarative implementation and the versatility of its compact,
+and regular input where individual words and canned phrases can co-exist.  Its
+main weakness, inefficiency for complex sentences, is currently being addressed
+by the development of a graph-based, re-implementation the {\sc fuf}
+interpreter in C to replace the current list-based implementation in LISP. We
+expect {\sc surge}'s run times to improve by an order of magnitude with this
+new interpreter. A more systematic use of control annotations in the grammar
+could also improve run time though less dramatically.
+
+
+\section{Future Work}
+
+The development of {\sc surge} itself continues, as prompted by the needs
+of new applications, and by our better understanding of the respective
+tasks of syntactic realization and lexical choice \cite{elhadad-et-al96}.
+We are specifically working on (1) integrating a more systematic
+implementation of Levin's alternations within the grammar, (2) extending
+composite processes to include mental and verbal ones, (3) modifying the
+nominal grammar to support nominalizations and some forms of syntactic
+alternations (relying on \cite{fries}) and (4) improving the treatment of
+obligatory pronominalization and binding.
+As it stands, {\sc surge} provides a comprehensive syntactic realization
+component, easy to integrate within a wide range of architectures for
+complete generation systems.  It is available on the WWW at {\tt
+  http://www.cs.bgu.ac.il/surge/}.
+
+\bibliography{master}
+\bibliographystyle{named}
+\end{document}
+
+
+
+
+
+
+

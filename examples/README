@@ -1,0 +1,29 @@
+			----------------------------
+			EXAMPLE GRAMMARS FOR FUF 5.4
+			----------------------------
+
+======================================================================
+All the material included in this package is Copyright 1987-2011 by
+          Michael Elhadad
+          Ben Gurion University
+          Dept. of Computer Science
+          Beer Sheva, 84105  ISRAEL
+          http://www.cs.bgu.ac.il/~elhadad
+
+License agreement can be found in file LICENSE.
+======================================================================
+
+This directory contains examples of grammars written in FUF, with example
+inputs for each grammar.  The examples are named with numbers, indicating
+increasing complexity (gr0 is very simple, gr1 a little more complex, up to
+gr10 which is close in complexity to the full SURGE grammar).  
+For each grammar GRi, there is a file of test input specification IRi.
+
+In addition, file html.l contains examples of usage for the HTML attribute,
+used to generate HTML code.  
+
+Inspection of this directory is the best way to learn how to use FUF
+(consider this a tutorial).  
+
+
+
