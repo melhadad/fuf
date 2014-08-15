@@ -6,9 +6,20 @@
 ;;; Created:      19 Dec 1991
 ;;; Modified:     18 Aug 1992 Added adverb (inherited from clause)
 ;;;                5 Jul 1995 SURGE 2.2 VERSION
-;;;                           - Fixed problem of wh/inversion in 
+;;;                           - Fixed problem of wh/inversion in
 ;;;                             long-distance (Who do you think won?) use do.
 ;;;                             (embedded no).
+;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
@@ -51,16 +62,16 @@
        ((deontic-modality given)
 	(epistemic-modality none)
 	(modality deontic))))
-  
+
   (:! tense-selection)
   (:! modality)
-  
+
   ;; Now, the tense feature should be selected.  Deal
   ;; with voice, interrogative and polarity.
   (:! voice-verb-group)
-  
+
   (:! notf-adverb-placement)
-  
+
   ;; Now fill the slots for auxiliaries if necessary
   (alt (((be-1 none)
 	 (cset ((- be-1))))
@@ -93,7 +104,7 @@
 		    (cat modal))))))
   (opt ((aux none)
 	(cset ((- aux)))))
-  
+
   ;; Put everything together. Notf and adverb have already been placed.
   ;; For interrogative, the tensed-feature has been fronted, so
   ;; don't put it here
@@ -132,7 +143,7 @@
   ;; ***** Done only for case of non-modal finite tense
 
   ;; SIMPLE TENSES
-  ( 
+  (
    ;; tense 2, the default:
    ;; I take the bus.[a]
    ;; The bus is taken by me.[p]
@@ -148,7 +159,7 @@
 	  ((simple no))))
     (verb-aspect root)
     (tensed-feature ((tense present))))
-   
+
    ;; Tense 1: past
    ;; I took the bus.[a]
    ;; The bus was taken by me.[p]
@@ -163,7 +174,7 @@
     (time-frame past)
     (:! aspect-choice)
     (tensed-feature ((tense past))))
-   
+
    ;; tense 3
    ;; I will take the bus.[a]
    ;; The bus will be taken by me.[b]
@@ -179,7 +190,7 @@
     (simple no)
     (time-frame future)
     (verb-aspect root))
-   
+
    ;; tense 4
    ;; I had taken the bus.(a)
    ;; The bus had been taken by me.(p)
@@ -196,7 +207,7 @@
     (tensed-feature ((tense past)))
     (:! aspect-choice)
     (verb-aspect past-participle))
-   
+
    ;; tense 5
    ;; I have taken the bus
    ;; The bus has been taken by me.
@@ -213,7 +224,7 @@
     (tensed-feature ((tense present)))
     (:! aspect-choice)
     (verb-aspect past-participle))
-   
+
    ;; tense 6
    ;; I will have taken the bus.[a]
    ;; The bus will have been taken by me.[p]
@@ -233,7 +244,7 @@
     (have-1 ((ending root)))
     (:! aspect-choice)
     (verb-aspect past-participle))
-   
+
    ;; tense 7
    ;; I was taking the bus.(a)
    ;; The bus was being taken by me.(p)
@@ -249,7 +260,7 @@
     (be-1 ((tense past)))
     (be-1 { ^ tensed-feature})
     (verb-aspect present-participle))
-   
+
    ;; tense 8
    ;; I am taking the bus.(a)
    ;; The bus is being taken by me.(p)
@@ -265,7 +276,7 @@
     (be-1 ((tense present)))
     (be-1 { ^ tensed-feature})
     (verb-aspect present-participle))
-   
+
    ;; tense 9
    ;; I will be taking the bus.(a)
    ;; The bus will be being taken by me.(p)
@@ -282,7 +293,7 @@
 	  (cat modal)))
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; tense 10
    ;; I was going to take the bus.[a]
    ;; The bus was going to be taken by me.[p]
@@ -296,7 +307,7 @@
     (verb-aspect root)
     (beg ((tense past)))
     (beg { ^ tensed-feature}))
-   
+
    ;; tense 11
    ;; I am going to take the bus.[a]
    ;; The bus is going to be taken by me.[p]
@@ -310,7 +321,7 @@
     (verb-aspect root)
     (beg ((tense present)))
     (beg { ^ tensed-feature}))
-   
+
    ;; tense 12
    ;; I will be going to take.[a]
    ;; The bus will be going to be taken.[b]
@@ -326,7 +337,7 @@
     (beg ((ending root)))
     (aux ((lex "will")
 	  (cat modal))))
-   
+
    ;; tense 13
    ;; I was going to have taken the bus.[a]
    ;; The bus was going to have been taken by me.[p]
@@ -342,7 +353,7 @@
     (beg { ^ tensed-feature})
     (have-2 ((ending root)))
     (verb-aspect past-participle))
-   
+
    ;; tense 14
    ;; I am going to have taken the bus.[a]
    ;; The bus is going to have been taken by me.[p]
@@ -358,7 +369,7 @@
     (beg { ^ tensed-feature})
     (have-2 ((ending root)))
     (verb-aspect past-participle))
-   
+
    ;; tense 15
    ;; I will be going to have taken the bus.[a]
    ;; The bus will be going to have been taken by me.[p]
@@ -374,7 +385,7 @@
     (beg ((ending root)))
     (have-2 ((ending root)))
     (verb-aspect past-participle))
-   
+
    ;; tense 16
    ;; I had been taking the bus.[a]
    ;; The bus had been being taken by me.[p]
@@ -389,7 +400,7 @@
     (have-1 { ^ tensed-feature})
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 17
    ;; I have been taking the bus.[a]
    ;; The bus has been being taken by me.[p]
@@ -404,7 +415,7 @@
     (have-1 { ^ tensed-feature})
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 18
    ;; I will have been taking the bus.[a]
    ;; The bus will have been being taken by me.[p]
@@ -419,7 +430,7 @@
     (have-1 ((ending root)))
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 19
    ;; I was going to be taking the bus.[a]
    ;; The bus was going to be being taking the bus.[p]
@@ -435,7 +446,7 @@
     (beg { ^ tensed-feature})
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; tense 20
    ;; I am going to be taking the bus.[a]
    ;; The bus is going to be being taken by me.[p]
@@ -451,7 +462,7 @@
     (beg { ^ tensed-feature})
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; tense 21
    ;; I will be going to be taking the bus.[a]
    ;; The bus will be going to be being taken by me.[p]
@@ -467,7 +478,7 @@
     (beg ((ending root)))
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; ***** NO SEMANTICS
    ;; tense 22
    ;; I had been going to take the bus.[a]
@@ -481,7 +492,7 @@
     (beg ((ending past-participle)))
     (verb-aspect root)
     )
-   
+
    ;; ***** NO SEMANTICS
    ;; tense 23
    ;; I have been going to take the bus.[a]
@@ -495,7 +506,7 @@
     (beg ((ending past-participle)))
     (verb-aspect root)
     )
-   
+
    ;; ***** NO SEMANTICS
    ;; tense 24
    ;; I will have been going to take the bus.[a]
@@ -509,7 +520,7 @@
     (beg ((ending past-participle)))
     (verb-aspect root)
     )
-   
+
    ;; tense 25
    ;; I had been going to have taken the bus.[a]
    ;; The bus had been going to have been taken by me.[p]???
@@ -526,7 +537,7 @@
     (have-1 {^ tensed-feature})
     (beg ((ending past-participle)))
     (have-2 ((ending root))))
-   
+
    ;; tense 26
    ;; I have been going to have taken the bus.[a]
    ;; The bus has been going to have been taken by me.[p]???
@@ -543,7 +554,7 @@
     (have-1 {^ tensed-feature})
     (beg ((ending past-participle)))
     (have-2 ((ending root))))
-   
+
    ;; tense 27
    ;; I will have been going to have taken the bus.[a]
    ;; The bus will have been going to have been taken by me.[p]???
@@ -560,7 +571,7 @@
     (have-1 ((ending root)))
     (beg ((ending past-participle)))
     (have-2 ((ending root))))
-   
+
    ;; tense 28
    ;; I was going to have been taking the bus.[a]
    ;; The bus was going to have been being taken by me.[p]
@@ -575,7 +586,7 @@
     (have-2 ((ending root)))
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 29
    ;; I am going to have been taking the bus.[a]
    ;; The bus is going to have been being taken by me.[p]
@@ -590,7 +601,7 @@
     (have-2 ((ending root)))
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 30
    ;; I will be going to have been taking the bus.[a]
    ;; The bus will be going to have been being taken by me.[p]
@@ -605,7 +616,7 @@
     (have-2 ((ending root)))
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 31
    ;; I had been going to be taking the bus.[a]
    ;; The bus had been going to be being taken by me.[p]
@@ -622,7 +633,7 @@
     (beg ((ending past-participle)))
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; tense 32
    ;; I have been going to be taking the bus.[a]
    ;; The bus has been going to be being taken by me.[p]
@@ -639,7 +650,7 @@
     (beg ((ending past-participle)))
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; tense 33
    ;; I will have been going to be taking the bus.[a]
    ;; The bus will have been going to be being taken by me.[p]
@@ -656,7 +667,7 @@
     (beg ((ending past-participle)))
     (be-1 ((ending root)))
     (verb-aspect present-participle))
-   
+
    ;; tense 34
    ;; I had been going to have been taking the bus.[a]
    ;; The bus had been going to have been being taken by me.[p]
@@ -675,7 +686,7 @@
     (beg ((ending past-participle)))
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 35
    ;; I have been going to have been taking the bus.[a]
    ;; The bus has been going to have been being taken by me.[p]
@@ -694,7 +705,7 @@
     (beg ((ending past-participle)))
     (be-1 ((ending past-participle)))
     (verb-aspect present-participle))
-   
+
    ;; tense 36
    ;; I will have been going to have been taking the bus.[a]
    ;; The bus will have been going to have been being taken by me.[p]
@@ -752,7 +763,7 @@
 	(((time-frame present)
 	  (aux ((lex "must") (cat modal))))
 	 ((time-frame future)
-	  ;; there is already a will 
+	  ;; there is already a will
 	  )
 	 ((time-frame past)
 	  (aux ((lex "must've") (cat modal))))
@@ -792,7 +803,7 @@
 
 
 
-(def-alt voice-verb-group (:index voice) 
+(def-alt voice-verb-group (:index voice)
   (:wait {^ event lex})
   (
    ;; First: very special case of "to be"
@@ -823,7 +834,7 @@
 	   ((polarity positive) 	;; e.g. I saw it
 	    (alt simple-interrogative (:index interrogative)
 	      ((;; When wh question where scope is subject NOT EMBEDDED
-		;; don't use aux. 
+		;; don't use aux.
 		;; Example: Who do you think really won the prize?
 		(interrogative wh)
 		({^ scope} ((synt-funct #(under subject))
@@ -860,7 +871,7 @@
 	(be-2 ((ending { ^ ^ verb-aspect})))))  )) ))
 
 
-(def-alt notf-adverb-placement (:index polarity) 
+(def-alt notf-adverb-placement (:index polarity)
   ;; ***** WORK ON NEGATION OF NON-FINITE
   (((polarity positive)
     (adverb none))

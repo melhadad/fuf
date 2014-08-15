@@ -4,15 +4,15 @@
 ;;; Description:  Cycling bugs in relocate
 ;;; Author:       Michael Elhadad
 ;;; Created:       4 Jan 1994
-;;; Modified:     
+;;; Modified:
 ;;; Package:      FUG5
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
 
-(define-procedural-type 'surfmap-cset 'unify-cset 
+(define-procedural-type 'surfmap-cset 'unify-cset
   :syntax 'check-cset :relocater 'relocate-pattern)
-(define-procedural-type 'deepmap-cset 'unify-cset 
+(define-procedural-type 'deepmap-cset 'unify-cset
   :syntax 'check-cset :relocater 'relocate-pattern)
 
 
@@ -35,15 +35,15 @@
 	      (elt1 ((dss {^2 dss rel1})))))))
 
 
-;; Try > (relocate br2 {rls elt1 dss}) 
+;; Try > (relocate br2 {rls elt1 dss})
 ;; ((HEAD ((A B)))
 ;;  (ARG0 ((C D)))
-;;  (ARG0B {^ ARG0})    
-;;  (ARG0C ((C D)))     
+;;  (ARG0B {^ ARG0})
+;;  (ARG0C ((C D)))
 ;;  (ARG1 NIL)          <<-- BUG
-;;  (ARG1B ((E F)))     
-;;  (ARG2 ((G H)))      
-;;  (ARG2B ((G H)))     
+;;  (ARG1B ((E F)))
+;;  (ARG2 ((G H)))
+;;  (ARG2B ((G H)))
 ;;  (ARG3 ((I J))))
 
 ;; > (relocate br2 {elt1b dss})
@@ -61,12 +61,12 @@
 ;; ((HEAD ((A B)))
 ;;  (ARG0 ((C D)))
 ;;  (ARG0B {^ ARG0})
-;;  (ARG0C NIL)         <<-- BUG  
-;;  (ARG1 NIL)          <<-- BUG  
-;;  (ARG1B NIL)         <<-- BUG  
-;;  (ARG2 NIL)          <<-- BUG  
-;;  (ARG2B NIL)         <<-- BUG  
-;;  (ARG3 NIL))         <<-- BUG  
+;;  (ARG0C NIL)         <<-- BUG
+;;  (ARG1 NIL)          <<-- BUG
+;;  (ARG1B NIL)         <<-- BUG
+;;  (ARG2 NIL)          <<-- BUG
+;;  (ARG2B NIL)         <<-- BUG
+;;  (ARG3 NIL))         <<-- BUG
 
 (setf br2
       '((ent3 ((i j)))
@@ -86,7 +86,7 @@
 	(elt1b ((dss {^2 rls dss rel1})))))
 
 
-;; Try (relocate lst {gargs ga1}) 
+;; Try (relocate lst {gargs ga1})
 ;; Desired:
 ;;   ((GCAT GA)
 ;;    (VAL {^ SSS VAL})
@@ -124,7 +124,7 @@
 
 ;; Try (relocate rel1 {bls sss-root})
 
-(setf 
+(setf
  rel1
  '((bls
   ((sss
@@ -214,12 +214,12 @@
 		 (surfsemcat encyclo)
 		 (onto indiv)
 		 (concept {bls sss rels co-occur args location rels
-			  opposition dss concept}) 
+			  opposition dss concept})
 		 (ref full)
 		 (names {bls sss rels co-occur args location rels
-			opposition dss attrs}) 
+			opposition dss attrs})
 		 (root {bls sss rels co-occur args location rels opposition
-		       names}))))))))) 
+		       names})))))))))
 	 (onto none)))))
      (root
       ((surfsemcat rhetor)
@@ -357,14 +357,14 @@
 	       (args
 		((set {bls sss dss attrs stats ents histo-stat0})
 		 (gen-elt {bls sss dss attrs stats ents
-			  histo-stat0-gen-elt}))))) 
+			  histo-stat0-gen-elt})))))
 	     (histo-stat0-gen-elt-ca
 	      ((deepsemcat relation)
 	       (role game-stat-rel)
 	       (token kmalone-pt-at-bos-ref-set-gen-elt-ca)
 	       (args
 		((carrier {bls sss dss attrs stats ents
-			  histo-stat0-gen-elt-ca}) 
+			  histo-stat0-gen-elt-ca})
 		 (stat {bls sss dss attrs stats ents histo-stat0-gen-elt})))))
 	     (histo-stat0-extr
 	      ((deepsemcat relation)
@@ -380,7 +380,7 @@
 	       (args
 		((stat-val 39)
 		 (histo-stat-extr {bls sss dss attrs stats ents
-				  histo-stat0-extr}))))))))) 
+				  histo-stat0-extr})))))))))
 	 (results
 	  ((ents
 	    ((host
@@ -619,7 +619,7 @@
 	      ((lex {bls circum co-event partic located sss-root names home})))
 	     (franchise
 	      ((lex {bls circum co-event partic located sss-root names
-		    franchise}))))) 
+		    franchise})))))
 	   (number plural)))
 	 (affected {bls circum co-event partic located})
 	 (location
@@ -636,13 +636,13 @@
 	       (cat score)
 	       (win
 		((value {bls circum co-event partic location np classifier
-			sss restrictors win}))) 
+			sss restrictors win})))
 	       (lose
 		((value {bls circum co-event partic location np classifier
-			sss restrictors lose}))))) 
+			sss restrictors lose})))))
 	     (surfmap-cset
 	      ((+ {circum co-event partic location np classifier} {circum
-		  co-event partic location np qualifier np}) 
+		  co-event partic location np qualifier np})
 	       (-)))
 	     (qualifier
 	      ((cat pp)
@@ -650,17 +650,17 @@
 		((lex "over")))
 	       (np
 		((sss {bls circum co-event partic location np sss rels
-		      opposition}) 
+		      opposition})
 		 (sss-root {bls circum co-event partic location np qualifier np sss})
 		 (cat compound-proper)
 		 (head
 		  ((cat team-name)
 		   (home
 		    ((lex {bls circum co-event partic location np qualifier
-			  np sss-root names home}))) 
+			  np sss-root names home})))
 		   (franchise
 		    ((lex {bls circum co-event partic location np qualifier
-			  np sss-root names franchise}))))) 
+			  np sss-root names franchise})))))
 		 (number plural)))))
 	     (head
 	      ((lex "victory")))))
@@ -668,7 +668,7 @@
 	    ((lex "to")))))))
        (surfmap-cset
 	((+ {circum co-event partic located} {circum co-event partic
-	    location np}) 
+	    location np})
 	 (-)))))))
    (sss-root {bls sss root root})
    (cat clause)
@@ -831,11 +831,11 @@
 		     (lose 94)))))
 		 (surfsemcat encyclo)
 		 (concept {rls sss rels co-occur args location rels score
-			  dss concept}) 
+			  dss concept})
 		 (restrictors {rls sss rels co-occur args location rels
-			      score dss attrs}) 
+			      score dss attrs})
 		 (root {rls sss rels co-occur args location rels score
-		       restrictors}) 
+		       restrictors})
 		 (onto quantity)))
 	       (opposition
 		((dss
@@ -848,12 +848,12 @@
 		 (surfsemcat encyclo)
 		 (onto indiv)
 		 (concept {rls sss rels co-occur args location rels
-			  opposition dss concept}) 
+			  opposition dss concept})
 		 (ref full)
 		 (names {rls sss rels co-occur args location rels
-			opposition dss attrs}) 
+			opposition dss attrs})
 		 (root {rls sss rels co-occur args location rels opposition
-		       names}))))))))) 
+		       names})))))))))
 	 (onto none)))))
      (root
       ((surfsemcat rhetor)
@@ -956,14 +956,14 @@
 	       (args
 		((set {rls sss dss attrs stats ents histo-stat0})
 		 (gen-elt {rls sss dss attrs stats ents
-			  histo-stat0-gen-elt}))))) 
+			  histo-stat0-gen-elt})))))
 	     (histo-stat0-gen-elt-ca
 	      ((deepsemcat relation)
 	       (role game-stat-rel)
 	       (token kmalone-pt-at-bos-ref-set-gen-elt-ca)
 	       (args
 		((carrier {rls sss dss attrs stats ents
-			  histo-stat0-gen-elt-ca}) 
+			  histo-stat0-gen-elt-ca})
 		 (stat {rls sss dss attrs stats ents histo-stat0-gen-elt})))))
 	     (histo-stat0-extr
 	      ((deepsemcat relation)
@@ -979,7 +979,7 @@
 	       (args
 		((stat-val 39)
 		 (histo-stat-extr {rls sss dss attrs stats ents
-				  histo-stat0-extr}))))))))) 
+				  histo-stat0-extr})))))))))
 	 (results
 	  ((ents
 	    ((host
@@ -1039,12 +1039,12 @@
 
 
 ;; Here try:
-;; 
+;;
 ;; (relocate rel2 {rls sss-root elts cdr car dss})
 ;; (relocate rel2 {rls sss dss attrs stats rels stat1})
 ;; The 2 paths are conflated and should return the same relocate.
 ;;
-(setf 
+(setf
  rel2
  '((bls
     ((sss
@@ -1395,7 +1395,7 @@
 			      ((= {^ args agent} {^ args created})))
 			     (dss
 			      {^ ^ ^ ^ ^ ^ ^ ^ dss attrs stats rels
-			      stat1}))))))))))))))) 
+			      stat1})))))))))))))))
        (rels
 	((location
 	  ((dss {^ ^ ^ dss attrs floats ents addr})
@@ -1634,7 +1634,7 @@
 ;; (sss {^ sss-root})
 ;; (sss-root {^ sss})
 ;;
-(setf 
+(setf
  rel3
  '((sss
   ((dss
@@ -2262,6 +2262,3 @@
       ((+ {circum co-event partic located}
           {circum co-event partic location np})
        (-)))))))))
-
-
-

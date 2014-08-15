@@ -1,6 +1,6 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:FUG5 -*-
 ;;; -----------------------------------------------------------------------
-;;; File:         DETERMINE.L 
+;;; File:         DETERMINE.L
 ;;; Description:  "Determination" stage of FUGs with SUCCESS.
 ;;; Author:       Michael Elhadad
 ;;; Created:      16-Oct-88
@@ -17,7 +17,7 @@
 ;;;               26 Nov 91 - added filter-flags and relocate
 ;;;               11 Dec 91 - added force-constituent-agenda call
 ;;;               13 Dec 91 - added det-constituents to deal with
-;;;               constituents appearing as a result of a delayed alt. 
+;;;               constituents appearing as a result of a delayed alt.
 ;;;               18 Dec 91 - added *use-wait*
 ;;;               23 Dec 91 - added change of failure address in det-const.
 ;;;               24 Dec 91 - remove call to add-constituent-agenda
@@ -35,15 +35,15 @@
 ;;;               09 Jan 94: Major bug fix in relocate: added tpath arg.
 ;;;               11 Apr 95: Replaced {^} with (make-path :l '(^)) (ME)
 ;;;               03 Sep 95: Removed relocate and insert-fd (defined in
-;;;               fd-graph). 
+;;;               fd-graph).
 ;;; Package:      FUG5
 ;;; Status:       Experimental
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -66,11 +66,11 @@
   "Check AGENDAS, TESTs and ANYs at the end of unification"
   ;; Agenda-policy determines what to do with frozen alts at the end of
   ;; unif: keep them undeveloped or force them (:keep or :force).
-  (det-agenda 
+  (det-agenda
    fd fail frame
    #'(lambda (fd fail frame)
        (if (empty-agenda)
-	 (det-tests 
+	 (det-tests
 	  fd (reverse (frame-tests frame)) fail frame
 	  #'(lambda (fd fail frame)
 	      (if *use-any*
@@ -85,18 +85,18 @@
   "Check AGENDAS, TESTs and ANYs at the end of unification"
   ;; Agenda-policy determines what to do with frozen alts at the end of
   ;; unif: keep them undeveloped or force them (:keep or :force).
-  (det-agenda 
+  (det-agenda
    fd fail frame
    #'(lambda (fd fail frame)
-       (force-constituent-agenda 
+       (force-constituent-agenda
         fd fail frame
 	#'(lambda (fd fail frame)
-	    (det-constituents 
+	    (det-constituents
 	     (list (make-path)) grammar cat-att cset-att
-	     fd fail frame 
+	     fd fail frame
 	     #'(lambda (fd fail frame)
 		 (if (and (empty-agenda) (empty-constituent-agenda))
-		   (det-tests 
+		   (det-tests
 		    fd (reverse (frame-tests frame)) fail frame
 		    #'(lambda (fd fail frame)
 			(if *use-any*
@@ -115,16 +115,16 @@
   ;; unif: keep them undeveloped or force them (:keep or :force).
   (setf *added-cset* nil)
   (if (and *use-wait* (not use-cset))
-    (det-agenda 
+    (det-agenda
      fd fail frame
      #'(lambda (fd fail frame)
-	 (det-constituents 
+	 (det-constituents
 	  (list (make-path)) grammar cat-att cset-att
-	  fd fail frame 
+	  fd fail frame
 	  #'(lambda (fd fail frame)
 	      (filter-agenda frame)
 	      (if (and (empty-agenda) (not *added-cset*))
-		(det-tests 
+		(det-tests
 		 fd (reverse (frame-tests frame)) fail frame
 		 #'(lambda (fd fail frame)
 		     (if *use-any*
@@ -136,7 +136,7 @@
 			   grammar cat-att cset-att))))))
 
     ;; Don't bother about wait: just checks tests and any
-    (det-tests 
+    (det-tests
      fd (reverse (frame-tests frame)) fail frame
      #'(lambda (fd fail frame)
 	 (if *use-any*
@@ -151,10 +151,10 @@
   "Check for any ANYs left."
   (declare (special *from-top*))
   (cond ((null fd) (funcall success total-fd fail frame))
-	((eq fd 'any) 
+	((eq fd 'any)
 	 (trace-format *trace-determine* frame 30
 		       "Fail in Determine: found an ANY at level ~s" path)
-	 (when (and *global-tracing* *local-tracing* 
+	 (when (and *global-tracing* *local-tracing*
 		    *trace-determine* *from-top*)
 	   (trace-indent ">" frame)
 	   (format t "CURRENT SENTENCE:~%")
@@ -167,10 +167,10 @@
 	((or (member (caar fd) *special-attributes*)
 	     (path-p (cadar fd)))
 	 (det-any (cdr fd) total-fd path frame fail success cat-att))
-	(t 
+	(t
 	  (let ((new-path (path-extend path (caar fd)))
 		(sub-fd (cadar fd)))
-	    (det-any 
+	    (det-any
 	     sub-fd total-fd new-path frame fail
 	     #'(lambda (another-fd fail frame)
 		 (declare (ignore another-fd))
@@ -195,7 +195,7 @@
 	(*fail* fail frame path path :e
 		"Fail in testing ~s at level ~s"
 		(filter-macro-char test) path)))))
-    
+
 
 ;; ------------------------------------------------------------
 ;; DET-AGENDA: forces evaluation of all delayed stuff.
@@ -206,11 +206,11 @@
 
 (defun det-agenda (fd fail frame success)
   (filter-agenda frame)   ;; remove the entries whose ignore clauses now match
-  (cond 
+  (cond
    ((empty-agenda) (funcall success fd fail frame))
    ((eq *agenda-policy* :keep)
     ;; put all the alts into the result fd at the level they come from
-    ;; (path2). 
+    ;; (path2).
     (mapc #'(lambda (ag-item)
 	      ;; if path points to a leaf, force it to become part of the
 	      ;; alt. fd-adjoin is defined in wait.l
@@ -236,32 +236,32 @@
 
 (defun det-constituents (lpath grammar cat-att cset-att fd fail frame success)
   (declare (special *failure-address* *changes-made*))
-  (cond 
+  (cond
    ((null lpath) (funcall success *input* fail frame))
    (t (let* ((arc (gdpp *input* (car lpath) frame))
-	     (cset (find-cset (safe-second arc) (car lpath) 
-			      cat-att cset-att))) 
-	(cond 
+	     (cset (find-cset (safe-second arc) (car lpath)
+			      cat-att cset-att)))
+	(cond
 	 ((or (arc-is-marked arc) (arc-is-marked-after-wait arc)
 	      (path-null (car lpath)))
-	  (det-constituents 
+	  (det-constituents
 	   (remove-duplicates (append (cdr lpath) cset)
 			      :test #'path-equal :from-end t)
 	   grammar cat-att cset-att
 	   fd fail frame success))
 	 (t
 	  ;; Change failure address so that bk-class is not confused.
-	  (trace-format 
+	  (trace-format
 	   *trace-bk-class* frame 5
 	   "BKd: Switch from ~s to ~s" *failure-address* (car lpath))
 	  (setf *failure-address* (car lpath))
 	  (setf *changes-made* t)
-	  (unify-cat 
+	  (unify-cat
 	   (safe-second arc) grammar (car lpath) frame fail
 	   #'(lambda (fd fail frame)
-	       (cond 
+	       (cond
 		((eq fd :frozen)  ;; delay traversal of this constituent
-		 #+ignore(add-constituent-agenda 
+		 #+ignore(add-constituent-agenda
 		  (car lpath) frame grammar cat-att cset-att)
 		 (det-constituents
 		  (cdr lpath) grammar cat-att cset-att
@@ -270,9 +270,9 @@
 		 (let ((cset (find-cset fd (car lpath) cat-att cset-att)))
 		   (when *trace-cset*
 		     (if cset
-		       (trace-format 
+		       (trace-format
 			*trace-cset* frame 20
-			"Expanding constituent ~s into cset ~s." 
+			"Expanding constituent ~s into cset ~s."
 			(car lpath) cset)
 		       (trace-format
 			*trace-cset* frame 20
@@ -297,11 +297,11 @@
 	((path-p fd) fd)
 	((leaf-p (car fd)) (error "Ill-formed fd in filter-nones"))
 	((eq 'none (cadar fd)) (filter-nones (cdr fd)))
-	((or (leaf-p (cadar fd)) 
+	((or (leaf-p (cadar fd))
 	     (member (caar fd) *special-attributes*)
 	     (path-p (cadar fd)))
 	 (cons (car fd) (filter-nones (cdr fd))))
-	(t 
+	(t
 	 (cons (list (caar fd)
 		     (filter-nones (cadar fd)))
 	       (filter-nones (cdr fd))))))
@@ -313,11 +313,11 @@
 	((path-p fd) fd)
 	((leaf-p (car fd)) (error "Ill-formed fd in filter-nils"))
 	((eq nil (cadar fd)) (filter-nils (cdr fd)))
-	((or (leaf-p (cadar fd)) 
+	((or (leaf-p (cadar fd))
 	     (member (caar fd) *special-attributes*)
 	     (path-p (cadar fd)))
 	 (cons (car fd) (filter-nils (cdr fd))))
-	(t 
+	(t
 	 (let ((sub-fd (filter-nils (cadar fd)))
 	       (rest-fd (filter-nils (cdr fd))))
 	   (if sub-fd
@@ -331,11 +331,11 @@
 	((path-p fd) fd)
 	((leaf-p (car fd)) (error "Ill-formed fd in filter-nils"))
 	((and (null keep-nil) (eq nil (cadar fd))) (filter-flags (cdr fd)))
-	((or (leaf-p (cadar fd)) 
+	((or (leaf-p (cadar fd))
 	     (member (caar fd) *special-attributes*)
 	     (path-p (cadar fd)))
 	 (cons (list (caar fd) (cadar fd)) (filter-flags (cdr fd))))
-	(t 
+	(t
 	 (let ((sub-fd (filter-flags (cadar fd)))
 	       (rest-fd (filter-flags (cdr fd))))
 	   (if sub-fd
@@ -355,4 +355,3 @@
 ;; -----------------------------------------------------------------------
 (provide "$fug5/determine")
 ;; -----------------------------------------------------------------------
-

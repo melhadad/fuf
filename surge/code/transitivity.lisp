@@ -7,10 +7,21 @@
 ;;; Modified:     07 Jan 1992: add a realization link when mapping is not
 ;;;                            direct constituent to constituent.  To be
 ;;;                            used by the relative system and add info
-;;;                            about relative-marker and question-pronoun. 
+;;;                            about relative-marker and question-pronoun.
 ;;;               09 Jan 1992: add question and relative info for each role.
 ;;;               05 Jul 1995: SURGE 2.2 VERSION
 ;;;               12 May 1996: Allow all combinations of partic for verbal
+;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
@@ -33,12 +44,12 @@
     ;; The mapping is under the subcat feature of the process.
     (process ((subcat given)))
     (oblique {^ process subcat}))
-   
+
    ;; Following are the general classes of verbs
    ;; using Fawcett's transitivity system.
    ((process-type simple-process)
     (:! simple-process))
-   
+
    ((process-type composite)
     (participants ((range none))) ;; don't want to mess with that
     (:! composite-process))))
@@ -47,17 +58,17 @@
 
 (def-alt simple-process (:index process-type)
   ;; Simple processes: list of templates
-  ;; Material: 
+  ;; Material:
   ;; Ag:       John runs.
   ;; Ag+Af     John eats a pie.
   ;; Ag+Cr     John cooks diner.
   ;; Ag+Rg     John sings a song.
   ;; Af        The sun shines.
   ;; Cr        The window popped.
-  ;; Mental:   
+  ;; Mental:
   ;; Pr        I think.
   ;; Pr+Ph     I think it's good.
-  ;; Verbal:    
+  ;; Verbal:
   ;; Sa        It talks.
   ;; Sa+Ad     John talks to Steve.
   ;; Sa+Ve     Steve says fix it.
@@ -81,7 +92,7 @@
     ;; Enumerate all acceptable subsets of these roles based on agentive,
     ;; dispositive and creative.
     (:! material-simple-agentive))
-   
+
    ;; Mental processes: *****
    ((process-type mental)
     (participants ((fset (processor phenomenon))))
@@ -120,10 +131,10 @@
 	(oblique ((3 none))))
        ((participants ((addressee given)))
 	(oblique ((3 {^3 participants addressee})))))))
-   
+
    ;; Relational processes:
    ((process-type relation)
-    ;; General things on Mode 
+    ;; General things on Mode
     (alt mode (:index (process mode))
       (((process ((mode attributive)
 		  (voice active)))
@@ -131,14 +142,14 @@
        ((process ((mode equative)))
 	(oblique ((1 {^ ^ participants identified}))))))
     (process ((change-mode ((alt (current maintain change))))))
-    
-    ;; Enumerate specializations of relation: 
+
+    ;; Enumerate specializations of relation:
     ;; Ascriptive, Locative, Possessive
     (:! relational-simple))))
 
 
 (def-alt material-simple-agentive (:index (process agentive))
-  ;; Within a clause, (type material) 
+  ;; Within a clause, (type material)
   (((process ((agentive yes)))
     (oblique ((fset (1 2))
 	      (1 {^ ^ participants agent})))
@@ -165,7 +176,7 @@
 	    (oblique ((fset (1))))))))
        ;; end of agentive yes
        )))
-   
+
    ((process ((agentive no)
 	      (effective yes)))
     (oblique ((fset (1))))
@@ -210,7 +221,7 @@
 		   (attribute ((question-pronoun ((lex "how")))))))
     (oblique ((fset (1 4))
 	      (4 {^2 participants attribute})))
-    (alt verb-be-attributive 
+    (alt verb-be-attributive
 	(:demo "What verb for ascriptive attributive?")
       (((process ((lex "be")
 		  (subject-clause infinitive)
@@ -221,7 +232,7 @@
     (participants ((identifier ((restrictive yes)))))
     (oblique ((fset (1 2))
 	      (2 {^ ^ participants identifier})))
-    (alt verb-be-equative 
+    (alt verb-be-equative
 	(:demo "What verb for ascriptive equative?")
       (((process ((lex "be")
 		  (copula yes)
@@ -244,22 +255,22 @@
 	(participants none)
 	(dummy-constituent yes)
 	(oblique none))
-       
+
        ;; EXISTENTIAL
        ((process-type #(under existential))
 	(participants ((fset (carrier located))
 		       (located {^ carrier})))
 	(dummy-constituent yes)
 	(oblique ((fset (1)))))
-       
+
        ;; TEMPORAL
        ((process-type #(under temporal))
-	(participants 
+	(participants
 	 ((fset (carrier attribute located time))
 	  (located {^ carrier})
 	  (time {^ attribute})))
 	(alt (((process ((circumstance-as participant)))
-	       (participants 
+	       (participants
 		((time ((question-embedded no)
 			(relative-embedded no)
 			(question-pronoun ((lex ((alt (given "when"))))))
@@ -267,10 +278,10 @@
 	      ((process ((circumstance-as process))))))
 	(oblique ((fset (1 4))
 		  (4 {^ ^ participants time}))))
-       
+
        ;; ANY OTHER LOCATIVE
        ((process-type locative)
-	(participants 
+	(participants
 	 ((fset (carrier attribute located location))
 	  (located {^ carrier})
 	  (location {^ attribute})))
@@ -283,10 +294,11 @@
 	      ((process ((circumstance-as participant)
 			 (type spatial)))
 	       (participants
-		((location ((question-embedded no)
-			    (relative-embedded no)
-			    (question-pronoun ((lex ((alt (given "where"))))))
-			    (relative-marker ((lex ((alt (given "where")))))))))))
+		((location
+                  ((question-embedded no)
+                   (relative-embedded no)
+                   (question-pronoun ((lex ((alt (given "where"))))))
+                   (relative-marker ((lex ((alt (given "where")))))))))))
 	      ((process ((circumstance-as process))))))
 	(oblique ((fset (1 4))
 		  (4 {^ ^ participants location})))))))
@@ -294,11 +306,11 @@
    ;; restrictive for questions: optional for locatives.
    ((process ((mode equative)))
     (alt (((process-type #(under temporal))
-	   (participants 
+	   (participants
 	    ((fset (identifier identified located location time))
 	     (time {^ location}))))
 	  ((process-type locative)
-	   (participants 
+	   (participants
 	    ((fset (identifier identified located location)))))))
     (participants ((located {^ identified})
 		   (location {^ identifier})))
@@ -309,7 +321,7 @@
 
 (def-alt possessive-mode (:index (process mode))
   (((process ((mode attributive)))
-    (participants 
+    (participants
      ((fset (carrier attribute possessor possessed))
       (possessor {^ carrier})
       (possessor ((question-embedded no)
@@ -324,10 +336,10 @@
 		  (subject-clause infinitive)
 		  (object-clause none))))
        ((process ((lex given)))))))
-   
+
    ;; restrictive is optional
    ((process ((mode equative)))
-    (participants 
+    (participants
      ((fset (identifier identified possessor possessed))
       (possessor {^ identified})
       (possessed {^ identifier})))
@@ -346,13 +358,13 @@
 (def-alt composite-process
   ;; COMPOSITE PROCESSES:
   ;; compose only material + relation
-  ;; Specify relation type under relation-type. 
+  ;; Specify relation type under relation-type.
   ;; Index on agentive/effective/effect-type
   ;; Best to view composition as adding a result relation to an action
   ;; Table of possible combinations:
-  ;; event = Ag, Ag+Af, Ag+Cr, Af, Cr 
+  ;; event = Ag, Ag+Af, Ag+Cr, Af, Cr
   ;; relation = Ca+Att, Ca+Pos, Ca+Loc, Id+Ir, [Id+Loc, Id+Pos]
-  ;; The following embedded alts identify only the permissible 
+  ;; The following embedded alts identify only the permissible
   ;; combinations [think of it as a matrix event/rel]
   ;; Ag+Af/Ca+At:  they made him rich
   ;; Ag+Af/Id+Ir:  they made him the boss *****
@@ -381,10 +393,10 @@
        ;; Agent only
        ((process ((effective no)))
 	(:! composite-agentive-relational)))))
-   
+
    ((process ((agentive no)
 	      (effective yes)
-	      (mode attributive)))  ;; no equative allowed 
+	      (mode attributive)))  ;; no equative allowed
     (participants ((agent none)
 		   (carrier ((function carrier)))))
     (:! composite-non-agentive-effect-type))))
@@ -401,7 +413,7 @@
     ;; Check now that affected or any synonym is indeed given
     (participants ((affected any)
 		   (affected ((function affected))))))
-   
+
    ((process ((effect-type creative)))
     ;; Structure is Ag+Cr
     ;; default verb is "create"
@@ -414,10 +426,10 @@
        ;; Ag+Cr/Ca+At:  he cooked the diner spicy (?)
        ((process ((relation-type ascriptive)
 		  (mode attributive)))
-	(participants 
+	(participants
 	 ((attribute ((question-pronoun ((lex ((alt (given "how"))))))))
 	  (fset (agent created carrier attribute)))))
-       
+
        ;; Ag+Cr/Ca+Loc: The prg popped the wnd on the screen
        ((process ((relation-type locative)
 		  (mode attributive)))
@@ -442,8 +454,8 @@
 (def-alt ag-disp-relation-type (:index (process relation-type))
   (
    ;; Ag+Af/Ca+At: they made him rich
-   ((process ((relation-type ascriptive) (mode attributive))) 
-    (participants 
+   ((process ((relation-type ascriptive) (mode attributive)))
+    (participants
      ((attribute ((question-pronoun ((lex ((alt (given "what"))))))))
       (carrier ((function carrier)))
       (affected {^ carrier})
@@ -453,10 +465,10 @@
     ;; Default verb is "make"
     (process ((alt (((lex "make"))
 		    ((lex given)))))))
-   
+
    ;; Ag+Af/Id+Ir: they elected him the boss
-   ((process ((relation-type ascriptive) (mode equative))) 
-    (participants 
+   ((process ((relation-type ascriptive) (mode equative)))
+    (participants
      ((identifier ((question-pronoun ((lex ((alt (given "what"))))))))
       (identified ((function identified)))
       (affected {^ identified})
@@ -466,7 +478,7 @@
     ;; Default verb is "make"
     (process ((alt (((lex "make"))
 		    ((lex given)))))))
-   
+
    ;; Ag+Af/Ca+Pos: the babe gave the boss cold cash
    ((process ((relation-type possessive)
 	      (mode attributive)))
@@ -487,7 +499,7 @@
     ;; Default verb is "give"
     (process ((alt (((lex "give"))
 		    ((lex given)))))))
-   
+
    ;; Ag+Af/Ca+Loc: I push the box to the left
    ((process ((relation-type locative)
 	      (mode attributive)))
@@ -516,10 +528,11 @@
    ;; Ag/Ca+At:     he became rich
    ((process ((relation-type ascriptive)
 	      (mode attributive)))
-    (participants ((carrier ((function carrier)))
-		   (carrier {^ agent})
-		   (attribute ((question-pronoun ((lex ((alt (given "what"))))))))
-		   (fset (agent carrier attribute))))
+    (participants
+     ((carrier ((function carrier)))
+      (carrier {^ agent})
+      (attribute ((question-pronoun ((lex ((alt (given "what"))))))))
+      (fset (agent carrier attribute))))
     (oblique ((fset (1 4))
 	      (4 {^ ^ participants attribute})))
     ;; Default verb is "become"
@@ -528,15 +541,16 @@
 		     (object-clause none)
 		     (change-mode change))
 		    ((lex given)))))))
-   
+
    ;; Ag/Id+Ir:     he became the boss
    ((process ((relation-type ascriptive)
 	      (voice active)
 	      (mode equative)))
-    (participants ((identifier ((question-pronoun ((lex ((alt (given "what"))))))))
-		   (identified ((function identified)))
-		   (identified {^ agent})
-		   (fset (agent identified identifier))))
+    (participants
+     ((identifier ((question-pronoun ((lex ((alt (given "what"))))))))
+      (identified ((function identified)))
+      (identified {^ agent})
+      (fset (agent identified identifier))))
     (oblique ((fset (1 4))
 	      (4 {^ ^ participants identifier})))
     ;; Default verb is "become"
@@ -545,7 +559,7 @@
 		     (object-clause none)
 		     (change-mode change))
 		    ((lex given)))))))
-   
+
    ;; Ag/Ca+Pos:    the boss bought a Rolls
    ((process ((relation-type possessive)
 	      (mode attributive)))
@@ -562,7 +576,7 @@
     ;; Default verb is "get"
     (process ((alt (((lex "get"))
 		    ((lex given)))))))
-   
+
    ;; Ag/Ca+Loc:    he went home
    ((process ((relation-type locative)
 	      (mode attributive)))
@@ -591,29 +605,29 @@
 		   (affected any)
 		   (affected ((function affected)))))
     (oblique ((1 {^ ^ participants affected})))
-    
+
     ;; Enumerate acceptable relation types
     (:! af-relation-type))
-   
+
    ((process ((effect-type creative)))
     ;; Structure is Cr
     (participants ((carrier {^ created})
 		   (created any)
 		   (created ((function created)))))
     (oblique ((1 {^ ^ participants created})))
-    
+
     ;; Enumerate acceptable relation types
     (alt cr-relation (:index (process relation-type))
       (
        ;; Cr/Ca+At:     The window popped wide
        ((process ((relation-type ascriptive)))
-	(participants 
+	(participants
 	 ((attribute ((question-pronoun ((lex ((alt (given "how"))))))))
 	  (fset (created carrier attribute))))
 	(oblique ((fset (1 4))
 		  (4 {^ ^ participants attribute})))
 	(process ((lex given))))
-       
+
        ;; Cr/Ca+Loc:    the window popped on the screen
        ((process ((relation-type locative)
 		  (voice active)))
@@ -638,7 +652,7 @@
   (
    ;; Af/Ca+At:     the kettle boiled dry
    ((process ((relation-type ascriptive)))
-    (participants 
+    (participants
      ((attribute ((question-pronoun ((lex ((alt (given "how"))))))))
       (fset (affected carrier attribute))))
     (oblique ((fset (1 4))
@@ -646,7 +660,7 @@
     ;; Default verb is "turn"
     (process ((alt (((lex "turn"))
 		    ((lex given)))))))
-   
+
    ;; Af/Ca+Pos:    the boss received cash
    ((process ((relation-type possessive)))
     (participants
@@ -660,7 +674,7 @@
     ;; Default verb is "get"
     (process ((alt (((lex "get"))
 		    ((lex given)))))))
-   
+
    ;; Af/Ca+Loc:    the box fell on the floor
    ((process ((relation-type locative)
 	      (voice active)))

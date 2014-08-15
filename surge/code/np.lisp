@@ -20,6 +20,17 @@
 ;;;                5 Nov 1995: moved person-name to special.l
 ;;;                            made address and date as np-types.
 ;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
+;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
 
@@ -165,7 +176,8 @@
 	   (partitive {^2 partitive})
 	   (distance {^2 distance})
 	   (countable {^2 countable})))
-  ;; JR-11-15-92: allowed index at the top-level and then copied it under semantics
+  ;; JR-11-15-92: \
+  ;; allowed index at the top-level and then copied it under semantics
   ;; This saves 24 characters per co-reference pointer, making them to fit on a
   ;; single line, e.g.
   ;; ((circum ((partic ((processor ((index {^5 partic processor index}))))))))
@@ -475,7 +487,7 @@
 	(((determiner none)
           ;; number plural requires det for proper
           ;; The Smiths
-          (number singular) 
+          (number singular)
 	  (pattern (head)))
 	((determiner ((head-cat proper)))
          (:! np-determiner)

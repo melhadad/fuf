@@ -8,7 +8,7 @@
 ;;;               20 Feb 91: use equality instead of equalp
 ;;;               22 Feb 91: allow for lists of bk-classes instead of one
 ;;;                          put a special trace flag for bk-class
-;;;               01 Mar 91: allow for lists of classes in define-bk-class 
+;;;               01 Mar 91: allow for lists of classes in define-bk-class
 ;;;                          also.  Changed match-bk-class.
 ;;;               28 Jul 91: undo agenda operations for WAIT.
 ;;;               19 Sep 91: fixed member-or-inter to work for any comb.
@@ -19,15 +19,15 @@
 ;;;               10 Jul 92: renamed undo to undo-list to avoid conflict in MCL
 ;;;               20 Oct 92: Added level to trace-format
 ;;;               11 Jan 96: Commented out code in update-pair (Charles
-;;;                          Brendan notified the problem) 
+;;;                          Brendan notified the problem)
 ;;; Package:      FUG5
 ;;; Macros:       backtrack, *fail*, update-pair, enrich
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -78,11 +78,11 @@
   "Check if elt and class intersect.
    Works for any combination of consp and symbolp."
   (cond
-   ((symbolp elt) 
+   ((symbolp elt)
     (cond ((symbolp class) (eq elt class))
 	  ((consp class) (member elt class))
 	  (t (error "Bad bk-class specification: ~s~%" class))))
-   ((consp elt) 
+   ((consp elt)
     (cond ((symbolp class) (member class elt))
 	  ((consp class) (intersection elt class))
 	  (t (error "Bad bk-class specification: ~s~%" elt))))))
@@ -93,15 +93,15 @@
   (cond
    ((null elt) class)
    ((null class) elt)
-   ((symbolp elt) 
+   ((symbolp elt)
     (cond ((symbolp class) (if (eq elt class) elt (list elt class)))
 	  ((consp class) (adjoin elt class))
 	  (t (error "Bad bk-class specification: ~s~%" class))))
-   ((consp elt) 
+   ((consp elt)
     (cond ((symbolp class) (adjoin class elt))
 	  ((consp class) (union elt class))
 	  (t (error "Bad bk-class specification: ~s~%" elt))))))
-  
+
 
 (defun input-pair (pair)
   (cond ((consp pair) (and (>= (length pair) 3)
@@ -113,12 +113,12 @@
   ;; Get the list of classes of which path is a member
   ;; Stop at the first element from the end that matches a bk-class
   ;; Return 2 values: class found
-  (labels 
+  (labels
       ((get-iter (rest)
          (if (null rest)
 	   (values nil nil)
 	   (multiple-value-bind (class found) (gethash (car rest) *bk-classes*)
-	     (if found 
+	     (if found
 	       (values class found)
 	       (get-iter (cdr rest)))))))
     (get-iter (reverse (path-l path)))))
@@ -128,12 +128,12 @@
 (defun match-bk-class (path1 path2 pair class frame)
   "Test if Path is declared a special long distance failure and
    if the class of the current bp cannot handle it"
-  (declare (special *changes-made* *failure-address* 
+  (declare (special *changes-made* *failure-address*
 		    *is-bk-failure* *class-of-failure*))
 
   ;; Determine address of failure (AF)
   ;; Need to switch the AF only in the following conditions
-  (when (and (or  (null *is-bk-failure*) 
+  (when (and (or  (null *is-bk-failure*)
 		  *changes-made*
 		  (input-pair pair))
 	     (not (eq path1 *same*)))
@@ -142,7 +142,7 @@
       ;; Can it be that path1 is a new special path?
       (unless (path-equal path1 *failure-address*)
 	(if *is-bk-failure*
-	  (trace-format 
+	  (trace-format
 	   *trace-bk-class* frame 15
 	   "BK: Switch from ~s to ~s" *failure-address* path1))
 	(setf *failure-address* path1)
@@ -153,15 +153,15 @@
       (unless (or (path-equal path1 path2)
 		  (and (not switched)
 		       (path-equal path2 *failure-address*)))
-	(multiple-value-bind (class2 flag2) 
+	(multiple-value-bind (class2 flag2)
 	    (get-bk-class path2)
 	  (when flag2
-	    (trace-format 
+	    (trace-format
 	     *trace-bk-class* frame 15
 	     "BK2: Switch from ~s to ~s" *failure-address* path2))
 	  (setf *failure-address* path2)
 	  (setf *is-bk-failure* flag2)
-	  (setf *class-of-failure* 
+	  (setf *class-of-failure*
 		(if switched
 		  (adjoin-or-union *class-of-failure* class2)
 		  class2))))))
@@ -171,10 +171,10 @@
     ;; match if the class can handle the special path:
     (let ((match (member-or-inter class *class-of-failure*)))
       (if (and match (> *bk-frames-skipped* 0))
-	(progn 
-	  (trace-format 
+	(progn
+	  (trace-format
 	   *trace-bk-class* frame 15
-	   "BK: Special path ~s caught by alt ~s class ~s after ~s frame~:P~%" 
+	   "BK: Special path ~s caught by alt ~s class ~s after ~s frame~:P~%"
 	   *failure-address* (frame-name frame) class *bk-frames-skipped*)
 	  (setf *bk-frames-skipped* 0))
 	(incf *bk-frames-skipped*))
@@ -199,13 +199,13 @@
           If pair = :unknown, recompute the gdpp."
   (declare (special *input* *changes-made* *is-bk-failure*))
   (if (eq pair :unknown) (setf pair (gdpp *input* path frame)))
-  (when (and (consp pair) 
+  (when (and (consp pair)
 	     (not (equality (second pair) value)))
     (setf *changes-made* t)     ;; Note that fd has changed
     (when *is-bk-failure*
       (trace-format *trace-bk-class* frame 5 "BK: Change at level ~s" path))
     (nconc (frame-undo frame) `((u ,(second pair) ,(third pair) ,path)))
-    (cond 
+    (cond
      ;; This thing shouldn't happen
      ;; ((path-null path)
      ;; (setf *input* value))
@@ -257,7 +257,7 @@
 		 (new-pair (the-last-arc-of-path *input* (third data))))
 	     (cond ((path-null (third data))
 		    (setf *input* old-value))
-		   ((consp new-pair) 
+		   ((consp new-pair)
 		    (setf (third new-pair) old-status)
 		    (setf (second new-pair) old-value))
 		   ((null new-pair)
@@ -265,15 +265,15 @@
 		    ;; probably been already removed
 		    )
 		   (t
-		    (cerror "Continue" 
+		    (cerror "Continue"
 			    "Error in UNDO:~%~
                              - new-pair is an atom! ~s~%~
 		             - old-value is ~s~%~
-		             - path is ~s~%" 
+		             - path is ~s~%"
 		       new-pair old-value (third data))))))
 
 	  ((eq type 'aa) ; undo an add-agenda: remove it for true - data=id
-	   (setf *agenda* (remove-if 
+	   (setf *agenda* (remove-if
 			   #'(lambda (x) (= (agenda-item-id x) data))
 			   *agenda*)))
 
@@ -284,10 +284,10 @@
 
 	  #+ignore((eq type 'ac) ; undo an add-constituent-agenda: remove it for true
 	   (setf *constituent-agenda*
-		 (remove-if #'(lambda (x) 
+		 (remove-if #'(lambda (x)
 				(= (constituent-agenda-item-id x) data))
 			    *constituent-agenda*)))
-	   
+
 	  #+ignore((eq type 'acr) ; undo a remove-constituent-agenda
 	   (let ((item (find-constituent-agenda (- data))))
 	     (when item

@@ -5,7 +5,18 @@
 ;;; Author:       Yael
 ;;; Created:      18 Mar 1996
 ;;; Modified:     18 Apr 1996 - Revision of code
-;;; Package:      FUG5 
+;;; Package:      FUG5
+;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
@@ -20,18 +31,18 @@
 (defun try (fd1)
   (let ((fd (uni-fd fd1)))
     (declare (special *input*))
-    (if (eq fd :fail) 
+    (if (eq fd :fail)
 	fd
       (let ((*input* fd))
 	(binding {})
-	(print-sentence 
+	(print-sentence
 	 (capitalize (punctuate (linearize *input* {}) '())))))))
 
 ;;; This is to test binding within NPs.
 (defun try2 (fd1)
   (let ((fd (uni-fd fd1)))
     (declare (special *input*))
-    (if (eq fd :fail) 
+    (if (eq fd :fail)
 	fd
       (let ((*input* fd))
 	(bt-within-np {} '())
@@ -93,12 +104,12 @@
 ;; and can be done in Lisp (since want to do recursive traversal of the
 ;; obliqueness structure of the sentence).
 
-;; Procedure: 
-;; Traverse oblique structure, and for all NP, store the list of 
+;; Procedure:
+;; Traverse oblique structure, and for all NP, store the list of
 ;; local-o-binders.
 ;; must traverse also peripherials (circum can be a clause)
 
-;; How to get oblique structure: 
+;; How to get oblique structure:
 ;; Add to fd features o-command and o-binder:
 ;; Instead, have grammar add a feature (o-command 1...) to each complement
 ;; (both participants and circumstantials).
@@ -127,7 +138,7 @@
   "Return a list of paths to all the complements in the clause appearing at
    level path within the total fd"
   (declare (special *input*))
-  (append 
+  (append
    (paths-to-relevant-complements path  'circum (get-disjuncts))
    (paths-to-relevant-complements path  'circum (get-sentence-modifiers))
    (paths-to-relevant-complements path  'pred-modif (get-pred-modifiers))
@@ -140,28 +151,32 @@
 
 
 (defun paths-to-relevant-synt-roles (path)
-  "For the given path, return a list sorted by obliqueness of paths to synt-roles
-   in the *input*"
+  "For the given path, return a list sorted by obliqueness of paths
+   to synt-roles in the *input*"
   (sort-complements
-    (mapcar 
-      #'(lambda (role) (path-append path (make-path :l (list 'synt-roles
-							     role))))
-
+    (mapcar
+      #'(lambda (role) (path-append path
+                                    (make-path :l (list 'synt-roles role))))
         (gdp *input* (path-append path {synt-roles fset})))))
 
 
-(defun paths-to-relevant-complements (path complement-type complements &optional acc)
-  "For a given path, complement-type is the type of modifier (pred, sentence, disjunct)
-   and a list of the possible complements, and returns the paths which are relevant
-   to the FD"
+(defun paths-to-relevant-complements (path complement-type complements
+                                      &optional acc)
+  "For a given path, complement-type is the type of modifier
+   (pred, sentence, disjunct) and a list of the possible complements,
+   and returns the paths which are relevant to the FD"
   (if (null complements) acc
-    (let* ((check-path (path-append path (make-path :l (list complement-type (car complements)))))
+    (let* ((check-path
+            (path-append
+             path
+             (make-path :l (list complement-type (car complements)))))
 	   (value (gdp *input* check-path)))
-      (paths-to-relevant-complements  path complement-type
-				      (cdr complements)
-				      (if (or (null value) (subsume 'none value))
-					  acc
-                                        (cons check-path acc))))))  
+      (paths-to-relevant-complements
+       path complement-type
+       (cdr complements)
+       (if (or (null value) (subsume 'none value))
+           acc
+           (cons check-path acc))))))
 
 ;;; Question: there is no definite separation in order of both, so perhaps
 ;;; it should be in one list.
@@ -172,7 +187,7 @@
 (defun get-disjuncts ()
   '(matter standard perspective concession constrast exception substitution
     condition concessive-condition inclusion co-event result))
-    
+
 
 ;; Given a list of paths to all the complements in a clause, sort them by
 ;; value of obliqueness.
@@ -198,21 +213,22 @@
   ;; first find the syntactic roles participating then check:
   ;;  1. category (recurse into (cat clause))
   ;;  2. sort by o-command values, make a list of all o-commanders and check
-  ;;     coreference with them. (look at each {synt-role subject/object.. o-command} values.)
+  ;;     coreference with them.
+  ;;     (look at each {synt-role subject/object.. o-command} values.)
   ;;  3. accordingly determine which principle holds.
 
   ;; Non-local-commanders is a list of commanders that can come from
   ;; discourse (non-local to the clause).  It is only used for pronouns
   ;; (not for anaphors) and for pronouns, non-local-commanders appear after
   ;; all local ones.
-  
+
   ;; complements is the list all the complements appearing within the
   ;; clause appearing at level path within the total fd, sorted by
   ;; obliqueness. (subject last).
   ;; NOTE: use maplist on obliques to obtain:
   ;; (3 2 1) then (2 1) then (1)
   (let ((complements (get-complements path)))
-                                                     
+
     (maplist
      #'(lambda (commanders)
 	 (BT (car commanders)
@@ -224,8 +240,9 @@
 
 (defun BT-within-NP (path non-local-commanders)
   "Check if there are binders inside the NP"
-  (let* ((oblique-list (paths-to-relevant-np-modifiers path (get-np-modifiers))))
-    ;;; make a list of possible NPs 
+  (let* ((oblique-list (paths-to-relevant-np-modifiers
+                        path (get-np-modifiers))))
+    ;;; make a list of possible NPs
     (maplist
      #'(lambda (commanders)
 	 (BT (car commanders)
@@ -235,7 +252,8 @@
     (values)))
 
 (defun BT-within-LIST (path  commanders non-local-commanders)
-  "Check if there are binders inside a list (such as a list of qualifiers of a noun"
+  "Check if there are binders inside a list
+   (such as a list of qualifiers of a noun"
   ;; I assume the last in the list is the most oblique one,
   ;; and therefore I'd like to bind it first.
   ;; so I have to reverse the list (a list of paths to the list components)
@@ -248,16 +266,16 @@
 	     (cdr commanders)
 	     non-local-commanders))
      oblique-list)
-    (values)))    
+    (values)))
 
 ;; ======================================================================
 ;; BT gets a path to a complement, a list of local commanders
 ;; and a list of non-local-commanders for this complement.
-;; It first checks the category of the complement. 
+;; It first checks the category of the complement.
 ;; - If it is a clause, it recursively calls binding on this clause with the
 ;;   local-commanders of the embedding clause added to the list of
 ;;   non-local-commanders of the embedded clause.
-;; - If it is an NP, it checks first Principle A: 
+;; - If it is an NP, it checks first Principle A:
 ;;   if local-o-commanders are coreferenced:
 ;;   yes: enrich FD with feature (binding anaphor).  The verb decides whether
 ;;        it will be a reflexive or a reciprocal.  Default is reflexive.
@@ -271,12 +289,12 @@
 (defun BT (complement-path commanders non-local-commanders)
   (declare (special *input*))
   (let ((category (gdp *input* (path-extend complement-path 'cat))))
-    (cond 
+    (cond
      ((subsume 'list category)
       (BT-within-LIST complement-path commanders non-local-commanders))
 
      ;; if clause - recurse on it with the upper o-commands for o-free of
-     ;; r-expressions. 
+     ;; r-expressions.
      ((subsume 'simple-clause category)
       (binding complement-path
                (append commanders non-local-commanders)))
@@ -318,17 +336,15 @@
          (enrich (gdp *input* complement-path)
                  '(forced-pronoun yes) (make-frame)))
 
-                   
 	;; If it is not o-free (coindexed with a non-local commander)
 	;; must be a ppro.
-	
 	;; If complement is free (including case of no commanders),
-	;; make it an npro. 
+	;; make it an npro.
 	(t (enrich (gdp *input* complement-path)
 		   '(binding npro) (make-frame)))))
 
 
-;; Get-index: path to constituent 
+;; Get-index: path to constituent
 ;; Return value of index.
 ;; If constituent is an NP, take its index feature
 ;; if it is a PP, take the index of its np.
@@ -340,16 +356,14 @@
     (gdp *input* (path-extend path 'index))))
 
 ;; Coreferenced returns the sublist of commanders-path argument with the
-;; same index. 
+;; same index.
 (defun coreferenced (path1 commanders-paths)
   (declare (special *input*))
   (let ((index1 (get-index path1)))
-    ;; let each one of nps be a list with: path  
+    ;; let each one of nps be a list with: path
     (loop for path in commanders-paths
 	  when (eq index1 (get-index path))
 	  collect path)))
-
-
 
 ;; Binding within NP:
 ;; possessor is like a 'subject' - cannot be commanded
@@ -365,22 +379,20 @@
   (if (null complements) acc
     (let* ((check-path (path-extend path (car complements)))
 	   (value (gdp *input* check-path)))
-      (paths-to-relevant-np-modifiers  
+      (paths-to-relevant-np-modifiers
        path
        (cdr complements)
        (if (or (null value) (subsume 'none value))
 	   acc
-	 (cons check-path acc)))))) 
+	 (cons check-path acc))))))
 
 (defun get-np-modifiers ()
   '(possessor qualifier))
-
 
 ;;;; This function gets a path to an FD with ((cat list) (distinct ...))
 ;;;; and returns a list of paths to the distinct components of it,
 ;;;; in reverse order (we assume the more oblique part come after in the
 ;;;; list.
-
 (defun get-list-components (path)
   "convert the FD (cat list) to a list, and collect the paths to
    its different components"
@@ -394,4 +406,3 @@
                              path
                              (path-append {cdr} path-in-list)
                              (cons (path-append path path-in-list) acc))))
-       

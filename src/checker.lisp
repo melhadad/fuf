@@ -6,7 +6,7 @@
 ;;; Created:      17-Feb-88
 ;;; Modified:     26-Feb-89 (Michael Elhadad)
 ;;;               01 May 90 - Moved exports to fug5
-;;;               20 Jun 90 - Rewritten. 
+;;;               20 Jun 90 - Rewritten.
 ;;;                         - fd-sem is now (u nil fd)
 ;;;                         - added (normalize fd) = (u nil fd)
 ;;;               11 Aug 91 - support for :wait :order and new annotations
@@ -25,9 +25,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -46,7 +46,7 @@
 ;;                returns NIL.
 ;; ----------------------------------------------------------------------
 (defmacro fd-p-test (test path err-msg &rest args)
-  `(cond (,test) 
+  `(cond (,test)
 	 (t (fd-p-err-msg ,path ,err-msg ,@args) nil)))
 
 (defmacro fd-p-err-msg (path err-msg &rest args)
@@ -64,9 +64,9 @@
 ;;    FD-SYNTAX:
 ;;          returns T if the argument passed is in FD form or
 ;;          returns NIL with error messages, otherwise.
-;; 
+;;
 ;;          A functional description (FD) is in the following format:
-;; 
+;;
 ;; 	   FD   <=  (PAR1 {F} PAR2 {F} ... {F} PARn)
 ;;         PAR  <=  ("alt" {F} {I} (FD1 FD2 ... FDn))
 ;;         PAR  <=  ("ralt" {F} {I} (FD1 FD2 ... FDn))
@@ -85,7 +85,7 @@
 ;; 	   F    <=  an-atomic-tracing-flag | (trace {...} F)
 ;;         I    <=  (index {...} PATH) | (index {...} an-existing-atom)
 ;; ----------------------------------------------------------------------
-(defun fd-syntax (&optional (fd *u-grammar*) 
+(defun fd-syntax (&optional (fd *u-grammar*)
 		  &key (print-warnings t) (print-messages t)
 		  (cset-attribute *cset-attribute*))
   (declare (special print-messages print-warnings))
@@ -137,7 +137,7 @@
 	     path
 	     "The attribute of a pair must be a symbol or a path: ~s"
 	     pair)
-  
+
   (setf path (if (leaf-p (car pair))
 		 (path-cons (car pair) path)
 	       (path-reverse (absolute-path (car pair) (path-reverse path)))))
@@ -146,15 +146,15 @@
 	      (car pair)))
 
   ;; Check now that we have just the right number of elts in the pair:
-  (cond 
+  (cond
    ((member att '(alt ralt))
     (multiple-value-bind
-	(branches traced indexed demo bk-class 
-		  order wait ignore-unless ignore-when) 
+	(branches traced indexed demo bk-class
+		  order wait ignore-unless ignore-when)
 	(branches pair)
-      (cond 
+      (cond
        ((> (- (length pair)
-	      (how-many traced indexed demo bk-class order wait 
+	      (how-many traced indexed demo bk-class order wait
 			ignore-unless ignore-when))
 	   2)
 	(fd-p-test nil path
@@ -174,17 +174,17 @@
        ;; normalize wait can raise an error
        ((normalize-wait wait))
        ;; Ignore values need to be valid fds
-       (ignore-when 
-	(fd-p-test 
+       (ignore-when
+	(fd-p-test
 	 (fd-p ignore-when :print-warnings nil :print-messages nil) path
 	 "The value of the :ignore-when annotation must be a valid fd."))
        (ignore-unless
-	(fd-p-test 
+	(fd-p-test
 	 (fd-p ignore-unless :print-warnings nil :print-messages nil) path
 	 "The value of the :ignore-unless annotation must be a valid fd."))
        ;; :order must be either random or sequential
        (order
-	(fd-p-test 
+	(fd-p-test
 	 (or (eq order :sequential) (eq order :random))	 path
 	 "The value of the :order annotation must be either :random or :sequential"))
        )
@@ -193,7 +193,7 @@
       (fd-p-test (consp branches) path
 		 "Value of ~s must be a list of at least one branch: ~s"
 		 att branches)
-      
+
       ;; Check that each branch is a valid fd:
       (fd-p-test
        (do ((list-of-fd branches (cdr list-of-fd))
@@ -201,18 +201,18 @@
 	    (count 0 (+ 1 count)))
 	   ((or (atom list-of-fd) (not correct)) correct)
 	   (if (not (fd-p-p (car list-of-fd)
-			    (path-cons (list att position count traced) 
+			    (path-cons (list att position count traced)
 				       (path-cdr path))
 			    0
 			    cset-attribute))
 	       (setf correct nil)))
        path
        "Value of special attribute ALT must be a list of valid FDs.")))
-	
+
 
    ((eq 'opt att)
     (multiple-value-bind (option flag) (option pair)
-      (cond 
+      (cond
        (flag
 	(fd-p-test (<= (length pair) 3) path
 		   "An OPT pair must have at most 2 args: (OPT trace fd).~%~
@@ -260,23 +260,23 @@
 	       "A PATTERN pair must be of the form (ATT VALUE): ~s" pair)
     (fd-p-test
      (and (listp (cadr pair))
-	  (every #'(lambda (l) 
-		     (or (leaf-p l) 
+	  (every #'(lambda (l)
+		     (or (leaf-p l)
 			 (path-p l)
-			 (and (consp l) 
-			      (eq (car l) '*) 
+			 (and (consp l)
+			      (eq (car l) '*)
 			      (or (leaf-p (cadr l)) (path-p (cadr l)))
 			      (null (cddr l)))))
 		 (cadr pair)))
      path
      "Value of special attribute PATTERN should be a list ~
-     of atoms, valid paths or mergeable atoms or paths: ~s" 
+     of atoms, valid paths or mergeable atoms or paths: ~s"
      pair))
-    
+
    ;; (TEST expr) | (CONTROL expr)
    ((member att '(test control))
     (fd-p-test (= (length pair) 2) path
-	       "A ~s pair must be of the form (ATT VALUE): ~s" 
+	       "A ~s pair must be of the form (ATT VALUE): ~s"
 	       att pair))
 
    ;; (SPECIAL special-value)
@@ -285,7 +285,7 @@
 	       "A SPECIAL pair must be of the form (ATT VALUE): ~s" pair)
     (if (special-syntax-function att)
 	(multiple-value-bind (test msg)
-	    (funcall (special-syntax-function att) 
+	    (funcall (special-syntax-function att)
 		     (second pair))
 	  (fd-p-test test path msg))
       t))
@@ -295,12 +295,12 @@
 	(and (vectorp (second pair))
 	     (> (array-dimension (second pair) 0) 0)
 	     (eq (aref (second pair) 0) 'external)))
-    (fd-p-test 
+    (fd-p-test
      (= (length pair) 2) path
      "An EXTERNAL pair must be of the form (ATT external-spec): ~s"
      pair)
     (when (vectorp (second pair))  ;; when function specified, check it
-      (fd-p-test 
+      (fd-p-test
        (equal '(2) (array-dimensions (second pair))) path
        "An external specification must be either EXTERNAL or an array ~
        of the form #(EXTERNAL function): ~s" pair)
@@ -308,7 +308,7 @@
 	(unless (functionp (aref (second pair) 1))
 	  (format t "~&--- Warning: The argument of external must be a ~
                      function: ~s~%~
-		       --- Path ==> ~s~%" 
+		       --- Path ==> ~s~%"
 		  pair (path-reverse path))))
       t))
 
@@ -316,11 +316,11 @@
    ((and (vectorp (second pair))
 	 (> (array-dimension (second pair) 0) 0)
 	 (eq (aref (second pair) 0) 'under))
-    (fd-p-test 
+    (fd-p-test
      (= (length pair) 2) path
      "An UNDER pair must be of the form (ATT under-spec): ~s"
      pair)
-    (fd-p-test 
+    (fd-p-test
      (equal '(2) (array-dimensions (second pair))) path
      "An UNDER specification must be an array ~
       of the form #(UNDER symbol): ~s" pair)
@@ -332,7 +332,7 @@
 	(format t "~&--- Warning: The argument of under does not have~%~
                      --- specializations defined: ~s~%~
                      --- Use (define-feature-type ~s (spec1 ... specn)).~%~
-                     --- Path ==> ~s~%" 
+                     --- Path ==> ~s~%"
 		pair (aref (second pair) 1) (path-reverse path))))
     t)
 
@@ -362,7 +362,7 @@
 ;;    Check the validity of indexes
 ;;    Count alts and branches
 ;; ----------------------------------------------------------------------
-(defun fd-sem (&optional (fd *u-grammar*) (grammar-p t) 
+(defun fd-sem (&optional (fd *u-grammar*) (grammar-p t)
 	       &key (print-messages t) (print-warnings t)
 	       (cset-attribute *cset-attribute*))
   "If grammar-p we test a grammar, otw we test an input"
@@ -379,8 +379,8 @@
       (if grammar-p
 	  (values t *number-of-index* *number-of-trace* *number-of-demo*)
 	t))))
-      
-    
+
+
 (defmacro fd-sem-err-msg (path str &rest args)
   `(progn
      (when print-messages
@@ -423,7 +423,7 @@
     (multiple-value-bind (branches traced indexed demo) (branches pair)
       (when traced
 	(incf *number-of-trace*))
-      (when indexed 
+      (when indexed
 	(incf *number-of-index*)
 	(when (and print-messages print-warnings)
 	  (check-index indexed branches path position)))
@@ -432,22 +432,22 @@
       (do ((list-of-fd branches (cdr list-of-fd))
 	   (correct t)
 	   (count 0 (1+ count)))
-	  ((or (null list-of-fd) (not correct)) 
+	  ((or (null list-of-fd) (not correct))
 	   (if (not correct) (throw 'fd-sem (values nil path)) t))
 	  (when print-messages (format t "."))
-	  (if (not (fd-sem1 (car list-of-fd) 
-			    (path-cons (list att position count traced) 
+	  (if (not (fd-sem1 (car list-of-fd)
+			    (path-cons (list att position count traced)
 				       (path-cdr path))
 			    0
 			    cset-attribute))
-	      (fd-sem-err-msg path "This branch is contradictory: ~s" 
+	      (fd-sem-err-msg path "This branch is contradictory: ~s"
 			      (car list-of-fd))))))
 
    ((eq 'opt att)
     (multiple-value-bind (option flag) (option pair)
-      (when flag 
+      (when flag
 	(incf *number-of-trace*))
-      (if (not (fd-sem1 option 
+      (if (not (fd-sem1 option
 			(path-cons (list att position 0 flag)
 				   (path-cdr path))
 			0
@@ -467,7 +467,7 @@
       (format t "~&--- Warning: ~s should not be placed in input.~%~
 		   --- Path ==> ~s~%" pair (path-reverse path)))
     t)
-   
+
    ((or (externalp (second pair)) (underp (second pair)))
     (unless grammar-p
       (when (and print-messages print-warnings)
@@ -495,7 +495,7 @@
 	 (value (u nil fd)))
     (if (eq value *fail*)
 	(progn
-	  (when print-messages 
+	  (when print-messages
 	    ;; If pb: redo unif with trace on to identify the culprit:
 	    (format t "~%")
 	    (let* ((*global-tracing* t)
@@ -514,14 +514,14 @@
 ;; ----------------------------------------------------------------------
 ;;   CHECK-INDEX : checks that the index declared in an alt is consistent
 ;;                 with what's in the branches.
-;;                 That is: 
+;;                 That is:
 ;;                 1/ the path leads to an existing value in all branches
 ;;                 2/ all the values for the index in the branches are
-;;                 different 
+;;                 different
 ;;   ALWAYS return t: just prints warning msgs.
 ;; ----------------------------------------------------------------------
 (defun check-index (index branches path position)
-  (let* ((list-of-keys (mapcar 
+  (let* ((list-of-keys (mapcar
 			#'(lambda (fd) (top-gdp fd (make-path :l index)))
 			branches))
 	 (branchpos (or (position nil list-of-keys)
@@ -533,8 +533,8 @@
                          for index ~s~%~
                      --- Path ==> ~s~%"
 		(1+ branchpos)
-		index 
-		(path-reverse 
+		index
+		(path-reverse
 		 (path-cons (list 'alt position)
 			    (path-cdr path))))
       (if (equal list-of-keys (remove-duplicates list-of-keys))
@@ -543,7 +543,7 @@
 		         the same value for index ~s~%~
                      --- Path ==> ~s~%"
 		index
-		(path-reverse 
+		(path-reverse
 		 (path-cons (list 'alt position)
 			    (path-cdr path)))))))
   t)
@@ -554,7 +554,7 @@
 ;;                checks that an FD is a well-formed grammar
 ;;                ((alt (((cat x1)  ) ... ((cat xn) ...))))
 ;; ----------------------------------------------------------------------
-(defun grammar-p (&optional (grammar *u-grammar*) 
+(defun grammar-p (&optional (grammar *u-grammar*)
 		  &key (print-messages t) (print-warnings t)
 		  (expansion t)
 		  (cset-attribute *cset-attribute*))
@@ -564,18 +564,18 @@
   ;; Check if this is a def-alt or a def-conj
   (setf grammar (get-grammar grammar :expansion expansion))
   (when (null grammar) (return-from grammar-p nil))
-  (let ((correct (fd-syntax grammar 
+  (let ((correct (fd-syntax grammar
 			    :print-messages print-messages
 			    :print-warnings print-warnings
 			    :cset-attribute cset-attribute)))
-    (when correct 
+    (when correct
       (when print-messages
 	(format t "~&Syntax is correct.~%")
 	(format t "Checking for contradictions and validity of indexes: "))
-      (multiple-value-bind 
+      (multiple-value-bind
 	  (correct indexes traces demos)
-	  (fd-sem grammar t 
-		  :print-messages print-messages 
+	  (fd-sem grammar t
+		  :print-messages print-messages
 		  :print-warnings print-warnings
 		  :cset-attribute cset-attribute)
 	(setq correct
@@ -590,10 +590,10 @@
 		(format t "~&The grammar is correct.~%~
 			It contains ~D indexed alt~:P, ~
                         ~D demo message~:P ~
-			and ~D traced alt~:P.~%" 
+			and ~D traced alt~:P.~%"
 			indexes demos traces))
 	      t)
-	  (progn 
+	  (progn
 	    (when print-messages
 	      (format T "~%A grammar should be a valid FD of the form:~%~
   		    ((ALT (((CAT x1) ... ) ... ((CAT xN) ...))))~%~
@@ -604,10 +604,10 @@
 ;; -----------------------------------------------------------------------
 ;; Checks an input fd (an fd with no alt)
 ;; -----------------------------------------------------------------------
-(defun fd-p (fd &key (print-messages t) (print-warnings t) 
+(defun fd-p (fd &key (print-messages t) (print-warnings t)
 		(cset-attribute *cset-attribute*))
   (let* ((fd (filter-flags (prep-input fd)))
-	 (syntax (fd-syntax fd 
+	 (syntax (fd-syntax fd
 			    :print-messages print-messages
 			    :print-warnings print-warnings
 			    :cset-attribute cset-attribute)))
@@ -642,7 +642,7 @@
 (defun alt-gdp (fd path &optional (reverse-current-path (make-path)))
   ;; A version of gdp that knows about alts and opts.
   ;; In a path: the spec. determining an alt branch is (ALT pos branch#)
-  ;; where pos is the pos of the alt pair in the embedding fd, and 
+  ;; where pos is the pos of the alt pair in the embedding fd, and
   ;; branch# is the position of the branch within the list of branches.
   ;; A spec of the form (ALT pos) points to the whole alt pair. It must be
   ;; the last element of a path to be legal.
@@ -653,10 +653,10 @@
   ;; Does not check for cycles.
   ;; Does not check for FSET.
   ;; Does not check for SPECIALs.
-  (cond 
+  (cond
    ((or (path-null path)   ;; termination test first.
 	(not (consp fd)))
-    (cond 
+    (cond
      ((path-null path) fd)
      ;; Do we stop at any or do we go below it: below is unspecified.
      ((eq fd 'any) (if (path-null path) 'any nil))
@@ -665,7 +665,7 @@
      ;; Below any other atom is impossible: none
      ((leaf-p fd) 'none)
      ;; For a path: return a path to the value actually pointed to.
-     ((path-p fd) 
+     ((path-p fd)
       (path-append (absolute-path fd (path-reverse reverse-current-path))
 		   path))
      (t (error "Unknown type: ~s" fd))))
@@ -682,16 +682,16 @@
     (alt-gdp (go-down-one-level fd (path-car path))
 	     (path-cdr path)
 	     (path-push (path-car path) reverse-current-path)))
-   
+
    (t (error "Not reached"))))
 
 (defun go-down-one-level (fd item)
-  (cond 
+  (cond
    ((leaf-p item) (safe-second (safe-assoc item fd)))
    ((consp item)
     ;; Deal with a (alt position branch) or (opt position):
     (let ((pair (nth (second item) fd)))
-      (cond 
+      (cond
        ((or (eq (car item) 'alt)
 	    (eq (car item) 'ralt))
 	(if (third item)

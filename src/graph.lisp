@@ -42,7 +42,7 @@
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
 ;;;
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
 ;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright

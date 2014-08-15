@@ -14,16 +14,28 @@
 ;;;                           moved out the mood code to a mood.l file
 ;;;                           Also changed patterns.
 ;;;                5 Jul 95 - SURGE 2.2 VERSION
-;;;                         - added clause-level/embedded which is different from
-;;;                           scoped (eg, "Who is coming" is scoped but not embedded);
-;;;                           embedded is necessary to determine if subject inversion
-;;;                           (eg,  "What happens" vs. "What do you think happens")
-;;;                           is required
+;;;                         - added clause-level/embedded
+;;;                           which is different from scoped
+;;;                           (eg, "Who is coming" is scoped but not embedded);
+;;;                           embedded is necessary to determine if subject
+;;;                           inversion (eg,  "What happens" vs.
+;;;                           "What do you think happens") is required
 ;;;                         - added alt focus
 ;;;                6 Nov 95 - removed hard-wired "by" for passive-prep in
 ;;;                           alt by-obj-cat
 ;;;               12 May 96 - changed object-subcat to allow wh-clauses
 ;;;                           as in "Ask him what it is".
+;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
@@ -64,7 +76,7 @@
   ;; synt-roles:        : syntactic arguments
   ;; predicate-modifiers: optional semantic roles refining the specification
   ;;                      of the clause predicate
-  ;; circumstances      : the optional semantic roles specifying the setting of the
+  ;; circumstances      : optional semantic roles specifying the setting of
   ;;                      the clause as a whole
   ;; disjuncts          : peripheral movable optional syntactic constituents
   ;; sentence-adjuncts  : central movable optional syntactic constituents
@@ -93,14 +105,12 @@
        ((lexical-roles none)
 	(partic none)
 	(alt (((process-type natural-phenom))
-
-	      ;; JR-added 1/19/93 to avoid stub roles in mono-role imperative clauses
+	      ;; JR 1/19/93 to avoid stub roles in mono-role imperative clauses
 	      ((mood #(under imperative))
 	       (process ((alt (((type #(under material))
 				(effective #(under no)))
 			       ((type #(under mental))
 				(transitive #(under no))))))))
-
 	      ((partic any)))))))
 
   (oblique ((fset (1 2 3 4 5 6 7 8))))
@@ -171,8 +181,9 @@
   ;; In general, we want to make the syntactic constituent which realizes the
   ;; focus the subject of the clause.  The focus-given alt checks which is
   ;; the syntactic constituent realizing focus.  realization can be:
-  ;; HEAD: this means that the pointer is pointing to a semantic constituent which
-  ;; is a trace in a relative clause, and is therefore realized by the head of the NP.
+  ;; HEAD: this means that the pointer is pointing to a semantic constituent
+  ;; which is a trace in a relative clause, and is therefore realized
+  ;; by the head of the NP.
   ;; In this case, we want the trace to be the subject.
   ;; A PATH: to the syntactic constituent realizing the focus.
   ;; Note: this only works for participants who can become subjects.

@@ -9,6 +9,17 @@
 ;;; Modified:      5 Jul 1995: SURGE 2.2 VERSION
 ;;;               22 Apr 1996: Added matter to fset of predicate-modifiers
 ;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
+;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
 
@@ -40,7 +51,8 @@
      ((fset (score manner means instrument comparison matter direction
 		   distance location path origin destination duration time))))
 
-    ;; Watch out! The order of the following alts is MEANINGFUL. It corresponds to
+    ;; Watch out!
+    ;; The order of the following alts is MEANINGFUL. It corresponds to
     ;; the default relative sentential ordering of the predicate adjuncts
     ;; realizing the corresponding semantic roles.
     (:! score)
@@ -64,13 +76,14 @@
     (circum ((fset (location distance origin time duration frequency
 		    co-event reason result purpose behalf
                     condition concessive-condition concession contrast
-		    exception inclusion substitution addition accompaniment opposition
-		    manner means comparison matter standard perspective
-                    to-loc from-loc at-loc on-loc in-loc))))
+		    exception inclusion substitution addition accompaniment
+                    opposition manner means comparison matter standard
+                    perspective to-loc from-loc at-loc on-loc in-loc))))
 
-    ;; Watch out! The order of the following alts is MEANINGFUL. It corresponds to
-    ;; the default relative sentential ordering of the movable syntactic constituents
-    ;; when they co-occur in the same position.
+    ;; Watch out!
+    ;; The order of the following alts is MEANINGFUL. It corresponds to
+    ;; the default relative sentential ordering of the movable syntactic
+    ;; constituents when they co-occur in the same position.
     (:! manner-circum)
     (:! accompaniment-circum)
     (:! opposition-circum)
@@ -80,7 +93,7 @@
     (:! behalf-circum)
     (:! distance-circum)
     (:! location-circum)
-;;    (:! result-circum)
+    ;; (:! result-circum)
     (:! duration-circum)
     (:! frequency-circum)
     (:! time-circum)
@@ -141,14 +154,17 @@
   (let ((qrel-conj (read-from-string
 		    (concatenate 'string (string sem-role) "-qrel")))
 	(map-alt (read-from-string
-		  (concatenate 'string "map-" (string sem-role) "-pred-adjunct")))
+		  (concatenate 'string
+                               "map-" (string sem-role) "-pred-adjunct")))
 	(cat-alt (read-from-string
-		  (concatenate 'string "cat-" (string sem-role) "-pred-adjunct"))))
+		  (concatenate 'string
+                               "cat-" (string sem-role) "-pred-adjunct"))))
     `(def-alt ,(read-from-string
-		(concatenate 'string (string sem-role) "-pred-modif"))
-       (:demo ,(concatenate 'string "Is there a "
-			    (string sem-role)
-			    " predicate-modifier?"))
+		(concatenate 'string
+                             (string sem-role) "-pred-modif"))
+       (:demo ,(concatenate 'string
+                            "Is there a " (string sem-role)
+                            " predicate-modifier?"))
        (((pred-modif ((,sem-role none))))
 	((pred-modif ((,sem-role given)
 		      (,sem-role ((:& ,qrel-conj)
@@ -167,11 +183,13 @@
 	 (alt circum-position-given (:index ,(path-append path '{position}))
 	   (((circum ((,sem-role ((position front)
 				  (opt ((punctuation ((after ",")))))))))
-	     (alt front-circum (((front-adverbial-1 given) (front-adverbial-2 ,path))
-				((front-adverbial-1 ,path)))))
-	    ((circum ((,sem-role ((position end)
-				  (opt ((synt-funct #(under disjunct))
-					(punctuation ((before ",")))))))))
+	     (alt front-circum
+                  (((front-adverbial-1 given) (front-adverbial-2 ,path))
+                   ((front-adverbial-1 ,path)))))
+	    ((circum ((,sem-role
+                       ((position end)
+                        (opt ((synt-funct #(under disjunct))
+                              (punctuation ((before ",")))))))))
 	     (alt end-circum (((end-adverbial-4 given) (end-adverbial-5 ,path))
 			      ((end-adverbial-3 given) (end-adverbial-4 ,path))
 			      ((end-adverbial-2 given) (end-adverbial-3 ,path))
@@ -179,10 +197,11 @@
 			      ((end-adverbial-1 ,path)))))
 	    ((circum ((,sem-role ((position header)
 				  (cat ((alt header-cat (address date))))))))
-	     (alt header-circum (((headers ((1 given)))
-				  (headers ((2 ,(path-append '{^} path))
-					    (2 ((punctuation ((before ","))))))))
-				 ((headers ((1 ,(path-append '{^} path)))))))))))
+	     (alt header-circum
+                  (((headers ((1 given)))
+                    (headers ((2 ,(path-append '{^} path))
+                              (2 ((punctuation ((before ","))))))))
+                   ((headers ((1 ,(path-append '{^} path)))))))))))
 	((alt circum-position-unspecified
            (((end-adverbial-5 given)
 	     (front-adverbial-2 ,path)
@@ -190,47 +209,56 @@
 	    ((end-adverbial-4 given)
 	     (front-adverbial-1 given)
 	     (end-adverbial-5 ,path)
-	     (opt ((circum ((,sem-role ((synt-funct #(under disjunct))
-					(punctuation ((before ","))))))))))
+	     (opt ((circum ((,sem-role
+                             ((synt-funct #(under disjunct))
+                              (punctuation ((before ","))))))))))
 	    ((end-adverbial-4 given)
 	     (front-adverbial-1 ,path)
 	     (opt ((circum ((,sem-role ((punctuation ((after ","))))))))))
 	    ((end-adverbial-3 given)
 	     (front-adverbial-1 given)
-	     (opt ((circum ((,sem-role ((synt-funct #(under disjunct))
-					(punctuation ((before ",")))))))))
+	     (opt ((circum ((,sem-role
+                             ((synt-funct #(under disjunct))
+                              (punctuation ((before ",")))))))))
 	     (end-adverbial-4 ,path))
 	    ((end-adverbial-3 given)
 	     (front-adverbial-1 ,path)
 	     (opt ((circum ((,sem-role ((punctuation ((after ","))))))))))
 	    ((end-adverbial-2 given)
 	     (front-adverbial-1 given)
-	     (opt ((circum ((,sem-role ((synt-funct #(under disjunct))
-					(punctuation ((before ",")))))))))
+	     (opt ((circum ((,sem-role
+                             ((synt-funct #(under disjunct))
+                              (punctuation ((before ",")))))))))
 	     (end-adverbial-3 ,path))
 	    ((end-adverbial-2 given)
 	     (front-adverbial-1 ,path)
-	     (opt ((circum ((,sem-role ((punctuation ((after ","))))))))))
+	     (opt ((circum ((,sem-role
+                             ((punctuation ((after ","))))))))))
 	    ((end-adverbial-1 given)
 	     (front-adverbial-1 given)
-	     (opt ((circum ((,sem-role ((synt-funct #(under disjunct))
-					(punctuation ((before ",")))))))))
+	     (opt ((circum ((,sem-role
+                             ((synt-funct #(under disjunct))
+                              (punctuation ((before ",")))))))))
 	     (end-adverbial-2 ,path))
 	    ((end-adverbial-1 given)
 	     (front-adverbial-1 ,path)
-	     (opt ((circum ((,sem-role ((punctuation ((after ","))))))))))
+	     (opt ((circum ((,sem-role
+                             ((punctuation ((after ","))))))))))
 	    ((end-adverbial-1 ,path)
-	     (opt ((circum ((,sem-role ((synt-funct #(under disjunct))
-					(punctuation ((before ",")))))))))))))))))
+	     (opt ((circum ((,sem-role
+                             ((synt-funct #(under disjunct))
+                              (punctuation ((before ",")))))))))))))))))
 
 
 (defmacro make-sent-adjunct (sem-role)
   (let ((qrel-conj (read-from-string
 		    (concatenate 'string (string sem-role) "-qrel")))
 	(map-alt (read-from-string
-		  (concatenate 'string "map-" (string sem-role) "-sent-adjunct")))
+		  (concatenate 'string
+                               "map-" (string sem-role) "-sent-adjunct")))
 	(cat-alt (read-from-string
-		  (concatenate 'string "cat-" (string sem-role) "-sent-adjunct"))))
+		  (concatenate 'string
+                               "cat-" (string sem-role) "-sent-adjunct"))))
     `(def-alt ,(read-from-string
 		(concatenate 'string (string sem-role) "-circum"))
        (:demo ,(concatenate 'string "Is there a "
@@ -248,10 +276,13 @@
   (let ((qrel-conj (read-from-string
 		    (concatenate 'string (string sem-role) "-qrel")))
 	(map-alt (read-from-string
-		  (concatenate 'string "map-" (string sem-role) "-disjunct")))
+		  (concatenate 'string
+                               "map-" (string sem-role) "-disjunct")))
 	(cat-alt (read-from-string
-		  (concatenate 'string "cat-" (string sem-role) "-disjunct"))))
-    `(def-alt ,(read-from-string (concatenate 'string (string sem-role) "-circum"))
+		  (concatenate 'string
+                               "cat-" (string sem-role) "-disjunct"))))
+    `(def-alt ,(read-from-string
+                (concatenate 'string (string sem-role) "-circum"))
        (:demo ,(concatenate 'string "Is there a "
 			    (string sem-role)
 			    " circumstantial?"))
@@ -267,10 +298,13 @@
 	(qrel-conj (read-from-string
 		    (concatenate 'string (string sem-role) "-qrel")))
 	(map-alt (read-from-string
-		  (concatenate 'string "map-" (string sem-role) "-disjunct")))
+		  (concatenate 'string
+                               "map-" (string sem-role) "-disjunct")))
 	(cat-alt (read-from-string
-		  (concatenate 'string "cat-" (string sem-role) "-disjunct"))))
-    `(def-alt ,(read-from-string (concatenate 'string (string sem-role) "-circum"))
+		  (concatenate 'string
+                               "cat-" (string sem-role) "-disjunct"))))
+    `(def-alt ,(read-from-string
+                (concatenate 'string (string sem-role) "-circum"))
        (:demo ,(concatenate 'string "Is there a "
 			    (string sem-role)
 			    " circumstantial?"))
@@ -289,7 +323,8 @@
              			   (rel-mark 'none)
 				   (q-embedded 'yes)
 				   (rel-embedded 'yes))
-  `(def-conj ,(read-from-string (concatenate 'string (string sem-role) "-qrel"))
+  `(def-conj ,(read-from-string
+               (concatenate 'string (string sem-role) "-qrel"))
      (question-prep ((lex ((alt (given ,q-prep))))))
      (question-pronoun ((lex ((alt (given ,q-pron))))))
     (relative-marker ((lex ((alt (given ,rel-mark))))))
@@ -327,7 +362,8 @@
 		 ((car
 		   ((synt-roles
 		     ((subject given)
-		      (subject ((punctuation ((capitalize yes))))))))))))))))))))))))
+		      (subject ((punctuation
+                                 ((capitalize yes))))))))))))))))))))))))
 
 
 
@@ -349,7 +385,8 @@
 
 (make-map-pred-modif location)
 
-(make-qrel location :q-pron "where" :rel-mark "where" :q-embedded no :rel-embedded no)
+(make-qrel location
+           :q-pron "where" :rel-mark "where" :q-embedded no :rel-embedded no)
 
 
 ;;=============================================================================
@@ -400,7 +437,8 @@
 ;;
 (make-pred-modif origin)
 
-(def-alt cat-origin-pred-adjunct (((cat pp) (prep ((lex ((alt (given "from")))))))))
+(def-alt cat-origin-pred-adjunct
+    (((cat pp) (prep ((lex ((alt (given "from")))))))))
 
 (make-map-pred-modif origin)
 
@@ -463,7 +501,8 @@
 ;;
 (make-pred-modif path)
 
-(def-alt cat-path-pred-adjunct (((cat pp) (prep ((lex ((alt (given "via")))))))))
+(def-alt cat-path-pred-adjunct
+    (((cat pp) (prep ((lex ((alt (given "via")))))))))
 
 (make-map-pred-modif path)
 
@@ -503,19 +542,27 @@
 (make-sent-adjunct time)
 
 (def-alt cat-time-sent-adjunct (:index cat)
-  (((cat pp) (prep ((lex given))))
+  (((cat pp)
+    (alt time-circum-pp
+         (((prep ((lex given))))
+          ((complex given)))))
    ((cat np))
    ((cat adv))
    ((cat date))
    ((cat clause)
-    (mood
-     ((alt time-mood (bound-adverbial present-participle past-participle verbless))))
-    (binder ((lex ((alt (given "when")))))))
+    (alt time-circum-clause
+         (((mood
+            ((alt time-mood
+                  (bound-adverbial present-participle
+                                   past-participle verbless))))
+           (binder ((lex ((alt (given "when")))))))
+          ((complex given)))))
    ((cat list))))
 
 (make-map-circum time sent-adjunct)
 
-(make-qrel time :q-pron "when" :rel-mark "when" :q-embedded no :rel-embedded no)
+(make-qrel time
+           :q-pron "when" :rel-mark "when" :q-embedded no :rel-embedded no)
 
 ;;=============================================================================
 ;; TIME pred-modif, e.g., "You filed LATE."
@@ -526,14 +573,21 @@
 (make-pred-modif time)
 
 (def-alt cat-time-pred-adjunct (:index cat)
-  (((cat pp) (prep ((lex given))))
+  (((cat pp)
+    (alt time-circum-pp
+         (((prep ((lex given))))
+          ((complex given)))))
    ((cat np))
    ((cat adv))
    ((cat date))
    ((cat clause)
-    (mood
-     ((alt time-mood (bound-adverbial present-participle past-participle verbless))))
-    (binder ((lex ((alt (given "when")))))))
+    (alt time-circum-clause
+         (((mood
+            ((alt time-mood
+                  (bound-adverbial present-participle
+                                   past-participle verbless))))
+           (binder ((lex ((alt (given "when")))))))
+          ((complex given)))))
    ((cat list))))
 
 (make-map-pred-modif time)
@@ -558,12 +612,17 @@
 
 (def-alt cat-duration-sent-adjunct (:index cat)
   (((cat pp)
-    (prep ((lex ((alt (given "for"))))))
-    (np ((cat ((alt (common measure)))))))
+    (alt cat-duration-pp
+         (((prep ((lex ((alt (given "for"))))))
+           (np ((cat ((alt (common measure)))))))
+          ((complex given)))))
    ((cat clause)
-    (mood ((alt duration-mood
-	     (bound-adverbial present-participle past-participle verbless))))
-    (binder ((lex given))))))
+    (alt cat-duration-clause
+         (((mood ((alt duration-mood
+                       (bound-adverbial present-participle
+                                        past-participle verbless))))
+           (binder ((lex given))))
+          ((complex given)))))))
 
 (make-map-circum duration sent-adjunct)
 
@@ -584,9 +643,10 @@
                      :q-embedded no :rel-embedded no)
 
 
-;;==========================------===================================================
-;; CO-EVENT adverbial e.g., "GIVING THE LAKERS THEIR FIRST WIN, Magic had 14 assists."
-;;===================================================================================
+;;====================------===================================================
+;; CO-EVENT adverbial e.g.,
+;; "GIVING THE LAKERS THEIR FIRST WIN, Magic had 14 assists."
+;;=============================================================================
 ;;
 (make-disjunct co-event)
 
@@ -594,7 +654,8 @@
   (((cat clause)
     (alt co-event-habitual (:index habitual)
       (((habitual none)
-	(mood ((alt co-event-mood (present-participle past-participle verbless))))
+	(mood ((alt co-event-mood
+                    (present-participle past-participle verbless))))
 	(binder ((alt co-event-binder (none ((lex given)))))))
        ((habitual #(under yes))
 	(mood ((alt co-event-habitual-mood (bound-adverbial verbless))))
@@ -603,9 +664,9 @@
 (make-map-circum co-event disjunct)
 
 
-;;===================================================================================
+;;=============================================================================
 ;; REASON adverbial e.g., "BECAUSE OF HIS INJURY, Bo did not play."
-;;===================================================================================
+;;=============================================================================
 ;;
 (def-alt reason-circum (:demo "Is there a reason adverbial?")
   (((circum ((reason none))))
@@ -613,30 +674,34 @@
     (alt since-because
 	(
 	 ;; By default map it to a sentence-adjunct bound by "because"
-	 ((circum ((reason ((:& reason-qrel)))
-		   (reason ((alt because-cat
-				(((cat clause)
-				  (mood bound-adverbial)
-				  (binder ((lex ((alt (given "because")))))))
-				 ((cat pp)
-				  (prep ((lex ((alt (given "because of")))))))))))))
+	 ((circum
+           ((reason ((:& reason-qrel)))
+            (reason ((alt because-cat
+                          (((cat clause)
+                            (mood bound-adverbial)
+                            (binder ((lex ((alt (given "because")))))))
+                           ((cat pp)
+                            (prep ((lex ((alt (given "because of")))))))))))))
 	  (:! map-reason-sent-adjunct))
 
 	 ;; But if it is a clause bound by "since" then map it to a disjunct
-	 ((circum ((reason ((cat clause)
-			    (mood bound-adverbial)
-			    (binder ((cat #(under conj)) (lex #(under since))))))))
+	 ((circum
+           ((reason ((cat clause)
+                     (mood bound-adverbial)
+                     (binder ((cat #(under conj)) (lex #(under since))))))))
 	  (:! map-reason-disjunct)))))))
 
 (make-map-circum reason sent-adjunct)
 (make-map-circum reason disjunct)
 
-(make-qrel reason :q-pron "why" :rel-mark "why" :q-embedded no :rel-embedded no)
+(make-qrel reason
+           :q-pron "why" :rel-mark "why" :q-embedded no :rel-embedded no)
 
 
-;;===============================-===================================================
-;; RESULT adverbial e.g., "Detroit waived Bo, TO SEE HIM FLOURISH WITH PHOENIX."
-;;===================================================================================
+;;=========================-===================================================
+;; RESULT adverbial e.g.,
+;; "Detroit waived Bo, TO SEE HIM FLOURISH WITH PHOENIX."
+;;=============================================================================
 ;;
 (make-final-circum result)
 
@@ -649,9 +714,9 @@
 		       (binder none)))))))
 
 
-;;===============================-===================================================
+;;=========================-===================================================
 ;; OPPOSITION adverbial e.g., "AGAINST THE KNICKS, Jordan scored 37 points."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-sent-adjunct opposition)
 
@@ -663,9 +728,9 @@
 (make-qrel opposition :q-pron "who" :q-prep "against" :rel-mark "whom")
 
 
-;;===============================-===================================================
+;;=========================-===================================================
 ;; ADDITION adverbial e.g., "They traded Smith AS WELL AS KIMBLE."
-;;===================================================================================
+;;=============================================================================
 ;;
 (def-alt addition-circum (:demo "Is there a addition adverbial?")
   (((circum ((addition none))))
@@ -689,9 +754,10 @@
 (make-qrel addition :q-pron "what" :q-prep "in addition to" :rel-mark "which")
 
 
-;;==========================------===================================================
-;; INCLUSION adverbial e.g., "Bo did everything to help, INCLUDING LENDING MONEY."
-;;===================================================================================
+;;====================------===================================================
+;; INCLUSION adverbial e.g.,
+;; "Bo did everything to help, INCLUDING LENDING MONEY."
+;;=============================================================================
 ;;
 (make-disjunct inclusion)
 
@@ -706,7 +772,6 @@
     (mood verbless))))
 
 (make-map-circum inclusion disjunct)
-
 
 ;;=============================================================================
 ;; MEANS predicate modifier, e.g., "Bo was treated SURGICALLY."
@@ -742,9 +807,9 @@
 (make-map-circum means sent-adjunct)
 
 
-;;===============================-===================================================
+;;=========================-===================================================
 ;; INSTRUMENT adverbial e.g., "Bo pushed WITH BOTH HANDS."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-pred-modif instrument)
 
@@ -791,7 +856,8 @@
 ;;
 (make-sent-adjunct behalf)
 
-(def-alt cat-behalf-sent-adjunct (((cat pp) (prep ((lex ((alt (given "for")))))))))
+(def-alt cat-behalf-sent-adjunct
+    (((cat pp) (prep ((lex ((alt (given "for")))))))))
 
 (make-map-circum behalf sent-adjunct)
 
@@ -847,9 +913,9 @@
 (make-map-circum manner sent-adjunct)
 
 
-;;==========================------===================================================
+;;=============================================================================
 ;; CONDITION adverbial e.g., "IF IN SHAPE, Bo will be unstoppable."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct condition)
 
@@ -863,16 +929,17 @@
        ((cond-polarity -)
 	(binder ((lex ((alt (given "unless"))))))))))))
 
-;; Note: should distinguish between real, predictive, hypothetical & counterfactual
+;; Note:
+;; should distinguish between real, predictive, hypothetical & counterfactual
 ;; conditions. But that requires to code subjunctive moods for adverbial &
 ;; represent tense coordination constraints.
 
 (make-map-circum condition disjunct)
 
 
-;;==========================------===================================================
+;;====================------===================================================
 ;; CONCESSIVE-CONDITION adverbial e.g., "ALTHOUGH INJURED, Bo started."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct concessive-condition)
 
@@ -889,9 +956,9 @@
 (make-map-circum concessive-condition disjunct)
 
 
-;;==========================------===================================================
+;;====================------===================================================
 ;; CONCESSION adverbial e.g., "ALTHOUGH INJURED, Bo started."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct concession)
 
@@ -905,9 +972,9 @@
 (make-map-circum concession disjunct)
 
 
-;;==========================------===================================================
+;;====================------===================================================
 ;; CONTRAST adverbial e.g., "WHILE MAGIC WAS A GUARD, Bird was a forward."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct contrast)
 
@@ -920,9 +987,9 @@
 (make-map-circum contrast disjunct)
 
 
-;;==========================------===================================================
+;;====================------===================================================
 ;; EXCEPTION adverbial e.g., "EXCEPT LAETTNER, all US Olympians were pro."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct exception)
 
@@ -935,9 +1002,9 @@
 (make-map-circum exception disjunct)
 
 
-;;==========================------===================================================
+;;====================------===================================================
 ;; SUBSTITUTION adverbial e.g., "INSTEAD OF JORDAN, Portland drafted Bowie."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct substitution)
 
@@ -997,20 +1064,22 @@
 (make-qrel matter :q-pron "what" :q-prep "about" :rel-mark "about which")
 
 
-;;===================================================================================
-;; MATTER circumstantial, e.g., "CONCERNING HIS CONTRACT, Bo talked to them soon."
-;;===================================================================================
+;;=============================================================================
+;; MATTER circumstantial, e.g.,
+;; "CONCERNING HIS CONTRACT, Bo talked to them soon."
+;;=============================================================================
 ;;
 (make-disjunct matter)
 
-(def-alt cat-matter-disjunct (((cat pp) (prep ((lex ((alt (given "concerning")))))))))
+(def-alt cat-matter-disjunct
+    (((cat pp) (prep ((lex ((alt (given "concerning")))))))))
 
 (make-map-circum matter disjunct)
 
 
-;;===============================-===================================================
+;;=========================-===================================================
 ;; STANDARD adverbial e.g., "FOR A 7 FOOTER, Divac handles the ball very well."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct standard)
 
@@ -1019,26 +1088,27 @@
 (make-map-circum standard disjunct)
 
 
-;;===============================-===================================================
+;;=========================-===================================================
 ;; PERSPECTIVE adverbial e.g., "AS A FLOOR LEADER, Magic was incomparable."
-;;===================================================================================
+;;=============================================================================
 ;;
 (make-disjunct perspective)
 
-(def-alt cat-perspective-disjunct (((cat pp) (prep ((lex ((alt (given "as")))))))))
+(def-alt cat-perspective-disjunct
+    (((cat pp) (prep ((lex ((alt (given "as")))))))))
 
 (make-map-circum perspective disjunct)
 
 
-;;===============================-===================================================
+;;=========================-===================================================
 ;; DOMAIN SPECIFIC ROLES
 ;; Score is specific to the NBA domain
-;; Features concerning relative clauses whose scope would be the score role, e.g.,
-;; "The score by which Utah defeated the Knicks"
+;; Features concerning relative clauses whose scope would be the score role,
+;; e.g., "The score by which Utah defeated the Knicks"
 ;; or concerning questions whose scope would be the score role, e.g.,
 ;; "By what score did Utah beat the Knicks?"
 ;; are ignored here, since not encountered in the NBA corpus
-;;===================================================================================
+;;=============================================================================
 ;;
 (def-alt score (:demo "Is there a score role?")
   (((pred-modif ((score none))))

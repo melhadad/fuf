@@ -4,15 +4,15 @@
 ;;; Description:  Support functions for external special value
 ;;; Author:       Michael Elhadad
 ;;; Created:      22 Jun 1990
-;;; Modified:     
+;;; Modified:
 ;;; Package:      FUG5
 ;;; Macros:       externalp
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -36,9 +36,9 @@
 ;; in a "lazy" way, specifying pieces of the grammar only when needed.
 
 (defun external-get-function (x)
-  (cond 
+  (cond
    ((symbolp x) *default-external-function*)
-   ((vectorp x) 
+   ((vectorp x)
     (cond ((equal (array-dimensions x) '(2))
 	   (aref x 1))
 	  (t (error "Invalid external specification: ~s" x))))

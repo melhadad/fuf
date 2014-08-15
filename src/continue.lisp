@@ -20,9 +20,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -35,11 +35,11 @@
 
 (defun u-exhaust (fd1 fd2 &key (test t) result (limit 10000)
 		      (cset-attribute *cset-attribute*))
-  "Unifier exhaust. Takes 2 functional descriptions. 
+  "Unifier exhaust. Takes 2 functional descriptions.
    Returns the list of all possible unifications until test is satisfied.
    In test, refer to the list being built as fug5::result.
    Does NOT recurse on constituents."
-  (toplevel-uni 
+  (toplevel-uni
    fd1 fd2 limit cset-attribute
    (unify *input* fd2 path path new-frame
 	  #'(lambda (msg) (declare (ignore msg)) (nreverse result))
@@ -48,7 +48,7 @@
 	      (if (eval `(let ((result ',result)) ,test))
 		  (nreverse result)
 		(*fail* fail frame (make-path) (make-path) *input-pair*))))))
-  
+
 (defun default-continuation2 (fd fail frame)
   "default-continuation does a throw 'top.  This one just returns the value."
   (declare (ignore fd fail frame)
@@ -72,10 +72,10 @@
       #'(lambda (fd fail frame)
 	  (unless non-interactive
 	    (format t "~%[Used ~D backtracking points ~
-		      - ~D wrong branches - ~D undo~:P]~%" 
+		      - ~D wrong branches - ~D undo~:P]~%"
 		    *counter* *wrong-branches* *number-of-undo*))
 	  (push (copy-tree (determine
-			    fd fail frame 'default-continuation2 
+			    fd fail frame 'default-continuation2
 			    grammar cat-attribute cset-attribute))
 		result)
 	  (if (eval `(let ((result ',result)) ,test))
@@ -90,12 +90,12 @@
    Preprocess input, unify top-level, then constituents.
    If non-interactive is nil, statistics are printed.
    Does not keep the successive values returned.  Just keep producing,
-   hoping that test does something with it, bit by bit.  
+   hoping that test does something with it, bit by bit.
    In test, fd is the value of the fd being returned (after determination),
    Count keeps track of how many times it has been called."
   (let ((*from-top* nil))
     (declare (special *from-top*))
-    (toplevel-uni 
+    (toplevel-uni
      input grammar limit cset-attribute
      (unify-sub-constituents
       *input* grammar path new-frame
@@ -104,10 +104,10 @@
 	  (incf count)
 	  (unless non-interactive
 	    (format t "~%[Used ~D backtracking points ~
-		    - ~D wrong branches - ~D undo~:P]~%" 
+		    - ~D wrong branches - ~D undo~:P]~%"
 		    *counter* *wrong-branches* *number-of-undo*))
 	  (if (eval `(let ((count ',count)
-			   (fd ',(determine 
+			   (fd ',(determine
 				  fd fail frame 'default-continuation2
 				  grammar cat-attribute cset-attribute)))
 		       ,test))
@@ -120,13 +120,13 @@
   "Unifies input n  successive times with grammar, and outputs the
    successive strings.
    n must be a numeric constant."
-  (let ((fd (u-exhaust-top-2 
+  (let ((fd (u-exhaust-top-2
 	     input :grammar grammar
 	     :non-interactive nil
 	     :limit limit
-	     :test 
+	     :test
 	     `(if (<= count ,n)
-		(progn 
+		(progn
 		  (print-sentence (call-linearizer fd))
 		  nil)
 		t))))

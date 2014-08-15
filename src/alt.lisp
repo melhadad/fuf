@@ -22,9 +22,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -44,7 +44,7 @@
 
 
 ;; ------------------------------------------------------------
-;; UTILITIES to manipulate alt expressions 
+;; UTILITIES to manipulate alt expressions
 ;; Kept for old syntax only.  Not useful anymore.
 ;; ------------------------------------------------------------
 
@@ -76,8 +76,8 @@
       (car (last sexpr)))))
 
 
-(proclaim '(inline alt-trace-expr alt-trace-flag 
-	    alt-index-expr alt-index-attr 
+(proclaim '(inline alt-trace-expr alt-trace-flag
+	    alt-index-expr alt-index-attr
 	    alt-demo-expr
 	    alt-bk-class-expr alt-bk-class-class))
 
@@ -87,13 +87,13 @@
   (when demo
     (trace-demo traced frame 12 "")
     (trace-demo traced frame 12 demo)
-    (trace-demo traced frame 12 "~a" 
+    (trace-demo traced frame 12 "~a"
 		(make-sequence 'string (length demo)
 			       :initial-element #\-))))
 
 ;; ---------------------------------------------------------------------
 ;;  BRANCHES:   takes an alt pair and return the branches, possibly
-;;              a tracing flag and an index declaration 
+;;              a tracing flag and an index declaration
 ;;              (9 values: branches traced indexed demo bk-class order wait
 ;;              ignore-unless ignore-when)
 ;;  OPTIONS:    same as branches for an opt pair. returns 3 values.
@@ -124,7 +124,7 @@
 	(:demo  (safe-second (safe-assoc 'demo alt)))
 	(:bk-class (alt-bk-class-class (safe-assoc 'bk-class alt)))
 	(otherwise nil)))))
-		
+
 
 (defun branches (alt-pair)
   (setq alt-pair (cdr alt-pair))
@@ -196,7 +196,7 @@
 		    t)
 		  (subsume key val-in-branch)))))
    branches))
-      
+
 
 
 ;; ---------------------------------------------------------------------
@@ -211,20 +211,20 @@
     (backtrack frame new-frame bk-class flag
       (unify fd1 option path1 path2 new-frame
 	     (make-failure fail
-	       (when (trace-enabled flag) 
+	       (when (trace-enabled flag)
 		 (handle-trace flag frame t)
 		 (trace-format flag frame 10
 		   "Trying without option ~s at level ~s~%"
 		   flag path1))
-	       (unify fd1 (cdr fd2) path1 path2 frame fail success 
+	       (unify fd1 (cdr fd2) path1 path2 frame fail success
 		      :pair pair))
 	     #'(lambda (fd fail frame)
-		 (when (trace-enabled flag) 
+		 (when (trace-enabled flag)
 		   (trace-format flag frame 10
 				 "Success with option ~s at level ~s~%"
 				 flag path1)
 		   (handle-trace flag frame t))
-		 (unify fd (cdr fd2) path1 path2 frame fail success 
+		 (unify fd (cdr fd2) path1 path2 frame fail success
 			:pair pair))
 	     :pair pair))))
 
@@ -235,13 +235,13 @@
 ;; alt-unify parses the alt construct and based on annotations, dispatches
 ;; to the appropriate specialized function.
 
-(defun alt-unify (fd1 fd2 path1 path2 frame fail success 
-		      &key indexed-given order-given 
+(defun alt-unify (fd1 fd2 path1 path2 frame fail success
+		      &key indexed-given order-given
 		           force-wait after-wait (pair :unknown)
 		      &aux key)
   (declare (special *input*))
-  (multiple-value-bind (branches traced indexed demo bk-class 
-				 order wait ignore-unless ignore-when) 
+  (multiple-value-bind (branches traced indexed demo bk-class
+				 order wait ignore-unless ignore-when)
                        (branches (car fd2))
     ;; Handle tracing messages
     (when (trace-enabled traced)
@@ -255,12 +255,12 @@
     (when order-given (setq order order-given))
     (when force-wait (setq wait nil))
     (unless indexed (setq indexed indexed-given))
-    (when indexed 
+    (when indexed
       (setq key (gdp *input* (make-path :l (append (path-l path1) indexed)))))
 
     ;; Dispatch based on annotations to specialized function
-    (cond 
-     ((null branches) 
+    (cond
+     ((null branches)
       (error "An alt must have at least one branch"))
 
      ;; NOTE: WAIT has priority on IGNORE
@@ -269,7 +269,7 @@
       (let ((id (add-agenda frame (car fd2) wait path1 path2 after-wait
 			    indexed order ignore-unless ignore-when pair)))
 	(trace-format (or *trace-wait* (trace-enabled traced)) frame 15
-		      "Freezing alt ~s: waiting for ~s [agenda ~s]" 
+		      "Freezing alt ~s: waiting for ~s [agenda ~s]"
 		      traced wait id)
 	(when (trace-enabled traced)
 	  (pop (frame-trace-flags frame))
@@ -288,8 +288,8 @@
 
      ;; INDEX annotation
      ((not (member key '(nil any given)))
-      (alt-unify-indexed 
-       fd1 (cdr fd2) path1 path2 bk-class frame fail success after-wait 
+      (alt-unify-indexed
+       fd1 (cdr fd2) path1 path2 bk-class frame fail success after-wait
        traced key branches indexed :random order :pair pair))
 
      ;; OK, proceed
@@ -297,14 +297,14 @@
 	  (trace-demo traced frame 5
 		      "Key not specified in input.  Need to search"))
 	(trace-format (and (trace-enabled traced) indexed) frame 5
-		      "No value given in input for index ~s - No jump" 
+		      "No value given in input for index ~s - No jump"
 		      indexed)
 	(if (eq order :random)
-	  (ralt-unify-simple 
-	   fd1 (cdr fd2) path1 path2 bk-class frame fail success after-wait 
+	  (ralt-unify-simple
+	   fd1 (cdr fd2) path1 path2 bk-class frame fail success after-wait
 	   traced (copy-list branches) 1 branches :pair pair)
-	  (alt-unify-simple 
-	   fd1 (cdr fd2) path1 path2 bk-class frame fail success after-wait 
+	  (alt-unify-simple
+	   fd1 (cdr fd2) path1 path2 bk-class frame fail success after-wait
 	   traced branches 1 nil :pair pair))))))
 
 
@@ -319,7 +319,7 @@
 ;; representation of the grammar.
 ;; ---------------------------------------------------------------------
 
-(defun alt-unify-simple (fd1 fd2 path1 path2 bk-class frame fail success after-wait 
+(defun alt-unify-simple (fd1 fd2 path1 path2 bk-class frame fail success after-wait
 			 traced branches branch-number orig-branches
 			 &key (pair :unknown))
   ; eat the tracing flags between branches
@@ -334,18 +334,18 @@
 	 (*fail* fail frame *same* path2 pair))
 	(t
 	  (trace-format traced frame 10
-			"Entering alt ~s -- Branch #~s" 
-			traced 
+			"Entering alt ~s -- Branch #~s"
+			traced
 			(if orig-branches
-			    (1+ (position (car branches) 
+			    (1+ (position (car branches)
 					  orig-branches
 					  :test #'equalp))
 			  branch-number))
 	  (backtrack frame new-frame bk-class traced
 	    (unify fd1 (car branches) path1 path2 new-frame
 		   (make-failure fail
-		     (alt-unify-simple 
-		      fd1 fd2 path1 path2 bk-class 
+		     (alt-unify-simple
+		      fd1 fd2 path1 path2 bk-class
 		      frame fail success after-wait traced
 		      (cdr branches) (1+ branch-number) orig-branches
 		      :pair pair))
@@ -364,57 +364,57 @@
 ;; ALT-UNIFY-INDEXED: alt is indexed.
 ;; Prune the set of branches to retain only those compatible with index.
 ;; If only one branch, unification is deterministic, just jump to the right
-;; branch and use it. 
+;; branch and use it.
 ;; If more than one, search on restricted set.
 ;; ---------------------------------------------------------------------
 
-(defun alt-unify-indexed (fd1 fd2 path1 path2 bk-class frame fail success after-wait 
+(defun alt-unify-indexed (fd1 fd2 path1 path2 bk-class frame fail success after-wait
 			      traced key branches indexed
 			      &key random (pair :unknown))
   (let ((good-branches (find-good-branches key indexed branches)))
-    (cond ((null good-branches) 
+    (cond ((null good-branches)
 	   (trace-format traced frame 30
 			 "fail on indexed alt ~s: no branch in ~
 			the grammar for ~s~%" traced key)
 	   (*fail* fail frame *same* path2 pair))
 	  ((= 1 (length good-branches))
-	   (trace-format 
+	   (trace-format
 	    traced frame 10
 	    "Entering alt ~s -- Jump indexed to branch #~s: ~
              ~s matches input ~s"
-	    traced 
+	    traced
 	    (1+ (position (car good-branches) branches :test #'equalp))
 	    (top-gdp (car good-branches) (make-path :l indexed))
 	    key)
-	   (unify fd1 (car good-branches) path1 path2 frame fail 
+	   (unify fd1 (car good-branches) path1 path2 frame fail
 		  #'(lambda (fd fail frame)
 		      (when traced
-			(trace-format 
+			(trace-format
 			 traced frame 10
 			 "Success with branch #~s ~s in alt ~s~%"
-			 (1+ (position (car good-branches) branches 
+			 (1+ (position (car good-branches) branches
 				       :test #'equalp))
 			 key
 			 traced)
 			(handle-trace traced frame t))
 		      (when after-wait (funcall after-wait))
-		      (unify fd fd2 path1 path2 frame fail success 
+		      (unify fd fd2 path1 path2 frame fail success
 			     :pair pair))
 		  :pair pair))
 	  (t
 	   (if traced
-	       (trace-format 
+	       (trace-format
 		traced frame 5
 		"Entering indexed ~a ~s -- Trying with ~s branches out of ~s"
 		(if random "Ralt" "alt")
 		traced (length good-branches) (length branches)))
 	   (if (eq random :random)
-	       (ralt-unify-simple fd1 fd2 path1 path2 bk-class frame 
-				  fail success after-wait 
+	       (ralt-unify-simple fd1 fd2 path1 path2 bk-class frame
+				  fail success after-wait
 				  traced good-branches 1 branches
 				  :pair pair)
-	     (alt-unify-simple 
-	      fd1 fd2 path1 path2 bk-class frame fail success after-wait 
+	     (alt-unify-simple
+	      fd1 fd2 path1 path2 bk-class frame fail success after-wait
 	      traced good-branches 1 branches :pair pair))))))
 
 

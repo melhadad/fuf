@@ -11,9 +11,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -27,14 +27,14 @@
 (format t "Complexity...~%")
 
 (defun complexity (&optional (fd *u-grammar*) (with-index t))
-  "Computes complexity of a grammar, that is, how many 
+  "Computes complexity of a grammar, that is, how many
        branches would be in the disjunctive normal form of fd.
        If with-index is T (default), the indexing declarations
        are taken into account, and an indexed alt is considered
        as a deterministic construct (assumes indexing always
        works). "
   (declare (special with-index))
-  ;; top level alt is always indexed on cat, but this is not 
+  ;; top level alt is always indexed on cat, but this is not
   ;; declared in the grammar. So special handling here.
   (let ((branches (branches (car fd))))
     (if with-index
@@ -62,28 +62,28 @@
 (defun avg-complexity (&optional (fd *u-grammar*) (with-index t) rough-avg)
   "Computes avg. complexity of a grammar, that is, how many
        branches on the average would be tried if the input were
-       empty. 
+       empty.
        If with-index is T (default), the indexing declarations
        are taken into account, and an indexed alt is considered
        as a deterministic construct (assumes indexing always
-       works). 
+       works).
        If rough-avg is nil (default), the avg. for an alt.
        construct is the sum of the complexity of the first half
        branches (when not indexed). Otw, the avg. is half the sum
        of the complexity of all branches (less accurate)."
   (declare (special with-index rough-avg))
-  ;; top level alt is always indexed on cat, but this is not 
+  ;; top level alt is always indexed on cat, but this is not
   ;; declared in the grammar. So special handling here.
   (let ((branches (branches (car fd))))
     (values
-      (round 
+      (round
 	(if with-index
 	    (apply #'avg (mapcar #'avg-complexity1 branches))
 	  (if rough-avg
 	      (/ (apply #'+ (mapcar #'avg-complexity1 branches)) 2)
-	    (apply #'+ 
-		   (mapcar #'avg-complexity1 
-			   (butlast branches 
+	    (apply #'+
+		   (mapcar #'avg-complexity1
+			   (butlast branches
 				    (round (/ (length branches) 2)))))))))))
 
 
@@ -104,9 +104,9 @@
 	       (apply #'avg (mapcar #'avg-complexity1 branches))
 	     (if rough-avg
 		 (/ (apply #'+ (mapcar #'avg-complexity1 branches)) 2)
-               (apply #'+ 
-		      (mapcar #'avg-complexity1 
-			      (butlast branches 
+               (apply #'+
+		      (mapcar #'avg-complexity1
+			      (butlast branches
 				       (round (/ (length branches) 2)))))))))
 	((eq (car fd) 'opt)
 	 (1+ (complexity1 (branches fd))))

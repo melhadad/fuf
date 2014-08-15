@@ -4,14 +4,14 @@
 ;;; Description:  New version of find-cset that fixes bugs
 ;;; Author:       Michael Elhadad
 ;;; Created:      31 May 1993
-;;; Modified:     
+;;; Modified:
 ;;; Package:      FUG5
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -47,7 +47,7 @@
 ;;;        This forms the basis cset.
 ;;;    b2/ The basis cset is incrementally adjusted according to + and -:
 ;;;        The total cset is: (set-difference (union implicit-cset l2) l3)
-;;;        
+;;;
 ;;; In all cases, the resulting cset is "cleaned" according to the
 ;;; following rules:
 ;;; 1/ All "duplicates" in the sense of gdp are removed ({p} and {q} are
@@ -81,19 +81,19 @@
       (clean-cset the-cset nil fd path cpath)
       ;; Compute first set before cleaning: so use append instead of union
       ;; And delay the make-absolute until the end.
-      (let ((basis-cset 
-	     (if impl-cset 
+      (let ((basis-cset
+	     (if impl-cset
 	       (make-absolute impl-cset cpath)
-	       (let ((from-pattern 
+	       (let ((from-pattern
 		      (clean-pattern (safe-second (safe-assoc 'pattern fd))))
-		     (from-cat (mapcan 
+		     (from-cat (mapcan
 				#'(lambda (pair)
 				    (when (pair-has-cat pair cat-attribute)
 				      (list (car pair))))
 				fd)))
 		 (append from-pattern from-cat)))))
 	(clean-cset (append basis-cset add-cset) sub-cset fd path cpath)))))
-	 
+
 
 ;; Receive an element from a cset list and return a pair path value - where
 ;; value is the gdp of path efficiently computed (with assoc in fd when
@@ -102,7 +102,7 @@
 ;; cpath is the path with cset added.
 (defun pair-path-value (x fd path cpath)
   (declare (special *input*))
-  (cond 
+  (cond
    ((attr-p x)
     (let ((p (path-extend path x))
 	  (val (safe-assoc x fd)))
@@ -113,7 +113,7 @@
    ((path-p x)
     (let ((p (absolute-path x cpath)))
       (list p (gdp *input* p))))
-   (t (error "Invalid value in cset: ~s in ~s at level ~s" 
+   (t (error "Invalid value in cset: ~s in ~s at level ~s"
 	     x (safe-assoc 'cset fd) path))))
 
 
@@ -142,7 +142,7 @@
        (not (member (car pair) *special-attributes*))
        (consp (second pair))
        (safe-assoc cat-attribute (second pair))))
-  
+
 
 ;; ------------------------------------------------------------
 (provide "$fug5/findcset")

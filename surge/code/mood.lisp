@@ -5,11 +5,11 @@
 ;;; Author:       Michael Elhadad & Jacques Robin
 ;;; Created:      27 Nov 1992
 ;;; Modified:      5 Jul 1995 SURGE 2.2 VERSION
-;;;                           - Add generic-mood to deal with same-mood constraint
-;;;                             in clause conjunction
-;;;                           - Allow innermost-role to be none (no partic).
-;;;                           - Allow binders for non-finite except imperative
-;;;                           - Add possessive-relative "The man whose car I wash"
+;;;                  - Add generic-mood to deal with same-mood constraint
+;;;                    in clause conjunction
+;;;                  - Allow innermost-role to be none (no partic).
+;;;                  - Allow binders for non-finite except imperative
+;;;                  - Add possessive-relative "The man whose car I wash"
 ;;;                5 Nov 1995 - Fix rule of which/that/who for relative-marker
 ;;;               12 May 1995 - Fix alt infinitive for bare-infinitive...
 ;;;                             Fix alt subject-mood for bare-infinitive...
@@ -32,7 +32,8 @@
 
   (((mood finite)
     (alt finite (:index mood)
-      (:demo "Is the clause declarative, interrogative, relative or subordinate?")
+      (:demo
+       "Is the clause declarative, interrogative, relative or subordinate?")
       (((mood declarative)
 	(generic-mood declarative)
 	(pattern ({^ headers 1} {^ headers 2} stop-header dots start dots)))
@@ -113,8 +114,10 @@
 	;;   "We must discover HOW TO DO IT."
 	;;   "AS SOON AS KOED BY IRON MIKE, he found himself a millionaire."
 	;; - All cases can be conjoined together:
-	;;   "The box accessible to all, burned by the sun and bulging under cover."
-	;;   "The man crushed by love, now knowing what love is and happy about it."
+	;;   "The box accessible to all,
+        ;;    burned by the sun and bulging under cover."
+	;;   "The man crushed by love,
+        ;;    now knowing what love is and happy about it."
 	(generic-mood embedded-mood)
 	(alt non-finite-binder (((binder none)) ((binder ((cat conj))))))
 	(alt embedded-moods (:index mood)
@@ -134,7 +137,8 @@
 	   ((mood #(under bare-infinitive))
 	    (process ((ending root))))
 
-	   ;; For all other variants of infinitive - ending infinitive with a "to".
+	   ;; For all other variants of infinitive -
+           ;; ending infinitive with a "to".
 	   ((mood infinitive)
 	    (process ((ending infinitive))))))))))))
 
@@ -163,7 +167,8 @@
    ((mood present-participle)
     (alt present-participle-subject
       (
-       ;; For nominal functions, subject present ==> possessive (or objective) case
+       ;; For nominal functions,
+       ;; subject present ==> possessive (or objective) case
        ((synt-roles ((subject given)))
 	(controlled none)
 	(synt-funct #(under synt-role))
@@ -260,7 +265,6 @@
 	  ((scope ((realization head)))
 	   (scoper {^ scope}))
 	  ((scoper {^ scope realization}))))
-;;    (cset ((- scope scoper)))
     (scoper ((gap yes)
 	     (clause-level ((scoped yes)))
 	     (question-pronoun {^2 scope question-pronoun})
@@ -270,7 +274,8 @@
     ;; Adverb is fronted in cases like "who never owned this book"
 
     (pattern
-     (stop-header dots question fronted-adverb fronted-aux fronted-not start dots)))
+     (stop-header dots question
+                  fronted-adverb fronted-aux fronted-not start dots)))
 
    ;; MOOD RELATIVE
    ((mood relative)
@@ -280,7 +285,6 @@
 	  ((scope ((realization head)))
 	   (scoper {^ scope}))
 	  ((scoper {^ scope realization}))))
-;;    (cset ((- scope scoper)))
     (scoper ((gap yes)
 	     (clause-level ((scoped yes)))
 	     (relative-marker {^2 scope relative-marker})

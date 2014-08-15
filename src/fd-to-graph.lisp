@@ -9,17 +9,29 @@
 ;;;               11 Apr 1995: replaced all {} in code with (make-path) (ME)
 ;;; Package:      FUG5
 ;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
+;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
 
 (defun ph (hash-table)
   "Print the contents of a hash-table one entry per line."
-  (maphash #'(lambda (key entry) (declare (ignore key)) (pprint entry)) hash-table))
+  (maphash #'(lambda (key entry) (declare (ignore key)) (pprint entry))
+           hash-table))
 
-;; Name of a function that is used to determine which of two paths is "more canonical" 
-;; than the other.
-;; The default function chooses the shortest path and for equal lengths, the smaller
-;; path in lexicographic order.
+;; Name of a function that is used to determine which of two paths is
+;; "more canonical" than the other.
+;; The default function chooses the shortest path and for equal lengths,
+;; the smaller path in lexicographic order.
 (defparameter *smaller-path-fct* 'innermost-ls)
 
 ;; ==================================================
@@ -33,19 +45,19 @@
 ;;   One id for each node              \ /
 ;;   in the graph.                      o
 ;;   Here: 3 ids (gensymed)             |
-;;                                      c--o 1                                      
+;;                                      c--o 1
 ;;
 ;; Here table will be:
-;; (<{},    N1, FD> 
+;; (<{},    N1, FD>
 ;;  <{a},   N2, ((c 1))>,
-;;  <{b},   N2, ((c 1))>, 
-;;  <{a c}, N3, 1>, 
+;;  <{b},   N2, ((c 1))>,
+;;  <{a c}, N3, 1>,
 ;;  <{b c}, N3, 1>)
 (defvar *path-table* (make-hash-table :test #'equal :size 500)
   "A hashtable of all triplets: <path,id,value>
-   identified in the fd during fd-to-graph conversion indexed by path.")  
+   identified in the fd during fd-to-graph conversion indexed by path.")
 
-(defparameter *unbound* (gensym) 
+(defparameter *unbound* (gensym)
   "Mark that a path-entry has not received a value.")
 
 (defstruct path-entry
@@ -85,7 +97,7 @@
 
 ;; Map from id to path-entry.
 (defun find-id (id &optional (*path-table* *path-table*))
-  (maphash #'(lambda (pathl pe) 
+  (maphash #'(lambda (pathl pe)
 	       (declare (ignore pathl))
 	       (if (eq id (path-entry-id pe)) (return-from find-id pe)))
 	   *path-table*))
@@ -120,7 +132,8 @@
 ;;   <N2, (<{a}, N2,((c 1))> <{b},N2,((c 1))>)>
 ;;   <N3, (<{a c},N3,1> <{b c},N3,1>)> )
 ;; In each list, the first element is assured to be the shortest path in the
-;; equivalence class.  Among all representants of same length, choose alphabetically.
+;; equivalence class.  Among all representants of same length,
+;; choose alphabetically.
 (defun quotient-set (path-table)
   "Get a hash-table of path entries and return a table of pairs (id,list)
    where each list is an equivalence class with shortest path first
@@ -134,15 +147,17 @@
 		    (gethash id q)
 		    ;; If new elt shorter, put it first, else second.
 		    (if (and current
-			     (funcall *smaller-path-fct* 
+			     (funcall *smaller-path-fct*
 				      (path-entry-path (first current))
 				      (path-entry-path pe)))
-		      (progn ;; (format T "~& I am calling ~s" *smaller-path-fct*)
-			     ;; (format T "~& putting ~s second" (path-entry-path pe))
-			     (cons (first current) (cons pe (rest current))))
-		      (progn ;; (format T "~& I am calling ~s" *smaller-path-fct*)
-                             ;; (format T "~& putting ~s first" (path-entry-path pe))
-			     (cons pe current))))))
+		      (progn
+                        ;; (format T "~& I am calling ~s" *smaller-path-fct*)
+                        ;; (format T "~& putting ~s second" (path-entry-path pe))
+                        (cons (first current) (cons pe (rest current))))
+		      (progn
+                        ;; (format T "~& I am calling ~s" *smaller-path-fct*)
+                        ;; (format T "~& putting ~s first" (path-entry-path pe))
+                        (cons pe current))))))
 	     path-table)
     q))
 
@@ -152,26 +167,28 @@
   (let ((l1 (path-len p1))
 	(l2 (path-len p2)))
     (cond ((< l1 l2) t)
-	  ((= l1 l2) 
+	  ((= l1 l2)
 	   (let ((s1 (format nil "~s" (path-l p1)))
 		 (s2 (format nil "~s" (path-l p2))))
 	     (string< s1 s2)))
 	  (t nil))))
 
-;; Takes as input a path in list form and two features that are cues to determine
-;; the canonicity of the path.
-;; Returns the sublist of path delimited by the two cues, including the first - cue1 -
-;; excluding the second - cue2 (cue1 is assumed to appear before cue2).
-;; e.g., (between '(a b dss c d sss e f) 'dss 'sss) = (dss c d), 
-;; but (between '(a b dss c d sss e f) 'sss 'dss) = (sss e f) 
+;; Takes as input a path in list form and two features that are cues
+;; to determine the canonicity of the path.
+;; Returns the sublist of path delimited by the two cues, including the first
+;; - cue1 - excluding the second - cue2
+;; (cue1 is assumed to appear before cue2).
+;; e.g., (between '(a b dss c d sss e f) 'dss 'sss) = (dss c d),
+;; but (between '(a b dss c d sss e f) 'sss 'dss) = (sss e f)
 ;; (cue2 before cue1 ignored)
-(defun between (path-as-list cue1 cue2) 
-  (let* ((other-cues (set-difference '(sss sss-root dss dss-buf ents) `(,cue1 ,cue2)))
+(defun between (path-as-list cue1 cue2)
+  (let* ((other-cues (set-difference '(sss sss-root dss dss-buf ents)
+                                     `(,cue1 ,cue2)))
 	 (me1 (member cue1 path-as-list))
 	 (me2 (member cue2 path-as-list))
 	 (me1-me2 (ldiff me1 me2)))
     (when (and me1 me2 (loop for other-cue in other-cues
-			     for res = (member other-cue me1-me2) 
+			     for res = (member other-cue me1-me2)
                                      then (or res (member other-cue me1-me2))
 			     finally (return (not res))))
       me1-me2)))
@@ -181,11 +198,11 @@
   (intersection path-as-list '(sss sss-root adss dss dss-buf ents)))
 
 ;; Ranks the cue features
-(defun cue-rank (cue) 
+(defun cue-rank (cue)
   (case cue ((sss) 4) ((sss-root) 3) ((adss) 2) ((dss dss-buf) 1) ((ents) 0)))
 
-;; Boolean testing which of two paths is most canonic (and should thus contain the 
-;; physical representant)
+;; Boolean testing which of two paths is most canonic
+;; (and should thus contain the physical representant)
 (defun innermost-ls (path1 path2)
   (let* ((p1 `(start ,@(path-l path1)))
 	 (p2 `(start ,@(path-l path2)))
@@ -198,8 +215,7 @@
 ;;    (format T "~&p2 = ~s" p2)
 ;;    (format T "~&p1-cues = ~s" p1-cues)
 ;;    (format T "~&p2-cues = ~s" p2-cues)
-    (cond 
-
+    (cond
      ;; if neither paths contain a cue feature, use the default length +
      ;; alphabetical canonicity criteria, e.g, {a b} < {c d e}
      ((not (or p1-1st-cue p2-1st-cue)) smaller)
@@ -212,20 +228,20 @@
      ;; if both paths contain cue(s)
      (T (let ((p1-1st-cue-rank (cue-rank p1-1st-cue))
 	      (p2-1st-cue-rank (cue-rank p2-1st-cue)))
-	  (cond 
+	  (cond
 
-	   ;; 1st criteria is the rank of their 1st (i.e. leftmost) cue 
+	   ;; 1st criteria is the rank of their 1st (i.e. leftmost) cue
 	   ;; e.g., {a dss b} < {a adss b}
 	   ((< p1-1st-cue-rank p2-1st-cue-rank) T)
 	   ((> p1-1st-cue-rank p2-1st-cue-rank) nil)
 
-	   ;; if that rank is the same, 
+	   ;; if that rank is the same,
 	   (T (let* (;; (p1-start (find-start p1))
 		     ;; (p2-start (find-start p2))
 		     (p1-preflen (length (between p1 'start p1-1st-cue)))
 		     (p2-preflen (length (between p2 'start p2-1st-cue))))
-		(cond 
-		 
+		(cond
+
 		 ;; 2nd criteria is the length of the subpath before the 1st cue
 		 ;; e.g., {a b sss c} < {e sss f g}
 		 ((< p1-preflen p2-preflen) T)
@@ -234,13 +250,14 @@
 		 ;; if that length is the same then,
 		 (T (let ((p1-2nd-cue (second p1-cues))
 			  (p2-2nd-cue (second p2-cues)))
-		      (cond 
+		      (cond
 
 		       ;; if neither path contains a 2nd cue, use the default
 		       ;; tie-breaker e.g., {a b sss c} < {e f sss g h}
 		       ((not (or p1-2nd-cue p2-2nd-cue)) smaller)
 
-		       ;; if only one path contains a 2nd cue, it is the most canonic
+		       ;; if only one path contains a 2nd cue,
+                       ;; it is the most canonic
 		       ;; e.g., {a sss b dss e} < {f sss g h}
 		       ((not p2-2nd-cue) T)
 		       ((not p1-2nd-cue) nil)
@@ -248,21 +265,21 @@
 		       ;; if both path contains a 2nd cue feature
 		       (T (let ((p1-2nd-cue-rank (cue-rank p1-2nd-cue))
 				(p2-2nd-cue-rank (cue-rank p2-2nd-cue)))
-			    (cond 
-			     
-			     ;; 3rd criteria is the rank of that 2nd cue, 
+			    (cond
+
+			     ;; 3rd criteria is the rank of that 2nd cue,
 			     ;; e.g., {sss a b dss} < {sss c adss}
 			     ((< p1-2nd-cue-rank p2-2nd-cue-rank) T)
 			     ((> p1-2nd-cue-rank p2-2nd-cue-rank) nil)
 
 			     ;; if that rank is the same
-			     (T (let ((p1-inflen 
+			     (T (let ((p1-inflen
 				       (length (between p1 p1-1st-cue p1-2nd-cue)))
-				      (p2-inflen 
+				      (p2-inflen
 				       (length (between p2 p2-1st-cue p2-2nd-cue))))
-				  (cond 
-				   
-				   ;; 3rd criteria is length of the subpath 
+				  (cond
+
+				   ;; 3rd criteria is length of the subpath
 				   ;; between the 1st and 2nd cue
 				   ;; e.g., {sss dss a b} < {sss c dss d}
 				   ((< p1-inflen p2-inflen) T)
@@ -271,15 +288,15 @@
 				   ;; if that length is the same
 				   (T (let ((p1-3rd-cue (third p1-cues))
 					    (p2-3rd-cue (third p2-cues)))
-					(cond 
+					(cond
 
-					 ;; if neither path has a 3rd cue, 
-					 ;; use default tie-breaker 
-					 ;; e.g., {sss dss a} < {sss dss b c} 
+					 ;; if neither path has a 3rd cue,
+					 ;; use default tie-breaker
+					 ;; e.g., {sss dss a} < {sss dss b c}
 					 ((not (or p1-3rd-cue p2-3rd-cue)) smaller)
 
 					 ;; if only one path has a 3rd cue,
-					 ;; it is the most canonic, 
+					 ;; it is the most canonic,
 					 ;; e.g., {sss dss a ents b} < {sss dss c d}
 					 ((not p2-3rd-cue) T)
 					 ((not p1-3rd-cue) nil)
@@ -310,10 +327,11 @@
    Assumption: *input* bound to total fd."
   ;; Problem with cycles: certain legal paths do not appear in the path-table.
   ;; For ex: (a c c c b) === (a b) but (a c c c b) is not there.
-  ;; For these cases, call (gdc p) to find an equivalent path that IS in the table.
+  ;; For these cases, call (gdc p) to find an equivalent path that IS
+  ;; in the table.
   ;; path-equiv returns T only if it can prove that 2 paths are equivalent given
-  ;; the current fd.  If p1 and p2 are not physically instantiated, there is no proof
-  ;; that they are distinct, and path-equiv returns nil.
+  ;; the current fd.  If p1 and p2 are not physically instantiated,
+  ;; there is no proof that they are distinct, and path-equiv returns nil.
   (let ((c1 (get-class p1 q))
 	(c2 (get-class p2 q))
 	(m1 nil)
@@ -351,8 +369,8 @@
 ;; Build a table of path-entries describing the graph equivalent to fd.
 ;; Two paths receive the same id if they point to the same node.
 ;; Side effect: every path that is mentioned in an indirection is physically
-;; instantiated in fd (physically modified) so that a regular traversal of fd will
-;; necessarily reach all paths in the table.
+;; instantiated in fd (physically modified) so that a regular traversal
+;; of fd will necessarily reach all paths in the table.
 
 (defun build-id-table (fd path)
   (let ((*input* fd))
@@ -370,7 +388,7 @@
 ;; This is a depth-first search of the physical FD graph repeated as many
 ;; times as necessary for structure shared subgraphs.  Ie, if an arc is
 ;; shared 3 times (it belongs to 3 distinct paths), it is traversed 3
-;; times. 
+;; times.
 ;; Conflations are computed here so that 2 paths leading to the same
 ;; node receive the same id.
 
@@ -381,7 +399,7 @@
   ;; (print "1")
   (let ((pe1 (find-entry path))
 	(pe2 (find-entry phys-path)))
-    (cond 
+    (cond
      ((and pe1 (path-entry-visited pe1)) *path-table*)
      ((leaf-p fd)
       (multiple-value-bind (pe1 pe2) (merge-ids path phys-path fd pe1 pe2)
@@ -394,9 +412,10 @@
       ;; path and phys-path: where we are.
       ;; fd and phys-to: where we are told to go.
       ;; All 4 have to receive the same id.
-      (multiple-value-bind (val phys-to missing node-tried arc-tried) (gdc *input* fd)
+      (multiple-value-bind (val phys-to missing node-tried arc-tried)
+          (gdc *input* fd)
 	(unless (path-null missing)
-	  ;; Uninstantiated path: make sure all arcs of path get an id 
+	  ;; Uninstantiated path: make sure all arcs of path get an id
 	  ;; from below the physical leaf (phys-to) to the end of fd.
 	  (add-chain node-tried arc-tried phys-to missing)
 	  (setf phys-to (path-append phys-to missing)))
@@ -404,15 +423,16 @@
 	;; receive the id of phys-to.
 	(let ((pe3 (find-entry phys-to))
 	      (pe4 (find-entry fd)))
-	  (multiple-value-setq (pe3 pe1) 
+	  (multiple-value-setq (pe3 pe1)
 	      (merge-ids phys-to path val pe3 pe1))
-	  (multiple-value-setq (pe3 pe2) 
+	  (multiple-value-setq (pe3 pe2)
 	      (merge-ids phys-to phys-path val pe3 pe2))
 	  (multiple-value-setq (pe3 pe4)
 	      (merge-ids phys-to fd val pe3 pe4))
 	  ;; Compute all extensions of path in val.
 	  ;; The extensions of fd, phys-to and phys-path will be computed when
-	  ;; they will be traversed physically (in the regular depth first traversal). 
+	  ;; they will be traversed physically
+          ;; (in the regular depth first traversal).
 	  ;; Avoid cycles
 	  (unless (and (not (path-equal phys-path phys-to))
 		       (path-prefix phys-path phys-to))
@@ -421,15 +441,16 @@
      (t
       (multiple-value-setq (pe2 pe1) (merge-ids phys-path path fd pe2 pe1))
       (setf (path-entry-visited pe1) t)
-      (mapc #'(lambda (pair) 
+      (mapc #'(lambda (pair)
 		(assert (consp pair) (pair fd)
 			"Ill-formed fd in fd-to-graph: ~s" pair)
 		(if (special-p (first pair))
 		  (let ((new-path (path-extend path (first pair)))
 			(new-phys-path (path-extend phys-path (first pair))))
-		    (multiple-value-bind (pe1 pe2) 
-			(merge-ids new-path new-phys-path (second pair) 
-				   (find-entry new-path) (find-entry new-phys-path))
+		    (multiple-value-bind (pe1 pe2)
+			(merge-ids new-path new-phys-path (second pair)
+				   (find-entry new-path)
+                                   (find-entry new-phys-path))
 		      (declare (ignore pe2))
 		      (setf (path-entry-visited pe1) t)))
 		  (build-id-table-aux (second pair)
@@ -441,7 +462,8 @@
 
 ;; Conflate ids for paths p1 and p2
 ;; Make sure both have an id.
-;; If ids already exist and are different, replace (id p2) with (id p1) everywhere.
+;; If ids already exist and are different,
+;; replace (id p2) with (id p1) everywhere.
 ;; If only one exists, use its id.
 ;; DO NOT CALL ADD-ENTRY if entry already exists for a path, so that the value
 ;; of its visited flag remains defined.
@@ -453,7 +475,7 @@
       (setf pe2 pe1)
       (setf pe2 (add-entry :path p2 :value val :id (path-entry-id pe1)))))
    ((and pe1 pe2)
-;;  (format t "~&Merging ~s and ~s" pe1 pe2)
+    ;;  (format t "~&Merging ~s and ~s" pe1 pe2)
     (unless (or (path-equal p1 p2)
 		(eq (path-entry-id pe1) (path-entry-id pe2)))
       (maphash #'(lambda (l p)
@@ -462,12 +484,12 @@
 		       (setf (path-entry-id p) (path-entry-id pe1))))
 	       *path-table*)))
    ((null pe1)
-    (setf pe1 
+    (setf pe1
 	  (if (path-equal p1 p2)
 	    pe2
 	    (add-entry :path p1 :value val :id (path-entry-id pe2)))))
    ((null pe2)
-    (setf pe2 
+    (setf pe2
 	  (if (path-equal p1 p2)
 	    pe1
 	    (add-entry :path p2 :value val :id (path-entry-id pe1))))))
@@ -505,7 +527,8 @@
 
 ;; First find the physical-representant of rpath so that relative paths are
 ;; correctly interpreted in the sub-fd.
-;; The call to filter-flags is necessary to avoid the creation of spurious tetards.
+;; The call to filter-flags is necessary to avoid the creation of
+;; spurious tetards.
 ;; Check ((a {b}) (b ((c nil)))).
 (defun relocate (total rpath &optional (*smaller-path-fct* *smaller-path-fct*))
   (let* ((*input* (filter-flags total))
@@ -514,10 +537,11 @@
 	 (q1 (quotient-set *path-table*))
 	 (*new-physical-path* (make-hash-table :test #'eq)))
     (multiple-value-bind (const rpath-phys missing) (gdc *input* rpath)
-      (cond 
+      (cond
        ((path-null missing)
-;;	(relocpairs q1 rpath-phys rpath-phys (make-path) const const))
-	(relocpairs q1 rpath-phys rpath-phys (make-path) const (copy-tree const)))
+        ;; (relocpairs q1 rpath-phys rpath-phys (make-path) const const))
+	(relocpairs q1 rpath-phys rpath-phys (make-path) const
+                    (copy-tree const)))
        (t nil)))))
 
 
@@ -539,13 +563,13 @@
 (defun relocpair (q1 rpath tpath cpath pair-ind pairs result &aux p)
   (let* ((pair (nth pair-ind pairs))
 	 (feature (first pair))
-	 (value (second pair)) 
+	 (value (second pair))
 	 (new-cpath (path-extend cpath feature))
 	 (new-tpath (path-extend tpath feature))
 	 (new-rep (rep new-tpath q1))
 	 (relocated-rep (relocated-rep q1 new-rep rpath)))
     ;; (format t "~&new-tpath = ~s - new-cpath = ~s" new-tpath new-cpath)
-    (cond 
+    (cond
 
      ;; Has new-tpath been already copied or displaced physically in result?
      ;; If so, insert into result a pointer to new phys-rep in result.
@@ -559,12 +583,12 @@
       (setf (second (nth pair-ind (top-gdc result cpath)))
 	    relocated-rep))
 
-     ((leaf-p value) 
+     ((leaf-p value)
       (record-new-physical-path new-tpath new-cpath)
       result)
 
      ;; pattern and cset can have paths in their values: patch them.
-     ;; The function relocate-special calls the appropriate method given feature. 
+     ;; The function relocate-special calls the appropriate method given feature.
      ((special-p feature)
       (setf (second (nth pair-ind (top-gdc result cpath)))
 	    (relocate-special q1 value feature rpath new-tpath new-cpath)))
@@ -573,7 +597,7 @@
       (relocpairs q1 rpath new-tpath new-cpath value result)
       (record-new-physical-path new-tpath new-cpath))
 
-     (t 
+     (t
       ;; value is a path where there should be a physical rep.
       ;; In all cases, insert here value instead of path.
       (multiple-value-bind (pointed-val point-to)
@@ -610,12 +634,14 @@
 	        then (if (and (path-prefix path rpath)
 			      (or (null rep)
 				  (funcall *smaller-path-fct*
-					   (strip-prefix path rpath) 
+					   (strip-prefix path rpath)
 					   rep)))
-		       (progn ;; (format T "~& I am calling ~s" *smaller-path-fct*)
-			      (strip-prefix path rpath))
-		       (progn ;; (format T "~& I am calling ~s" *smaller-path-fct*)   
-			      rep))
+		       (progn
+                         ;; (format T "~& I am calling ~s" *smaller-path-fct*)
+                         (strip-prefix path rpath))
+		       (progn
+                         ;; (format T "~& I am calling ~s" *smaller-path-fct*)
+                         rep))
 	;; do (format t "~&path = ~s; rep = ~s" path rep)
 	finally (return rep)))
 
@@ -642,8 +668,8 @@
 	 (lcp (longest-common-prefix l1 l2))
 	 (llcp (length lcp))
 	 (uplevel (- (length l1) llcp)))
-    (values 
-     (make-path :l (append 
+    (values
+     (make-path :l (append
 		    (make-sequence 'list uplevel :initial-element '^)
 		    (subseq l2 llcp)))
      uplevel
@@ -653,7 +679,7 @@
 ;; INSERT-FD: reverse of relocate, insert a total fd within a larger total
 ;; fd under path subfd-path.
 ;; ------------------------------------------------------------
-;; Example: 
+;; Example:
 ;; (insert-fd '((a {b}) (b 1) (c {^ b}))
 ;;            '((b 2))
 ;;            {c})
@@ -667,7 +693,7 @@
 (defun insert-fd (fd total subfd-path)
   (filter-flags (u total (insert-empty-fd fd subfd-path))))
 
-;; Just put an fd under a path 
+;; Just put an fd under a path
 ;; Example: (insert-empty-fd '((a {b}) (c {^ a})) {x y} T)
 ;; =>
 ;; ((x ((y ((a {x y b})     <--- NOTE updated path
@@ -720,7 +746,7 @@
 (defun outgoing-arcs (fd)
   (mapcar #'first fd))
 
-(defun ext-equal (fd1 fd2) 
+(defun ext-equal (fd1 fd2)
   (cond
    ((and (leaf-p fd1) (leaf-p fd2)) (equalp fd1 fd2))
    ((or (leaf-p fd1) (leaf-p fd2)) nil)
@@ -731,26 +757,26 @@
 
 (defun ext-equal2 (fd1 fd2)
   "Check that 2 UNFOLDED fds are equal modulo feature movement"
-  (cond 
+  (cond
    ((and (leaf-p fd1) (leaf-p fd2)) (equalp fd1 fd2))
    ((or (leaf-p fd1) (leaf-p fd2)) nil)
    (t (and (= (length fd1) (length fd2))
 	   (set-equal (outgoing-arcs fd1) (outgoing-arcs fd2))
 	   (equal (sort fd1 #'compare-features)
 		  (sort fd2 #'compare-features))))))
-  
+
 (defun unfold (fd)
   "Replace all paths in an fd with the value they point to.
   In case of cycles, keep a path (only case where a path remains in output)."
   (let ((*input* fd))
     (unfold-aux fd (make-path))))
 
-(defun unfold-aux (fd path) 
+(defun unfold-aux (fd path)
   "Get an FD with absolute paths in equations (e.g., (a {x y a b})), and
   replace them with the value they point to."
-  (cond 
+  (cond
    ((leaf-p fd) fd)
-   ((path-p fd) 
+   ((path-p fd)
     (multiple-value-bind (val phys) (gdc *input* (absolute-path fd path))
     (if (path-prefix path phys)     ;; Cycle condition
 	fd
@@ -812,14 +838,17 @@ rest of the fd."
 (defun ban-path-as-total (fd)
   (cond ((and (path-p fd) (path-relative-p fd))
 	 (error "A total fd cannot be a relative path"))
-	((path-p fd) (setf fd (filter-flags (build-fd-from-path fd (make-path)))))
+	((path-p fd) (setf fd
+                           (filter-flags (build-fd-from-path fd (make-path)))))
 	(T fd)))
 
-(defun top-gdc (fd path) (let ((*input* (ban-path-as-total fd))) (gdc fd path)))
+(defun top-gdc (fd path)
+  (let ((*input* (ban-path-as-total fd)))
+    (gdc fd path)))
 
 (defun gdc (fd path)
-  "given an fd (representing a connected graph) and a path, 
-  return 5 values: 
+  "given an fd (representing a connected graph) and a path,
+  return 5 values:
   1. value pointed by path
   2. physical path where this value occurs in fd.
   3. what's missing from path in the physical rep.
@@ -830,17 +859,17 @@ rest of the fd."
   ;; representant directly, and already-tried is not necessary.  For other
   ;; fds, you need it as shown by example: ((a {o}) (o ((m {a m}))))
 
-  (do* ((fd fd) 
+  (do* ((fd fd)
 	(path path)
 	(already-tried (list path))
 	(cpath (make-path))
 	(current-fset (find-fset fd))
 	(arc-tried (list :top fd))
 	(node-tried (list arc-tried)))
-      ((and (not (path-p fd)) (path-null path)) 
+      ((and (not (path-p fd)) (path-null path))
        (values fd cpath path node-tried arc-tried))
     ;; (format t "~&DO path = ~s - cpath = ~s - fd = ~s" path cpath fd)
-    (cond 
+    (cond
      ;; Below any/given/nil is unspecified.
      ((or (eq fd 'any) (eq fd 'given) (eq fd nil))
       (return (values nil cpath path fd arc-tried)))
@@ -854,9 +883,9 @@ rest of the fd."
       #+check-types
       (let ((from (car arc-tried))
 	    (to   (car (last (path-l fd)))))
-	(cond 
+	(cond
 	 ((eq from to))  ;; fine - type equality
-	 ((or (special-p from) (special-p to)) 
+	 ((or (special-p from) (special-p to))
 	  (return (values 'none cpath path node-tried arc-tried)))))
       ;; ok proceed...
       (let* ((path-prefix (absolute-path fd cpath))
@@ -865,18 +894,18 @@ rest of the fd."
 	;; Note: the problem is only when a short points to a long:
 	;; ((a {a b})) loops, ((a ((b {a})))) is fine.
 	;; (format t "~&already tried = ~s - pp = ~s" already-tried path-prefix)
-	(cond 
+	(cond
 	 ;; Find a short path pointing to an extension of itself:
 	 ;; Replace (a {a b}) by (a ((b {a}))) and continue.
 	 ;; Ignore cases (a {a}) which are tetard cases dealt with below.
-	 ((and (path-prefix path-prefix cpath) 
+	 ((and (path-prefix path-prefix cpath)
 	       (not (path-equal path-prefix cpath)))
 	  ;; (format t "~&Found a short to long pointer: ~s ~s" path-prefix cpath)
 	  (let ((extension (strip-prefix path-prefix cpath)))
 ;;	    (format T "~& short->long")
 ;;	    (format T "~& arc-tried1 = ~s" arc-tried)
-;;	    (format T "~& already-tried1 = ~s" already-tried)	    
-	    (setf (second arc-tried) 
+;;	    (format T "~& already-tried1 = ~s" already-tried)
+	    (setf (second arc-tried)
 		  (build-fd-from-path extension cpath)))
 	  ;; Reinit already-tried for the new structure
 	  (setf already-tried nil))
@@ -891,7 +920,7 @@ rest of the fd."
 	 ((and (path-prefix cpath path-prefix)
 	       (not (path-equal cpath path-prefix))))
 ;;	  (format T "~& long->short")
-	 
+
 	 ;; Tetard cases: cut the redundant path eg ((a {a})) is ((a nil))
 	 ;; or  ((a {b}) (b ((m {a m})))) is ((a {b}) (b ((m nil))))
 	 ((member npath already-tried :test #'path-equal)
@@ -900,7 +929,7 @@ rest of the fd."
 	  (return (values nil cpath path node-tried arc-tried))))
 
 ;;	(format T "~& arc-tried3 = ~s" arc-tried)
-;;	(format T "~& already-tried3 = ~s" already-tried)	    
+;;	(format T "~& already-tried3 = ~s" already-tried)
 	(setf path npath)
 	(push path already-tried)
 	(setf cpath (make-path))
@@ -913,8 +942,9 @@ rest of the fd."
      ;; Special attributes are also atomic: cannot go below them.
      ;; but can have a path as value.
      ((member (path-car path) *special-attributes*)
-      (cond ((cdr (path-l path)) (return (values 'none cpath path node-tried arc-tried)))
-	    ((or (null current-fset) 
+      (cond ((cdr (path-l path))
+             (return (values 'none cpath path node-tried arc-tried)))
+	    ((or (null current-fset)
 		 (member (path-car path) current-fset)
 		 (eq (path-car path) 'fset))
 	     (setf arc-tried (safe-assoc (path-car path) fd))
@@ -953,7 +983,7 @@ rest of the fd."
 ;; - Label constituents by cat
 ;; - Extract pattern recursively
 ;; Output format as sexpr: (root (path child) ...)
-;; where: root = a cat 
+;; where: root = a cat
 ;;        path = a path {a b c}
 ;;        child = a tree or a lex or nil
 
@@ -979,29 +1009,38 @@ rest of the fd."
 
 (defun fd-to-pattern-tree-traverse (path)
   (let ((fd (find-entry path)))
-    (if (leaf-p fd) 
+    (if (leaf-p fd)
 	fd
 	(let ((cat (find-entry (path-extend path 'cat)))
 	      (pattern (find-entry (path-extend path 'pattern)))
 	      (lex (find-entry (path-extend path 'lex))))
 	  (cond ((null pattern) (make-label lex cat))
-		(t (make-pattern-tree 
+		(t (make-pattern-tree
 		    (make-label lex cat)
-		    (mapcar #'(lambda (pattern-elt)
-				(let ((target-path (if (leaf-p pattern-elt)
-						       (path-extend path pattern-elt)
-						       (absolute-path pattern-elt (path-extend path 'pattern)))))
-				  (make-edge target-path
-					     (fd-to-pattern-tree-traverse target-path))))
-			    (clean-pattern (path-entry-value pattern))))))))))
+		    (mapcar
+                     #'(lambda (pattern-elt)
+                         (let ((target-path
+                                (if (leaf-p pattern-elt)
+                                    (path-extend path pattern-elt)
+                                    (absolute-path
+                                     pattern-elt
+                                     (path-extend path 'pattern)))))
+                           (make-edge target-path
+                                      (fd-to-pattern-tree-traverse
+                                       target-path))))
+                     (clean-pattern (path-entry-value pattern))))))))))
 
 (defun filter-pattern-tree (pattern-tree)
   (cond ((null pattern-tree) nil)
 	((leaf-p pattern-tree) pattern-tree)
-	(t (let ((non-empty-edges (mapcan #'(lambda (edge)
-					      (let ((filtered-subtree (filter-pattern-tree (second edge))))
-						(if (null filtered-subtree) nil (list (list (car edge) filtered-subtree)))))
-					  (cdr pattern-tree))))
+	(t (let ((non-empty-edges
+                  (mapcan #'(lambda (edge)
+                              (let ((filtered-subtree
+                                     (filter-pattern-tree (second edge))))
+                                (if (null filtered-subtree)
+                                    nil
+                                    (list (list (car edge) filtered-subtree)))))
+                          (cdr pattern-tree))))
 	     (if (null non-empty-edges)
 		 nil
 		 (make-pattern-tree (car pattern-tree) non-empty-edges))))))
@@ -1020,7 +1059,8 @@ rest of the fd."
    :node-children #'pattern-tree-children
    :node-name #'(lambda (edge) (if (consp (second edge))
 				   (format nil "~s" (first edge))
-				   (format nil "~s: ~s" (first edge) (second edge)))))
+				   (format nil "~s: ~s"
+                                           (first edge) (second edge)))))
   (values))
 
 

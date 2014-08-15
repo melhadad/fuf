@@ -14,12 +14,24 @@
 ;;;                5 Jul 1995: SURGE 2.2 VERSION
 ;;;                            Removed trivial-name
 ;;;                            Added adv-p
-;;;                            Specialized wh into wh-partial, wh-full, wh-possessive
+;;;                            Specialized wh into
+;;;                            wh-partial, wh-full, wh-possessive
 ;;;                            Removed nominalized-ing and verbal-clause
 ;;;                            Added complex for cardinal and ordinal
 ;;;                            Added possessive-relative
 ;;;               19 May 1996: Package all defs in one function
 ;;;                            (reset-surge-types)
+;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
@@ -38,11 +50,11 @@
 
 ;; CATEGORY HIERARCHY
 ;; ------------------
-;; 
+;;
 ;; 1. SEMANTIC (non-lexical) vs. LEXICAL-CAT
 ;; Input to grammar can be either lexicalized or non-lexicalized.
 ;; When it is lexicalized, cat are CLAUSE, VERB-GROUP, NP, PP, AP, NOUN,
-;; ADJ. 
+;; ADJ.
 ;; When it is non-lexicalized, it needs to be lexicalized first (each
 ;; constituent) before the grammar for syntax can work.  In this case,
 ;; input contains semantic cats EVENT or THING with a concept
@@ -54,9 +66,9 @@
 ;; Treat complex constructions to be the same cat as their constituents
 ;; For example, a conjunction of NPs is an NP.
 ;; To handle complex constructions, the feature complex is added to a
-;; constituent. 
+;; constituent.
 ;; (complex none) -> simple constituent
-;; (complex conjunction) 
+;; (complex conjunction)
 ;; (complex apposition)
 ;; (complex list)
 ;; [Distinctions are explained below]
@@ -93,7 +105,7 @@
 
 ;; The cats that can serve as np heads
 ;; JR: added person-name and team-name
-(define-feature-type simple-np-head 
+(define-feature-type simple-np-head
   (noun noun-compound measure partitive name))
 ;; Name is quite domain specific: add your types of names here...
 (define-feature-type name (person-name team-name))
@@ -102,11 +114,11 @@
 
 ;; A single complex construct handles all the similarities between complex
 ;; constructs and handles the recursion.
-(define-feature-type complex (clause verb-group np ap pp np-head adj 
+(define-feature-type complex (clause verb-group np ap pp np-head adj
 				     cardinal ordinal))
 
 ;; The NP hierarchy
-(define-feature-type simple-np 
+(define-feature-type simple-np
   (pronoun common proper measure partitive date address))
 ;; JR-added 3/7/95: address to simple-np types
 
@@ -131,7 +143,7 @@
 ;; - simple           |
 ;; --- event          |
 ;; ----- material     | agent affected created range
-;; -----              | [features: 
+;; -----              | [features:
 ;;                    |  effective: yes, no
 ;;                    |  agentive: yes, no
 ;;                    |  event-as: process, participant
@@ -142,7 +154,7 @@
 ;; ------- emotional  |
 ;; ----- verbal       | sayer, addressee, verbalization
 ;; --- relation       | carrier, attribute
-;; ---                | [features: 
+;; ---                | [features:
 ;;                    |  change-mode: maintain, change, neutral
 ;;                    |  mode: attributive, equative
 ;;                    |  relation-as: process, participant
@@ -150,14 +162,14 @@
 ;;                    | when mode equative       | identified, identifier
 ;; ----- ascriptive   |
 ;; ----- locative     |  located, location
-;; ------- spatial    |  
-;; ------- temporal   |  
-;; ------- accompaniment 
+;; ------- spatial    |
+;; ------- temporal   |
+;; ------- accompaniment
 ;; ------- existential|
 ;; ----- possessive   |  possessor, possessed
 ;;                    |
 ;; - composite        | [features:
-;;                    |  process: 
+;;                    |  process:
 ;;                    |   event-struct
 ;;                    |   relation-struct]
 ;;                    | + the mappings are expressed in input.
@@ -202,7 +214,7 @@
 (define-feature-type created (created-carrier))
 (define-feature-type carrier (located possessor))
 (define-feature-type located (agent-carrier affected-carrier created-carrier))
-(define-feature-type possessor 
+(define-feature-type possessor
   (agent-carrier affected-carrier created-carrier))
 (define-feature-type identified (agent-identified affected-identified))
 
@@ -221,17 +233,18 @@
 ;; JR-added-1/19/93
 ;; Adverbial Semantic Roles
 (define-feature-type sem-adverbial (pred-modif circum))
-(define-feature-type pred-modif 
-  (location direction origin destination path distance duration manner means 
+(define-feature-type pred-modif
+  (location direction origin destination path distance duration manner means
    instrument comparison score))
 (define-feature-type circum
-  (location distance origin time duration frequency co-event reason result purpose 
-   behalf condition concessive-condition concession contrast exception inclusion 
-   substitution addition accompaniment opposition manner means comparison matter 
-   standard perspective))
+  (location distance origin time duration frequency co-event reason
+            result purpose behalf condition concessive-condition concession
+            contrast exception inclusion substitution addition accompaniment
+            opposition manner means comparison matter standard perspective))
 (define-feature-type sem-adverbial (spatial temporal causal conditional
 				    determinative how topical))
-(define-feature-type spatial (location direction origin destination path distance))
+(define-feature-type spatial
+    (location direction origin destination path distance))
 (define-feature-type temporal (time duration frequency co-event))
 (define-feature-type causal (reason result purpose behalf co-event))
 (define-feature-type conditional (condition concessive-condition concession))
@@ -246,7 +259,7 @@
 ;; feature in the verb (cf. info needed in verb) or adding a feature prep
 ;; in the role.  The feature in the role has priority if it is given.
 ;; -------------------------------------------------------------------
-;; Role name        | Default preposition  | Default relative pronoun 
+;; Role name        | Default preposition  | Default relative pronoun
 ;; -----------------+----------------------+--------------------------
 ;; to-loc           | to                   | where
 ;; from-loc         | from                 | where
@@ -254,7 +267,7 @@
 ;; in-loc           | in                   | where
 ;; on-loc           | on                   | where
 ;; instrument       | with                 | with (embedded)
-;; purpose          | in order to + clause | 
+;; purpose          | in order to + clause |
 ;;                  | for + np             | for (embedded)
 ;; at-time          | at                   | when
 ;; accompaniment    | with                 | with (embedded)
@@ -269,38 +282,40 @@
 ;; -----------------+------------------------------------------------
 ;; process-class    :    any process-type
 ;; process-structure:    like in process described in transitivity above
-;; dative-prep      : 	 "to", "for"            
+;; dative-prep      : 	 "to", "for"
 ;; to-loc-prep      :    "to", ... any preposition
-;; from-loc-prep    :    "from",... 
+;; from-loc-prep    :    "from",...
 ;; on-loc-prep      :    "on",...
-;; instrument-prep  :    "with", "using" ...                         
+;; instrument-prep  :    "with", "using" ...
 ;; purpose-prep     :    "for"
 ;; accompaniment-prep:   "with",...
 ;; subject-clause   :    infinitive, present-participle, that, none
 ;; object-clause    :    infinitive, present-participle, that, none
 ;; particle         :    "off" ... (for "to take off" when particle is
-;;                  :    mobile, when it is not mobile, lex should be 
+;;                  :    mobile, when it is not mobile, lex should be
 ;;                  :    "give up" (in one string).
 ;; preposition      :    cf Quirk 12 (not implemented yet)
 
 
-;; MOOD SYSTEM: 
+;; MOOD SYSTEM:
 ;; ------------------------------------------------------------------
 ;; Changed by JR 1-16-92: removed unimplemented stuff
-;;                        added verbless, bound-adverbial 
+;;                        added verbless, bound-adverbial
 ;;                        subdivided infinitive
 
 (define-feature-type mood (finite non-finite))
 (define-feature-type finite (declarative interrogative bound relative))
 (define-feature-type non-finite (imperative participle infinitive verbless))
 (define-feature-type participle (past-participle present-participle))
-(define-feature-type infinitive (to-infinitive for-to-infinitive bare-infinitive))
+(define-feature-type infinitive
+    (to-infinitive for-to-infinitive bare-infinitive))
 (define-feature-type interrogative (yes-no wh))
 (define-feature-type wh (wh-full wh-possessive wh-partial))
 (define-feature-type bound (bound-nominal bound-adverbial))
-(define-feature-type bound-nominal 
-  (bound-nominal-declarative bound-nominal-subjunctive))
-(define-feature-type relative (simple-relative embedded-relative possessive-relative))
+(define-feature-type bound-nominal
+    (bound-nominal-declarative bound-nominal-subjunctive))
+(define-feature-type relative
+    (simple-relative embedded-relative possessive-relative))
 
 
 
@@ -313,29 +328,29 @@
 (define-feature-type deontic-modality (duty authorization))
 
 
-;; SCOPE: role (value is the name of the role under scope in the relative 
+;; SCOPE: role (value is the name of the role under scope in the relative
 ;;        clause)
 
 
 ;; SEMANTIC INFORMATION NEEDED IN NPs:
 ;; ------------------------------------------------------------------
 ;; SYNTAX:
-;; animate:           	 yes/no                                             
-;; number:            	 plural/singular                                    
-;; definite:          	 yes/no                                             
-;; person:            	 first/second/third                                 
-;; gender:            	 masculine/feminine/neuter                          
-;; case:              	 subjective/objective/possessive/reflexive 
-;; distance:          	 far/near                                           
-;; countable:         	 yes/no                                             
-;; collective:        	 yes/no                                             
+;; animate:           	 yes/no
+;; number:            	 plural/singular
+;; definite:          	 yes/no
+;; person:            	 first/second/third
+;; gender:            	 masculine/feminine/neuter
+;; case:              	 subjective/objective/possessive/reflexive
+;; distance:          	 far/near
+;; countable:         	 yes/no
+;; collective:        	 yes/no
 
 ;; CONSTITUENTS OF NPs   relevant features
 ;; ------------------------------------------------------------------
 ;; determiner:           definite/distance/demonstrative/possessive
-;; describer:            
+;; describer:
 ;; head:                 (syntax) lex/animate/person/number/gender/case
-;; classifier:           
+;; classifier:
 ;; qualifier:            restrictive [yes/no]
 ;; possessor:            an NP
 ;; cardinal:             an fd with ((value n) (digit yes/no))
@@ -392,7 +407,7 @@
 			       past-perfect-progressive))
 (define-feature-type tense-17 (present-in-past-in-present
 			       present-perfect-progressive))
-(define-feature-type tense-18 (present-in-past-in-future 
+(define-feature-type tense-18 (present-in-past-in-future
 			       future-perfect-progressive))
 (define-feature-type tense-19 (present-in-future-in-past
 			       past-future-progressive))

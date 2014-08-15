@@ -8,15 +8,27 @@
 ;;;               07 Apr 1991 (Michael Elhadad: added comments, fixed few
 ;;;               bugs.  Not tested properly yet)
 ;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
+;;; -----------------------------------------------------------------------
+
 ;;; WARNING: THIS TPATTERN UNIFIER DOES NOT WORK PROPERLY
 ;;; IT WORKS ENOUGH TO RUN EXAMPLES BUT NEEDS TO BE FIXED.
 
 ;;; This files implements a "tpattern unifier" for use with FUF.
 ;;; tpattern stands for "temporal pattern."  tpatterns are used in grammars to
-;;; encode the semantics of tense.  
+;;; encode the semantics of tense.
 ;;; tpattern express temporal relations between the speech time, the event
 ;;; time (the time when the event we are describing happens) and several
-;;; reference times (up to five in this implementation).  
+;;; reference times (up to five in this implementation).
 ;;; Each one of these actually refers to an interval of time.
 ;;; Relations between these temporal intervals can be: :precedes,
 ;;; :includes, :equal, :overlaps, :meets, :before, :during, :in or some
@@ -52,7 +64,7 @@
 
 ;;; ***** UNCOMMENT TO USE IN PACKAGE ADVISOR
 ;;; (export 'tpattern)
- 
+
 (defvar *tpattern-max-refs* 5 "the maximum number of references allowed in a
 tpattern element.  This should be equal to (length *tpattern-ref-keywords*)")
 (defvar *tpattern-ref-keywords* '((:rt0) (:rt1) (:rt2) (:rt3) (:r4)))
@@ -60,7 +72,7 @@ tpattern element.  This should be equal to (length *tpattern-ref-keywords*)")
 
 (defun tpattern-reset-tpattern-ref-keywords ()
   (setq *tpattern-ref-keywords* '((:rt0) (:rt1) (:rt2) (:rt3) (:r4))))
-  
+
 (defvar *tpattern-speech-time-keyword* :st)
 (defvar *tpattern-event-time-keyword* :et)
 (defvar *tpattern-reversable-operands* '(:includes :equals))
@@ -74,8 +86,8 @@ tpattern element.  This should be equal to (length *tpattern-ref-keywords*)")
 (defun tpattern-check-operand (potential-op)
   "This function checks a tpattern operand for legality.  A legal t-pattern
 operand is either the speech time  symbol, the event-time symbol, or one of
-the reference time symbols."  
-  (tpattern-reset-tpattern-ref-keywords)  
+the reference time symbols."
+  (tpattern-reset-tpattern-ref-keywords)
   (or
    (eq potential-op *tpattern-speech-time-keyword*)
    (eq potential-op *tpattern-event-time-keyword*)
@@ -104,17 +116,17 @@ operator is a member of *tpattern-operators*."
 (defun tpattern-get-relation (graph key-time-element related-time-element)
   "Given a graph of tpattern relations, it locates the operand which
 relates key-time-element to related-time-element.  Remeber, the graphs
-are ordered, so it may be necessary to check for a relationship 
+are ordered, so it may be necessary to check for a relationship
 between two different time elements both in row order and in col.
 order -- so to speak.  Just swap the order of the time-element
 params."
-  (let ((value (assoc related-time-element 
+  (let ((value (assoc related-time-element
 		      (cdr (assoc key-time-element graph)))))
     (when value
       (second value)))
   )
 
-(defun tpattern-set-relation  (graph key-time-element related-time-element 
+(defun tpattern-set-relation  (graph key-time-element related-time-element
 				     operand)
   (let* ((relations (assoc key-time-element graph))
 	 (value (assoc related-time-element
@@ -147,10 +159,10 @@ params."
 	((subsume op2 op1) op1)  ; op1 "     "   "        "  op2
 	(t :fail))               ; unifcation fails
   )
-	
+
 (defun tpattern-unify-relation (graph key-time-element related-time-element
 				      operand)
-  (let* ((old-operand (tpattern-get-relation 
+  (let* ((old-operand (tpattern-get-relation
 		       graph
 		       key-time-element
 		       related-time-element))
@@ -172,7 +184,7 @@ params."
 	;; if the old operand was reversable and the new one isn't
 	;; [e.g. old: :includes; new:  :meets], then we want to zap
 	;; the old operand in its inverse incarnation (so to speek).
-	(tpattern-set-relation 
+	(tpattern-set-relation
 	 graph
 	 related-time-element
 	 key-time-element
@@ -206,8 +218,8 @@ same (NIL)."
 					     (second cur-statement))
                     ;; now, if the operand is reversable -- install
                     ;; the inverse relation too
-		    (or (not 
-			 (tpattern-reversable-operand-p 
+		    (or (not
+			 (tpattern-reversable-operand-p
 			  (second cur-statement)))
 			(tpattern-unify-relation graph
 						 (third cur-statement)
@@ -227,7 +239,7 @@ same (NIL)."
        (cur-item (car tp-graph) (car tp-graph)))
       ((null cur-item) not-found-refs)
     (when (cdr cur-item)
-      (setf not-found-refs 
+      (setf not-found-refs
             (remove-if #'(lambda (x)
                            (equal (car x) (car cur-item))) not-found-refs))
       (mapcar #'(lambda (relation)
@@ -244,12 +256,12 @@ same (NIL)."
   (if (equal tp-graph :fail)
     :fail
     (let ((unused-refs (reverse (tp-find-gaps tp-graph))))
-      
+
       ))
   )
 
 
-;; Merge (unify) two graphs containing temporal relations as arcs.  
+;; Merge (unify) two graphs containing temporal relations as arcs.
 ;; Return :fail if graphs are not compatible.
 (defun tpattern-merge (tp-graph1 tp-graph2 mapping)
   (declare (ignore mapping))
@@ -289,9 +301,9 @@ same (NIL)."
                    (cur-relation (car relations) (car relations)))
                   ((null cur-relation) nil)
                (when (second cur-relation)
-                 (setf tp 
-                       (append tp 
-                               `((,first-operand 
+                 (setf tp
+                       (append tp
+                               `((,first-operand
                                   ,(second cur-relation)
                                   ,(car cur-relation)))))))
              (setf tp-graph (cdr tp-graph))))))
@@ -325,9 +337,10 @@ same (NIL)."
            (or (null tp)
                (tpattern-check-each-member tp)))
     t
-    (values 
-     nil 
-     "tpattern ({(<tpattern-operand> <tpattern-operator> <tpattern-operand>)}*)")))
+    (values
+     nil
+     "tpattern ({(<tpattern-operand> <tpattern-operator> <tpattern-operand>)}*)"
+     )))
 
 
 ;; Top level function: unify two tpattern values.

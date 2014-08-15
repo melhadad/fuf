@@ -35,9 +35,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -62,7 +62,7 @@
     (if (leaf-p list)
 	(list "<fail>")
       (values
-       (capitalize 
+       (capitalize
 	(punctuate (linearize list (make-path) :cat-attribute cat-attribute)
 		   (subsume 'interrogative (second (safe-assoc 'mood list))))
 	(safe-assoc 'capitalize list))
@@ -75,7 +75,7 @@
 ;; Original written by Jay Meyer (USC/ISI)
 ;; ------------------------------------------------------------
 (defun CAPITALIZE (sentence &optional dontcapitalize)
-  "Capitalizes the first word in a sentence." 
+  "Capitalizes the first word in a sentence."
   (if (and dontcapitalize (eq (second dontcapitalize) 'no))
       sentence
     (cons (string-capitalize (car sentence) :end 1)(cdr sentence))))
@@ -93,7 +93,7 @@
   (or (bracket-open-char letter)
       (bracket-close-char letter)))
 
-(defun VOWEL (char) 
+(defun VOWEL (char)
   (member char '(#\a #\e #\i #\o #\u)))
 
 (defun consonant-dipthong (word)
@@ -106,7 +106,7 @@
 (defun butlast-char (str)
   (subseq str 0 (- (length str) 1)))
 
-;; Rules: 
+;; Rules:
 ;; 0/ deal with "an empty" "an RST relation"
 ;; 1/ don't put spaces before closing brackets.
 ;; 2/ don't put spaces after opening brackets.
@@ -122,7 +122,7 @@
     (let ((x (car sentence)))
       (while (and (not (equal x "")) (punctuation (char x 0)))
 	(setq x (subseq x 1)))
-      (if (equal x "") 
+      (if (equal x "")
 	(setf sentence (cdr sentence))
 	(setf (car sentence) x))))
 
@@ -133,9 +133,9 @@
 
   (if (null sentence)
       (list "<fail>")
-    (append 
-     (mapcan 
-      #'(lambda (x y) 
+    (append
+     (mapcan
+      #'(lambda (x y)
 	  (when (noun-marked-as-an x)
 	    (setq x (unmark-noun-as-an x)))
 	  (cond
@@ -146,7 +146,7 @@
                          (noun-marked-as-an y)))
                 (list "an" " ")
               (list "a" " ")))
-           ;; Rules 1 and 2 
+           ;; Rules 1 and 2
 	   ((or (bracket-open-char (char x 0))
 		(bracket-close-char (char y 0)))
 	    (list x))
@@ -171,7 +171,7 @@
       (butlast sentence)
       (cdr sentence))
      (last sentence))))
-		  
+
 
 
 ;; ------------------------------------------------------------
@@ -185,31 +185,31 @@
        constituent, the constituent does not appear in the result.
        The features punctuation have a special effect described
        in documentation of function list-punctuation."
-  (cond 
+  (cond
     ((leaf-p fd) nil)
     (t
       (let ((pattern     (incr-gdp 'pattern fd path))
 	    (gap         (incr-gdp 'gap fd path))
 	    (punctuation (incr-gdp 'punctuation fd path))
 	    (punct-path  (path-extend path 'punctuation)))
-	(cond 
+	(cond
 	  ((and gap (not (eq gap 'none)))
-	    ;; constituent is gapped - don't put it in linearized 
+	    ;; constituent is gapped - don't put it in linearized
 	    nil)
-	  (pattern 
+	  (pattern
 	    ;; recurse on all constituents
 	    (let ((order (clean-pattern pattern)))
 	      (list-punctuation
 		punctuation punct-path
-		(mapcan 
+		(mapcan
 		 #'(lambda (constituent)
-		     (let ((new-path (safe-path-extend path constituent)) 
-			   (new-fd 
+		     (let ((new-path (safe-path-extend path constituent))
+			   (new-fd
 			    (if (attr-p constituent)
 			      (incr-gdp constituent fd path)
-			      (gdp *input* 
-				   (absolute-path 
-				    constituent 
+			      (gdp *input*
+				   (absolute-path
+				    constituent
 				    (path-extend path 'pattern))))))
 		       (linearize new-fd new-path)))
 		 order))))
@@ -220,7 +220,7 @@
 	      (list-punctuation punctuation punct-path
 				(morph cat lex fd path
 				       :cat-attribute cat-attribute)))))))))
-		  
+
 
 
 ;; ------------------------------------------------------------
@@ -239,7 +239,7 @@
   (unless (stringp lex)
     (setq lex (string-downcase (format nil "~s" lex))))
   (when (subsume 'pronoun cat) (setf cat 'pronoun))
-  (list-if-atom 
+  (list-if-atom
    (case cat
      ((adj adv conj modal prep relpro punctuation phrase) lex)
      (noun (morph-noun
@@ -269,12 +269,12 @@
        lex
        (incr-gdp 'number fd path)))
      ((ordinal cardinal simple-cardinal simple-ordinal)
-      (morph-numeric lex cat 
+      (morph-numeric lex cat
 		     (incr-gdp 'value fd path)
 		     (incr-gdp 'digit fd path)))
      (fraction
-      (morph-fraction lex 
-		      (incr-gdp 'num fd path) 
+      (morph-fraction lex
+		      (incr-gdp 'num fd path)
 		      (incr-gdp 'den fd path)
 		      (incr-gdp 'digit fd path)))
      (t (cond ((member cat (categories-not-unified cat-attribute)) lex)
@@ -288,12 +288,12 @@
 (defun morphology-help (&optional unknown-cats)
   "Gives feedback to users who have done something wrong with morpho."
   (when unknown-cats
-    (format 
-     t 
+    (format
+     t
      "You have used the following categories which are not known ~@
       by the morphology module: ~s~%" unknown-cats))
-  (format 
-   t 
+  (format
+   t
    "The categories known by the morphology module are: ~@
     adj, adv, conj, modal, prep, relpro, punctuation, phrase:
               lex is sent unmodified.~@
@@ -309,21 +309,21 @@
 
 
 ;; ------------------------------------------------------------
-;; Checks: verify validity of features influencing morphology 
+;; Checks: verify validity of features influencing morphology
 ;; and chooses default values.
 ;; ------------------------------------------------------------
-(defun CHECK-PERSON (person) 
-  "Returns person, DEFAULT is THIRD." 
+(defun CHECK-PERSON (person)
+  "Returns person, DEFAULT is THIRD."
   (cond ((member person '(first second third)) person)
         (t 'third)))
 
 (defun CHECK-TENSE (tense)
-  "Returns tense, DEFAULT is PRESENT." 
+  "Returns tense, DEFAULT is PRESENT."
   (cond ((member tense '(present past)) tense)
 	(t 'present)))
 
-(defun CHECK-NUMBER (number) 
-  "Returns number, DEFAULT is SINGULAR." 
+(defun CHECK-NUMBER (number)
+  "Returns number, DEFAULT is SINGULAR."
   (cond ((member number '(plural dual not-one)) number)
         (t 'singular)))
 
@@ -361,12 +361,12 @@
 ;; Specialized Morph. Routines by Jay Meyer (USC/ISI) and Michael Elhadad
 ;; ------------------------------------------------------------
 
-(defun MORPH-NOUN (word number a-an feature) 
+(defun MORPH-NOUN (word number a-an feature)
   "If feature is possessive, then return the apostrephised form of the noun
    appropriate to the number.
    If a-an is 'an mark noun with mark-noun-as-an to agree with determiner.
-   return word with number suffix." 
-  (setq word (morph-number word number)) 
+   return word with number suffix."
+  (setq word (morph-number word number))
   (setq word (cond ((eq feature 'possessive)
 		    (cond ((lexfetch word 'possessive))
 			  ((and (subsume 'plural number)
@@ -389,9 +389,9 @@
        (string= (subseq word 0 (length *a-an-marker*)) *a-an-marker*)))
 
 
-(defun MORPH-NUMBER (word number) 
+(defun MORPH-NUMBER (word number)
   "Adds the plural suffix to word if number is plural
-   note that the default is singular." 
+   note that the default is singular."
   (cond ((null number) word)
 	((null word) word)
         ((subsume 'plural number)
@@ -400,36 +400,36 @@
         (t word)))
 
 
-(defun MORPH-VERB (word ending number person tense) 
+(defun MORPH-VERB (word ending number person tense)
   "Adds the proper suffix to the verb root taking into account
-   ending, number, person, and tense." 
+   ending, number, person, and tense."
   (cond ((eq ending 'root) word)
-        ((eq ending 'infinitive) (list "to" word)) 
-        ((equal word "be") (morph-be number person (or ending tense))) 
+        ((eq ending 'infinitive) (list "to" word))
+        ((equal word "be") (morph-be number person (or ending tense)))
         ((eq ending 'present-participle)
          (cond ((lexfetch word 'present-participle))
                (t (form-ing word))))
-        ((eq ending 'past-participle) 
+        ((eq ending 'past-participle)
          (cond ((lexfetch word 'past-participle))
-               (t (form-past word)))) 
+               (t (form-past word))))
         ((lexfetch word (if (and (eq tense 'present)
                             (eq person 'third)
                             (eq number 'singular))
                        'present-third-person-singular
                        tense)))
         ((eq tense 'present) (form-present-verb word number person))
-        ((eq tense 'past) (form-past word)) 
+        ((eq tense 'past) (form-past word))
         (t nil)))
 
 
 (defun MORPH-BE (number person tense)
   (case tense
-    (present (case number 
+    (present (case number
 	       (singular (case person
 			   (first "am")
 			   (second "are")
-			   (third "is"))) 
-	       (t  "are"))) 
+			   (third "is")))
+	       (t  "are")))
     (past (case number
 	    (singular (case person
 			(first "was")
@@ -440,8 +440,8 @@
     (past-participle "been")))
 
 
-(defun FORM-PRESENT-VERB (word number person) 
-  "Forms the suffix for the present tense of the verb WORD." 
+(defun FORM-PRESENT-VERB (word number person)
+  "Forms the suffix for the present tense of the verb WORD."
   (when word
     (case person
       (first word)
@@ -455,15 +455,15 @@
       (otherwise nil))))
 
 
-(defun FORM-PAST (word) 
+(defun FORM-PAST (word)
   "Form past tense by adding 'ed to word,
-  handles duplication of final consonant and special cases. " 
+  handles duplication of final consonant and special cases. "
   (let ((char (elt word (1- (length word)))))
     (case char
-      (#\e (concatenate 'string word "d")) 
+      (#\e (concatenate 'string word "d"))
       (#\y (if (vowel (elt word (- (length word) 2)))
 	       (concatenate 'string word "ed")
-	     (concatenate 'string (subseq word 0 (1- (length word))) 
+	     (concatenate 'string (subseq word 0 (1- (length word)))
 			  "ied")))
       (#\r (if (char-equal (elt word (- (length word) 2)) #\a)
 	       (concatenate 'string word (list char) "ed")
@@ -481,7 +481,7 @@
   handles duplication of final consonant and special cases."
   (let ((char (elt word (1- (length word)))))
     (case char
-      (#\e (concatenate 'string (subseq word 0 (1- (length word))) "ing")) 
+      (#\e (concatenate 'string (subseq word 0 (1- (length word))) "ing"))
       (#\r (if (char-equal (elt word (- (length word) 2)) #\a)
 	       (concatenate 'string word (list char) "ing")
 	     (concatenate 'string word "ing")))
@@ -490,7 +490,7 @@
 		(not (vowel (elt word (- (length word) 3)))))
 	   (concatenate 'string word (list char) "ing")
 	 (concatenate 'string word "ing")))
-      (t (concatenate 'string word "ing"))))) 
+      (t (concatenate 'string word "ing")))))
 
 
 (defun MORPH-DETERMINER (word number)
@@ -536,8 +536,8 @@
 	  ;; which/that only for non-animate.
 	  ((and (eq restrictive 'yes) (eq animate 'no)) "that")
 	  ((eq case 'possessive) "whose")
-	  ((eq case 'objective) 
-	   (if (eq gender 'neuter) "which" "whom"))  
+	  ((eq case 'objective)
+	   (if (eq gender 'neuter) "which" "whom"))
 	  ((eq gender 'neuter) "which")
 	  ((eq animate 'no) "which")
 	  (t "who")))
@@ -545,7 +545,7 @@
 	 (when (eq animate 'no) (setq gender 'neuter))
 	 (cond ((eq restrictive 'yes) "which")
 	       ((eq case 'possessive) "whose")
-	       ((eq case 'objective) 
+	       ((eq case 'objective)
 		(if (eq gender 'neuter) "what" "whom"))
 	       ((eq gender 'neuter) "what")
 	       ((eq animate 'no) "what")
@@ -555,7 +555,7 @@
 
 
 (defun format-ordinal (value)
-  ;; Integer to string of the form "nth" 
+  ;; Integer to string of the form "nth"
   ;; 1 -> st except for 11
   ;; 2 -> nd except for 12
   ;; 3 -> rd except for 13
@@ -568,7 +568,7 @@
 		    ((= lastone 3) "rd")
 		    (t "th"))))
     (format nil "~s~a" value ext)))
-	 
+
 
 (defun MORPH-NUMERIC (lex ord-or-card value digit)
   "Return a string given a number - either ordinal or cardinal"
@@ -591,13 +591,13 @@
 	 (format nil "~s" value))
 	((stringp value) value)
 	(t (format nil "<unknown-number: ~s>" value))))
-	 
+
 
 (defun MORPH-FRACTION (lex num den digit)
   "Return a string for a fraction"
   (cond ((and (integerp num) (integerp den))
-	 (cond ((= den 1) 
-		(case digit 
+	 (cond ((= den 1)
+		(case digit
 		  (no (format nil "~r" num))
 		  (roman (format nil "~@R" num))
 		  (t (format nil "~s" num))))
@@ -625,7 +625,7 @@
 
 (defun list-punctuation (punctuation path lstring)
   "Punctuation is an fd with 3 relevant features: before, after and
-       capitalize. 
+       capitalize.
        The value of both before and after must be a string of
        punctuation. Capitalize can be yes or no.  Default is no.
        Path is the path from the root of the total fd to punctuation.
@@ -633,14 +633,14 @@
        Returns a list of strings with punctuation before and
        after lstring as indicated by punctuation."
   (setq lstring (trim-lstring lstring))
-  (cond ((null punctuation) lstring) 
-	(t 
+  (cond ((null punctuation) lstring)
+	(t
 	 (let ((before (incr-gdp 'before punctuation path))
 	       (after  (incr-gdp 'after  punctuation path))
 	       (capitalize (incr-gdp 'capitalize punctuation path)))
 	   (unless (or (null capitalize) (eq 'none capitalize)
 		       (eq 'no capitalize))
-	     (setq lstring 
+	     (setq lstring
 		   (cons (string-capitalize (car lstring) :end 1)
 			 (cdr lstring))))
 	   (when (stringp before)
@@ -658,7 +658,7 @@
 ;; ------------------------------------------------------------
 
 (defun PLURALIZE (word-string)
-  "Handles word-string ending in ch, sh, o, s, x, y, and z 
+  "Handles word-string ending in ch, sh, o, s, x, y, and z
   as well as regular forms."
   (let* ((n (length word-string))
          (next-to-final (elt word-string (- n 2)))
@@ -673,7 +673,7 @@
                    (concatenate 'string word-string "s")))
           (#\y (if (not (vowel next-to-final))
                    (concatenate 'string (subseq word-string 0 (1- n)) "ies")
-                   (concatenate 'string word-string "s"))) 
+                   (concatenate 'string word-string "s")))
           (t (concatenate 'string word-string "s")))))
 
 

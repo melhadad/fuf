@@ -7,7 +7,7 @@
 ;;; utilities may be obtained by anonymous ftp from a.gp.cs.cmu.edu
 ;;; (128.2.242.7) in the directory /usr/mkant/Public/ (you must cd to this
 ;;; directory in one fell swoop, as you do not have access to intermediate
-;;; directories). 
+;;; directories).
 ;;; Author:       Joseph Bates, CMU CSD
 ;;; Created:      March 1988
 ;;; Modified:     include insert parameter to psgraph, Dec 1988
@@ -249,7 +249,7 @@
 		  (when (eql r 'no)
 			(setq collision t)
 			(return))))
-				 
+
 	     ;;; if no collision and big enough space then we win
 	     (incf upward-top)
 	     (when (and (not collision) (= (- upward-top upward-bot) height))
@@ -275,7 +275,7 @@
 	     (when (and (not collision) (= (- downward-top downward-bot) height))
 		   (setf desired-y (+ 1 downward-bot))
 		   (return))
-	     
+
 	     (when collision
 		   (setf downward-top downward-bot))
 	   )
@@ -290,7 +290,7 @@
 	 (setf maximum-y
 	       (max maximum-y (+ (psnode-yvalue (aref narray index))
 				 (psnode-height (aref narray index))))))))
-		       
+
   ;;; compute y-offset to center graph vertically
   (setq rows (ceiling (- maximum-y minimum-y) pageheight))
   (setq y-offset (- (floor (- (* rows pageheight) (- maximum-y minimum-y)) 2)
@@ -307,7 +307,7 @@
      (format t "/box~D {~%" index)
      (format t "xarray ~D get ~D widtharray ~D get ~D drawbox~%"
 	     index
-	     (+ y-offset 
+	     (+ y-offset
 		(psnode-yvalue (aref narray index))
                 (floor extra-y-spacing 2))
 	     index
@@ -430,7 +430,7 @@
 	  (format t "{drawgraph} maximum-x pagewidth div ceiling ~
 	             ~D printposter end~%"
 		  rows)))
-  
+
 )
 
 
@@ -464,7 +464,7 @@
 			      (psnode-parents (aref narray child-index))))))))
     root-index)
 )
-	  
+
 (defun top-sort-node (index)
   (when (not (psnode-appears-in-top-sort (aref narray index)))
 

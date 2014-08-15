@@ -31,9 +31,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -48,7 +48,7 @@
 
 
 ;; ------------------------------------------------------------
-;; TRACING 
+;; TRACING
 ;; ------------------------------------------------------------
 (defun internal-trace-on () (setq *bigtracing* t))
 (defun internal-trace-off () (setq *bigtracing* nil))
@@ -112,10 +112,10 @@ No argument or nil to turn off trace, n to emit . every n backtracking points."
    If cat is nil, untrace all categories.
    If status is t, trace category cat, otw, untrace it.
    Works if cat is a symbol or a list of symbols."
-  (cond 
+  (cond
    ((null cat) (setf *traced-categories* nil))
    ((eq cat :all) (setf *traced-categories* :all))
-   (status 
+   (status
     (cond ((symbolp cat)
 	   (if (eq *traced-categories* :all)			; new
 	       (setf *traced-categories* (list cat))		; new
@@ -142,22 +142,22 @@ No argument or nil to turn off trace, n to emit . every n backtracking points."
    If cat is nil, un-hyper-trace all categories.
    If status is t, hyper-trace category cat, otw, un-hyper-trace it.
    Works if cat is a symbol or a list of symbols."
-  (cond 
+  (cond
    ((null cat) (setf *hyper-traced-categories* nil))
    ((eq cat :all) (setf *hyper-traced-categories* :all))
-   (status 
+   (status
     (cond ((symbolp cat)
 	   (pushnew cat *hyper-traced-categories*))
 	  ((and (consp cat) (every #'symbolp cat))
-	   (setf *hyper-traced-categories* 
+	   (setf *hyper-traced-categories*
 		 (union cat *hyper-traced-categories*)))
 	  (t (error "Argument must be a symbol or a list of symbols"))))
    ((null status)
     (cond ((symbolp cat)
-	   (setf *hyper-traced-categories* 
+	   (setf *hyper-traced-categories*
 		 (remove cat *hyper-traced-categories*)))
 	  ((and (consp cat) (every #'symbolp cat))
-	   (setf *hyper-traced-categories* 
+	   (setf *hyper-traced-categories*
 		 (set-difference *hyper-traced-categories* cat)))
 	  (t (error "Argument must be a symbol or a list of symbols"))))))
 
@@ -222,7 +222,7 @@ No argument or nil to turn off trace, n to emit . every n backtracking points."
 			flag))
 	      (pushnew flag *trace-disabled*))
 	  lflags)
-    (format t "~s flags still enabled.~%" 
+    (format t "~s flags still enabled.~%"
 	    (max 0 (- (length atf) (length *trace-disabled*)))))
   (values))
 
@@ -231,7 +231,7 @@ No argument or nil to turn off trace, n to emit . every n backtracking points."
   (setq *trace-disabled* nil)
   (format t "All ~s flags enabled.~%" (length (all-tracing-flags grammar)))
   (values))
-  
+
 (defun trace-disable-all (&optional (grammar *u-grammar*))
   "Disable all active tracing flags. Use trace-disable to selectively
    reenable one of the flags."
@@ -244,12 +244,12 @@ No argument or nil to turn off trace, n to emit . every n backtracking points."
   (let ((atf (all-tracing-flags grammar)))
     (setq *trace-disabled*
 	  (union *trace-disabled* (match-symbols atf string)))
-    (format t "~s are disabled.~%~s flags still enabled.~%" 
-	    *trace-disabled* 
+    (format t "~s are disabled.~%~s flags still enabled.~%"
+	    *trace-disabled*
 	    (max 0 (- (length atf) (length *trace-disabled*)))))
   (values))
 
-(defun trace-enable-match (string &optional (grammar *u-grammar*))  
+(defun trace-enable-match (string &optional (grammar *u-grammar*))
   "Enable all tracing flags whose name matches string"
   (let ((match 	(match-symbols (all-tracing-flags grammar) string)))
     (setq *trace-disabled* (set-difference *trace-disabled* match))
@@ -280,7 +280,7 @@ No argument or nil to turn off trace, n to emit . every n backtracking points."
   "Given a list of symbols and a pattern, returns the sublist of
    symbols whose name match string and those who don't (2 values)"
   (let ((match nil) (no-match nil) (string (string-upcase string)))
-    (mapc #'(lambda (s) 
+    (mapc #'(lambda (s)
 	      (if (search string (symbol-name s))
 		  (push s match)
 		(push s no-match)))
@@ -324,11 +324,11 @@ the order in which they appear in grammar."
 (defun walk-fd (fd collect)
   (cond ((leaf-p fd) collect)
 	((path-p fd) collect)
-	((leaf-p (car fd)) 
+	((leaf-p (car fd))
 	 (walk-fd (cdr fd) (cons (car fd) collect)))
-	((eq (caar fd) 'alt) 
+	((eq (caar fd) 'alt)
 	 (walk-fd (cdr fd) (walk-alt (car fd) collect)))
-	((eq (caar fd) 'ralt) 
+	((eq (caar fd) 'ralt)
 	 (walk-fd (cdr fd) (walk-alt (car fd) collect)))
 	((eq (caar fd) 'opt)
 	 (walk-fd (cdr fd) (walk-opt (car fd) collect)))
@@ -346,7 +346,7 @@ the order in which they appear in grammar."
   (multiple-value-bind (branches trace index) (branches alt-pair)
     (declare (ignore index))
     (when trace (push trace collect))
-    (mapc #'(lambda (fd) 
+    (mapc #'(lambda (fd)
 	      (setq collect (walk-fd fd collect)))
 	  branches)
     collect))

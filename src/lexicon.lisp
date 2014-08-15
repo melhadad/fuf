@@ -2,7 +2,7 @@
 ;;; -----------------------------------------------------------------------
 ;;; File:         LEXICON.L
 ;;; Description:  Lexicon for FUG5
-;;; Author:       Jay Meyer 
+;;; Author:       Jay Meyer
 ;;; Created:      16-Mar-87
 ;;; Modified:     01-Jul-88 (Michael Elhadad)
 ;;;               30 Apr 90 - moved exports from here to fug5
@@ -11,9 +11,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -28,10 +28,10 @@
 ;; -----------------------------------------------------------------------
 ;; Lexicon - JMyers comments as of 3/16/87
 ;; The lexicon contains only irregular plurals and irregular verb conjugations
-;; [and pronouns - experimental]. It is accessed during the process of 
+;; [and pronouns - experimental]. It is accessed during the process of
 ;; linearization.  Entries are represented as strings to control capitalization
 ;; and to allow the use of phrases.  There is no particular rationale for the
-;; entries listed here and the lexicon should be extended as needed. 
+;; entries listed here and the lexicon should be extended as needed.
 ;; -----------------------------------------------------------------------
 
 
@@ -49,17 +49,17 @@
 	("data" "data")
 	("deer" "deer")
 	("die" "dice")
-	("elf" "elves") 
+	("elf" "elves")
 	("glasses" "glasses")
 	("goods" "goods")
 	("goose" "geese")
-	("half" "halves") 
+	("half" "halves")
 	("knife" "knives")
 	("leaf" "leaves")
 	("life" "lives")
 	("loaf" "loaves")
 	("man" "men")
-	("many" "many") 
+	("many" "many")
 	("mouse" "mice")
 	("oats" "oats")
 	("ox" "oxen")
@@ -82,14 +82,14 @@
 	("those" "those")
 	("tongs" "tongs")
 	("trousers" "trousers")
-	("trout" "trout") 
+	("trout" "trout")
 	("which" "which")
 	("wife" "wives")
 	("woman" "women")))
 
-;; (sort *irreg-plurals* #'string-lessp :key #'car) 
+;; (sort *irreg-plurals* #'string-lessp :key #'car)
 
-;; The irregular conjugation of "to be" is handled by a function 
+;; The irregular conjugation of "to be" is handled by a function
 ;; in the linearizer (morph-be).
 
 (setq *irreg-verbs*
@@ -151,12 +151,12 @@
 	("we" "us" "ours" "ourselves")
 	("they" "them" "theirs" "themselves")))
 
-;; Lexfetch is the function called during linearization 
-;; to retrieve information from the lexicon 
+;; Lexfetch is the function called during linearization
+;; to retrieve information from the lexicon
 (defun lexfetch (key property)
   "Retrieve information from the lexicon.
   Called during linearization.
-  Properties can be: 
+  Properties can be:
   verb : present-third-person-singular past present-participle past-participle
   noun : plural
   pronoun : subjective objective possessive reflexive."
@@ -167,17 +167,17 @@
   "Stores irregular lexical information into lexicon.
   For the possible properties cf lexfetch."
   (let ((oldvalue (lexfetch key property)))
-       (if oldvalue 
+       (if oldvalue
 	   (rplacd (safe-assoc property (gethash key *dictionary*)) value)
-	   (setf (gethash key *dictionary*) 
+	   (setf (gethash key *dictionary*)
 		 (acons property value (gethash key *dictionary*))))))
- 
+
 (defun store-plurals (list)
   (mapc #'(lambda (x) (lexstore (car x) 'plural (cadr x)))
 	list))
 
 (defun store-verbs (list)
-  (mapc #'(lambda (x) 
+  (mapc #'(lambda (x)
 	    (let ((key (car x)))
 	      (lexstore key 'present-third-person-singular (second x))
 	      (lexstore key 'past (third x))
@@ -204,7 +204,7 @@
 	      (lexstore key 'feminine (second x))
 	      (lexstore key 'neuter (third x))))
 	*pronouns-gender*)
-  (mapc #'(lambda (x) 
+  (mapc #'(lambda (x)
 	    (let ((key (car x)))
 	      (lexstore key 'objective (second x))
 	      (lexstore key 'possessive (third x))

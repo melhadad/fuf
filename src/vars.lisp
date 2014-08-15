@@ -11,10 +11,9 @@
 ;;;               07 Jun 1994: add *conflate-leaves*
 ;;; Package:      FUG5
 ;;; -----------------------------------------------------------------------
-;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
 ;;;
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
 ;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
@@ -60,7 +59,7 @@
   l)
 
 (defun print-path (path stream depth)
-  (declare (ignore depth))
+  (declare (ignore depth) (type stream stream))
   (format stream "{~{~s~^ ~}}" (path-l path)))
 
 (defun copy-path (path)
@@ -84,14 +83,16 @@
 ;;; This prevents } from being part of form
 (set-macro-character #\} (get-macro-character #\)))
 
-(defun normalize-path (list &optional result &aux n)
+(defun normalize-path (list &optional result)
   "Transforms JR's chars into their normal meaning:
    ^ and ^~ stand for themselves
    ^n stands for n ^ in sequence
    ^n~ stands for n ^ followed by ^~
    ~n stands for cdr n-1 times followed by car."
   (let* ((s (if (symbolp (car list)) (symbol-name (car list))))
-	 (l (if s (length s))))
+	 (l (if s (length s)))
+         (n 0))
+    (declare (type fixnum n))
     (cond ((null list) (nreverse result))
 	  ;; don't test for (eq '^) so that reader works even in packages
 	  ;; that do not import fug5::^.
@@ -132,7 +133,7 @@
 ;; VARIABLES
 ;; ============================================================
 
-(defvar *fuf-dir* "c:/documents and settings/michael/application data/fuf/"
+(defvar *fuf-dir* "c:/Users/Michael/fuf/"
   "The root folder containing the FUF and SURGE package")
 
 (defvar *fuf-src-dir* (concatenate 'string *fuf-dir* "src/")

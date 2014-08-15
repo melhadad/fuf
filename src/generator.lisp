@@ -13,9 +13,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -31,13 +31,13 @@
 ; --------------------------------------------------------------------------
 ; Comments :
 ; --------------------------------------------------------------------------
-; A generator is a pair : (VALUE . CONTINUATION) or nil.                   
-; nil is the empty generator.                                              
-; where VALUE is any lisp object, and CONTINUATION is a closure            
-; CONT. should require no argument (something like #'(lambda () ...))      
-; (that is what Scheme calls a thunk).					   
-; The value of CONT. must be a new generator.				   
-; Patterned after SCHEME streams.					   
+; A generator is a pair : (VALUE . CONTINUATION) or nil.
+; nil is the empty generator.
+; where VALUE is any lisp object, and CONTINUATION is a closure
+; CONT. should require no argument (something like #'(lambda () ...))
+; (that is what Scheme calls a thunk).
+; The value of CONT. must be a new generator.
+; Patterned after SCHEME streams.
 ; --------------------------------------------------------------------------
 
 
@@ -64,7 +64,7 @@
       *the-empty-generator*
       ; cons-gen
       (cons (car list) #'(lambda nil (list->gen (cdr list))))))
-  
+
 (defun gen-first (generator)
   "Returns the first value of a generator"
   (if (empty generator)
@@ -114,7 +114,7 @@
 
 
 (defun mapgen (f gen)
-  "Returns a generator whose values are those of gen modified by the 
+  "Returns a generator whose values are those of gen modified by the
   application of f"
   (if (empty gen)
       gen
@@ -137,7 +137,7 @@
   The order of traversal of the 2 generators is j varying the faster."
   (if (or (empty gen1) (empty gen2))
       *the-empty-generator*
-      (concatgen 
+      (concatgen
        (mapgen #'(lambda (first2) (funcall f (gen-first gen1) first2)) gen2)
        #'(lambda () (multiplygen f (next gen1) gen2)))))
 

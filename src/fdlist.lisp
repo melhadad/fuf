@@ -12,9 +12,9 @@
 ;;; ------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -60,7 +60,7 @@
 	  ((eq rest 'none) (cons first nil))
 	  (t
 	   (cons first (FD-to-prolog-aux rest (path-extend path 'cdr)))))))
-  
+
 
 
 (defun list-to-FD (l)
@@ -85,11 +85,11 @@
   (cond ((leaf-p fd) (format stream "~s" fd))
 	((path-p fd) (format stream "~s" fd))
 	((safe-assoc 'car fd)
-	 (format stream "[~{~a~%~}]" 
-		 (mapcar #'(lambda (f) (print-fd f nil)) 
+	 (format stream "[~{~a~%~}]"
+		 (mapcar #'(lambda (f) (print-fd f nil))
 			 (fd-to-prolog fd nil))))
 	(t (format stream "(~{(~s ~a)~%~})"
-		   (mapcan #'(lambda (pair) 
+		   (mapcan #'(lambda (pair)
 			       (list (car pair) (print-fd (second pair) nil)))
 			   fd)))))
 

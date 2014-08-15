@@ -8,6 +8,17 @@
 ;;; Modified    :
 ;;; Language    : FUF
 ;;; ------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
+;;; -----------------------------------------------------------------------
 
 (in-package :fug5)
 
@@ -98,7 +109,8 @@
 			     (definite no)
 			     (lex "Sunday")))))))))
 
-(store-verbs '(("work out" "works out" "worked out" "working out" "worked out")))
+(store-verbs
+ '(("work out" "works out" "worked out" "working out" "worked out")))
 
 
 ;; Tests: direction as common
@@ -125,6 +137,7 @@
 ;; a way to specify partial ordering constraints in the input overriding
 ;; the default is needed.
 
+;; Either you specify by order - no semantic role.
 (def-test c5bis
   "Bo runs home this way often now."
   ((cat clause)
@@ -136,28 +149,25 @@
    (end-adverbial-4 ((cat adv) (lex "now")))))
 
 
-;; Example of duplication of semantic roles:
-;; outputs "Often, Bo runs often, this way home now."
-;;          ^^^^^          ^^^^^
-#+ignore(def-test c5ter
-  "Bo runs often home this way now."
+;; Or you use the semantic roles and rely on default ordering.
+(def-test c5ter
+  "Often, Bo runs this way home now."
   ((cat clause)
    (process ((type material) (effective no) (lex "run")))
    (partic ((agent ((cat basic-proper) (lex "Bo")))))
    (pred-modif ((destination ((cat adv) (lex "home")))
 		(direction ((cat common) (distance near) (lex "way")))))
    (circum ((frequency ((cat adv) (lex "often")))
-	    (time ((cat adv) (lex "now")))))
-   (end-adverbial-1 {^ circum frequency})))
+	    (time ((cat adv) (lex "now")))))))
 
 ;; Alternative analysis with destination as participant
-#+ignore(def-test c5bis
-  "Bo often runs home this way now."
+(def-test c5quad
+  "Often, Bo runs home this way now."
   ((cat clause)
    (process ((type composite) (relation-type locative) (lex "run")))
    (partic ((agent ((cat basic-proper) (lex "Bo")))
 	    (located {^ agent})
-	    (destination ((cat adv) (lex "home")))))
+	    (location ((cat adv) (lex "home")))))
    (pred-modif ((direction ((cat common) (distance near) (lex "way")))))
    (circum ((frequency ((cat adv) (lex "often")))
 	    (time ((cat adv) (lex "now")))))))
@@ -189,13 +199,14 @@
 					     (total +)
 					     (describer ((lex "authorized")))
 					     (head ((lex "user")))))))))))))))
-   (circum ((time ((cat clause)
-		   (mood bound-adverbial)
-		   (binder ((lex "as soon as")))
-		   (process ((type mental) (lex "find")))
-		   (partic ((processor ((cat personal-pronoun) (person second)))
-			    (phenomenon ((cat personal-pronoun)
-					 (index {^5 partic affected index})))))))))))
+   (circum
+    ((time ((cat clause)
+            (mood bound-adverbial)
+            (binder ((lex "as soon as")))
+            (process ((type mental) (lex "find")))
+            (partic ((processor ((cat personal-pronoun) (person second)))
+                     (phenomenon ((cat personal-pronoun)
+                                  (index {^5 partic affected index})))))))))))
 
 
 ;; Tests: direction as PP
@@ -229,9 +240,9 @@
 				    (lex "weight")))))))))))
 
 
-;; Tests: splitted complex time PP
-#+ignore(def-test c8
-  "On Monday, I will call you at noon."
+;; Tests: complex time PP
+(def-test c8
+  "I will call you on Monday, at noon."
   ((cat clause)
    (tense future)
    (process ((type verbal) (lex "call")))
@@ -239,7 +250,7 @@
 	    (addressee ((cat personal-pronoun) (person second)))))
    (circum ((time ((cat pp)
 		   (complex apposition)
-		   (elements ~(((prep ((lex "on")))
+		   (distinct ~(((prep ((lex "on")))
 				(np ((cat basic-proper) (lex "Monday"))))
 			       ((prep ((lex "at")))
 				(np ((cat basic-proper) (lex "noon"))))))))))))
@@ -330,8 +341,9 @@
 (def-test c12
   "With his knees hampering him, Blackman has not played since becoming a Knick."
   ((cat clause)
-   (tense present-perfect)  ;; note the tense constraint: past tense in the matrix
-                            ;; would require a finite subordinate
+   (tense present-perfect)
+   ;; note the tense constraint: past tense in the matrix
+   ;; would require a finite subordinate
    (polarity negative)
    (process ((type material) (effective no) (lex "play")))
    (partic ((agent ((cat basic-proper) (lex "Blackman") (gender masculine)))))
@@ -340,7 +352,9 @@
 		(mood present-participle)
 		(controlled {^ partic agent})
 		(binder ((lex "since")))
-		(process ((type composite) (relation-type ascriptive) (lex "become")))
+		(process ((type composite)
+                          (relation-type ascriptive)
+                          (lex "become")))
 		(partic ((agent ((index {^5 partic agent index})))
 			 (carrier {^ agent})
 			 (attribute ((cat common)
@@ -375,7 +389,8 @@
 	    (co-event ((cat clause)
 		       (mood bound-adverbial)
 		       (habitual yes)
-		       (process ((type material) (effective no) (lex "resurface")))
+		       (process ((type material) (effective no)
+                                 (lex "resurface")))
 		       (partic ((agent ((cat common)
 					(countable no)
 					(lex "pain")))))))))))
@@ -462,7 +477,8 @@
    (tense past)
    (process ((type material) (effective no) (lex "miss")))
    (partic ((agent ((cat basic-proper) (lex "Bo")))
-	    (range ((cat measure) (quantity ((value 11))) (unit ((lex "game")))))))
+	    (range ((cat measure) (quantity ((value 11)))
+                    (unit ((lex "game")))))))
    (circum
     ((co-event
       ((cat clause)
@@ -472,11 +488,12 @@
        (position front)
        (process ((type material) (lex "injure")))
        (partic ((affected ((index {^5 partic agent index})))))
-       (circum ((opposition ((cat pp)
-			     (np ((cat compound-proper)
-				  (number plural)
-				  (head ((cat team-name)
-					 (franchise ((lex "Giant")))))))))))))))))
+       (circum ((opposition
+                 ((cat pp)
+                  (np ((cat compound-proper)
+                       (number plural)
+                       (head ((cat team-name)
+                              (franchise ((lex "Giant")))))))))))))))))
 
 
 ;; Tests: co-event as verbless clause
@@ -562,26 +579,28 @@
    (process ((type ascriptive)))
    (partic
     ((carrier ((cat basic-proper) (lex "Bo") (gender masculine)))
-     (attribute ((cat ap)
-		 (head ((lex "unable")))
-		 (qualifier ((cat clause)
-			     (mood to-infinitive)
-			     (process ((type material) (effective no) (lex "play")))
-			     (partic ((agent ((index {^5 carrier index})))))
-			     (circum ((reason ((cat pp)
-					       (np ((cat common)
-						    (denotation illness)
-						    (lex "injury")))))))))))))
+     (attribute
+      ((cat ap)
+       (head ((lex "unable")))
+       (qualifier ((cat clause)
+                   (mood to-infinitive)
+                   (process ((type material) (effective no) (lex "play")))
+                   (partic ((agent ((index {^5 carrier index})))))
+                   (circum ((reason ((cat pp)
+                                     (np ((cat common)
+                                          (denotation illness)
+                                          (lex "injury")))))))))))))
    (circum
-    ((result ((cat clause)
-	      (mood bound-adverbial)
-	      (binder ((lex "so")))
-	      (tense past)
-	      (process ((type composite) (relation-type locative) (lex "stay")))
-	      (partic ((agent ((cat personal-pronoun)
-			       (index {^5 partic carrier index})))
-		       (located {^ agent})
-		       (location ((cat adv) (lex "home")))))))))))
+    ((result
+      ((cat clause)
+       (mood bound-adverbial)
+       (binder ((lex "so")))
+       (tense past)
+       (process ((type composite) (relation-type locative) (lex "stay")))
+       (partic ((agent ((cat personal-pronoun)
+                        (index {^5 partic carrier index})))
+                (located {^ agent})
+                (location ((cat adv) (lex "home")))))))))))
 
 
 ;; Tests: result as to-infinitive clause
@@ -666,19 +685,20 @@
 		    (number plural)
 		    (definite no)
 		    (lex "commercial")))))
-   (circum ((exception ((cat pp) (np ((cat basic-proper) (lex "Bo")))))
-	    (purpose ((cat clause)
-		      (mood bound-adverbial)
-		      (binder ((lex "so")))
-		      (epistemic-modality possible)
-		      (process ((type material) (effect-type creative) (lex "make")))
-		      (partic ((agent ((cat personal-pronoun)
-				       (index {^5 partic agent index})))
-			       (created ((cat common)
-					 (countable no)
-					 (definite no)
-					 (classifier ((cat adj) (lex "extra")))
-					 (head ((lex "money")))))))))))))
+   (circum
+    ((exception ((cat pp) (np ((cat basic-proper) (lex "Bo")))))
+     (purpose ((cat clause)
+               (mood bound-adverbial)
+               (binder ((lex "so")))
+               (epistemic-modality possible)
+               (process ((type material) (effect-type creative) (lex "make")))
+               (partic ((agent ((cat personal-pronoun)
+                                (index {^5 partic agent index})))
+                        (created ((cat common)
+                                  (countable no)
+                                  (definite no)
+                                  (classifier ((cat adj) (lex "extra")))
+                                  (head ((lex "money")))))))))))))
 
 
 ;; Tests: purpose as to-infinitive clause
@@ -707,8 +727,9 @@
        (process ((type verbal) (lex "conceal")))
        (partic
 	((sayer ((index {^5 partic sayer index})))
-	 (verbalization ((cat personal-pronoun)
-			 (index {^4 substitution partic verbalization index})))))))))))
+	 (verbalization
+          ((cat personal-pronoun)
+           (index {^4 substitution partic verbalization index})))))))))))
 
 
 ;; Tests: behalf
@@ -728,17 +749,18 @@
 		   (position end)
 		   (prep ((lex "on")))
 		   (np ((cat basic-proper) (lex "Sunday")))))
-	    (condition ((cat clause)
-			(position front)
-			(mood bound-adverbial)
-			(process ((type ascriptive)))
-			(partic ((carrier ((cat personal-pronoun)
-					   (index {^5 partic agent index})))
-				 (attribute ((cat ap)
-					     (classifier ((cat measure)
-							  (quantity ((value 100)))
-							  (unit ((lex "percent")))))
-					     (head ((lex "fit")))))))))))))
+	    (condition
+             ((cat clause)
+              (position front)
+              (mood bound-adverbial)
+              (process ((type ascriptive)))
+              (partic ((carrier ((cat personal-pronoun)
+                                 (index {^5 partic agent index})))
+                       (attribute ((cat ap)
+                                   (classifier ((cat measure)
+                                                (quantity ((value 100)))
+                                                (unit ((lex "percent")))))
+                                   (head ((lex "fit")))))))))))))
 
 
 
@@ -752,24 +774,25 @@
    (process ((type material) (agentive no) (lex "start")))
    (partic ((affected ((cat basic-proper) (lex "Bo") (gender masculine)))))
    (circum
-    ((concession ((cat clause)
-		  (tense past)
-		  (binder ((lex "even though")))
-		  (polarity negative)
-		  (process ((type ascriptive)))
-		  (partic ((carrier ((cat personal-pronoun)
-				     (index {^5 partic affected index})))
-			   (attribute ((cat common)
-				       (definite no)
-				       (lex "starter")))))
-		  (circum ((time ((cat pp)
-				  (prep ((lex "at")))
-				  (np ((cat common)
-				       (head ((lex "beginning")))
-				       (qualifier ((cat pp)
-						   (prep ((lex "of")))
-						   (np ((cat common)
-							(lex "season")))))))))))))
+    ((concession
+      ((cat clause)
+       (tense past)
+       (binder ((lex "even though")))
+       (polarity negative)
+       (process ((type ascriptive)))
+       (partic ((carrier ((cat personal-pronoun)
+                          (index {^5 partic affected index})))
+                (attribute ((cat common)
+                            (definite no)
+                            (lex "starter")))))
+       (circum ((time ((cat pp)
+                       (prep ((lex "at")))
+                       (np ((cat common)
+                            (head ((lex "beginning")))
+                            (qualifier ((cat pp)
+                                        (prep ((lex "of")))
+                                        (np ((cat common)
+                                             (lex "season")))))))))))))
      (condition ((cat clause)
 		 (position front)
 		 (mood verbless)
@@ -838,18 +861,19 @@
    (tense past)
    (process ((type material) (effective no) (lex "retreat")))
    (partic ((agent ((cat basic-proper) (lex "Bo") (gender masculine)))))
-   (pred-modif ((distance ((cat measure)
-			   (quantity ((value 5)))
-			   (unit ((lex "mile")))))
-		(destination ((cat clause)
-			      (mood bound-adverbial)
-			      (tense past)
-			      (binder ((lex "towards where")))
-			      (process ((type material)
-					(effective no)
-					(lex "come from")))
-			      (partic ((agent ((cat personal-pronoun)
-					       (index {^5 partic agent index})))))))))
+   (pred-modif
+    ((distance ((cat measure)
+                (quantity ((value 5)))
+                (unit ((lex "mile")))))
+     (destination ((cat clause)
+                   (mood bound-adverbial)
+                   (tense past)
+                   (binder ((lex "towards where")))
+                   (process ((type material)
+                             (effective no)
+                             (lex "come from")))
+                   (partic ((agent ((cat personal-pronoun)
+                                    (index {^5 partic agent index})))))))))
 ;; This non-composite analysis of "he came from" sounds weird, so it might
 ;; in this case be a relative clause with gap. The problem is to find a
 ;; criteria to distinguish it with the usages of where in locative adjuncts.
@@ -865,18 +889,20 @@
 				 (np ((cat common)
 				      (denotation zero-article-thing)
 				      (lex "doubt")))))))
-	    (circum ((matter ((cat pp)
-			      (prep ((lex "concerning")))
-			      (np ((cat common)
-				   (possessor ((cat personal-pronoun)
-					       (index {^5 partic carrier index})))
-				   (head ((lex "position")))))))))))
+	    (circum
+             ((matter ((cat pp)
+                       (prep ((lex "concerning")))
+                       (np ((cat common)
+                            (possessor ((cat personal-pronoun)
+                                        (index {^5 partic carrier index})))
+                            (head ((lex "position")))))))))))
      (manner ((cat adv) (lex "cautiously")))
-     (substitution ((cat clause)
-		    (mood present-participle)
-		    (controlled {^ partic processor})
-		    (process ((type mental) (transitive no) (lex "panic")))
-		    (partic ((processor ((index {^5 partic agent index})))))))))))
+     (substitution
+      ((cat clause)
+       (mood present-participle)
+       (controlled {^ partic processor})
+       (process ((type mental) (transitive no) (lex "panic")))
+       (partic ((processor ((index {^5 partic agent index})))))))))))
 
 (store-verbs '(("come from" "comes from" "came from" "coming from" "came from")))
 (store-verbs '(("panic" "panics" "panicked" "panicking" "panicked")))
@@ -892,8 +918,9 @@
    (mood imperative)
    (process ((type material) (effective no) (lex "resist")))
    (partic ((agent ((cat personal-pronoun) (person second)))))
-   (pred-modif ((manner ((cat pp)
-			 (np ((cat common) (lex "obstination") (countable no)))))))
+   (pred-modif
+    ((manner ((cat pp)
+              (np ((cat common) (lex "obstination") (countable no)))))))
    (circum
     ((duration ((cat clause)
 		(position end)
@@ -1038,25 +1065,27 @@
    (process ((type material) (lex "kill")))
    (partic ((agent ((cat basic-proper) (lex "Drexler")))
 	    (affected ((cat personal-pronoun) (person second)))))
-   (circum ((comparison ((cat pp) (np ((cat basic-proper) (lex "Jordan")))))
-	    (concessive-condition
-	     ((cat clause)
-	      (mood past-participle)
-	      (controlled {^ partic affected})
-	      (process ((type material)
-			(lex "slow down")
-			(agentless no)))
-	      (partic ((agent ((cat common) (denotation illness) (lex "injury")))
-		       (affected ((index {^5 partic agent index})))))))
-	    (location ((cat pp)
-		       (prep ((lex "from")))
-		       (np ((cat common)
-			    (denotation zero-article-thing)
-			    (lex "outside")))))))))
+   (circum
+    ((comparison ((cat pp) (np ((cat basic-proper) (lex "Jordan")))))
+     (concessive-condition
+      ((cat clause)
+       (mood past-participle)
+       (controlled {^ partic affected})
+       (process ((type material)
+                 (lex "slow down")
+                 (agentless no)))
+       (partic ((agent ((cat common) (denotation illness) (lex "injury")))
+                (affected ((index {^5 partic agent index})))))))
+     (location ((cat pp)
+                (prep ((lex "from")))
+                (np ((cat common)
+                     (denotation zero-article-thing)
+                     (lex "outside")))))))))
 ;; outside as a noun seems weird but [prep adv] definitely can't be a
 ;; proper constituent, right Master Capelovici?
 
-(store-verbs '(("slow down" "slows down" "slowed down" "slowing down" "slowed down")))
+(store-verbs
+ '(("slow down" "slows down" "slowed down" "slowing down" "slowed down")))
 
 
 ;; Tests: concession as past-participle clause
@@ -1106,28 +1135,29 @@
        (binder ((lex "as")))
        (process ((type material) (effective no) (lex "do")))
 
-                ;; Should really be:
-                ;; (cat pro-verb)
-		;; (index {^4 process index})
-                ;; Such pro-form inference for verb would be quite nice isn't it?
-
+       ;; Should really be:
+       ;; (cat pro-verb)
+       ;; (index {^4 process index})
+       ;; Such pro-form inference for verb would be quite nice wouldn't it?
        (partic ((agent ((cat personal-pronoun)
 			(index {^5 partic agent index})))))
        (circum
 	((accompaniment
 	  ((cat pp)
 	   (np ((cat personal-pronoun)
-		(index {^6 circum concession circum accompaniment np index})))))))))))
-   (circum ((concession ((cat clause)
-			 (mood present-participle)
-			 (controlled {^ partic agent})
-			 (process ((type material) (effective no) (lex "play")))
-			 (partic ((agent ((index {^5 partic agent index})))))
-			 (circum ((accompaniment ((cat pp)
-						  (accomp-polarity -)
-						  (np ((cat basic-proper)
-						       (gender masculine)
-						       (lex "Bo")))))))))))))
+		(index
+                 {^6 circum concession circum accompaniment np index})))))))))))
+   (circum ((concession
+             ((cat clause)
+              (mood present-participle)
+              (controlled {^ partic agent})
+              (process ((type material) (effective no) (lex "play")))
+              (partic ((agent ((index {^5 partic agent index})))))
+              (circum ((accompaniment ((cat pp)
+                                       (accomp-polarity -)
+                                       (np ((cat basic-proper)
+                                            (gender masculine)
+                                            (lex "Bo")))))))))))))
 
 (store-verbs '(("win" "wins" "won" "winning" "won")))
 
@@ -1204,25 +1234,26 @@
        (partic
 	((agent ((index {^5 partic agent index})))
 	 (possessor {^ agent})
-	 (possessed ((cat compound-proper)
-		     (head ((cat person-name)
-			    (last-name ((lex "Bowman")))))
-		     (qualifier
-		      ((cat clause)
-		       (mood possessive-relative)
-		       (restrictive no)
-		       (process ((type ascriptive)))
-		       (scope {^ partic carrier})
-		       (partic ((carrier ((cat common)
-					  (classifier ((cat verb)
-						       (ending present-participle)
-						       (lex "pass")))
-					  (head ((lex "game")))))
-				(attribute ((cat ap) (lex "exceptional")))))
-		       (circum ((standard ((cat pp)
-					   (np ((cat common)
-						(definite no)
-						(lex "seven footer")))))))))))))
+	 (possessed
+          ((cat compound-proper)
+           (head ((cat person-name)
+                  (last-name ((lex "Bowman")))))
+           (qualifier
+            ((cat clause)
+             (mood possessive-relative)
+             (restrictive no)
+             (process ((type ascriptive)))
+             (scope {^ partic carrier})
+             (partic ((carrier ((cat common)
+                                (classifier ((cat verb)
+                                             (ending present-participle)
+                                             (lex "pass")))
+                                (head ((lex "game")))))
+                      (attribute ((cat ap) (lex "exceptional")))))
+             (circum ((standard ((cat pp)
+                                 (np ((cat common)
+                                      (definite no)
+                                      (lex "seven footer")))))))))))))
        (pred-modif ((means ((cat pp)
 			    (prep ((lex "through")))
 			    (np ((cat common) (lex "free agency")))))))
@@ -1234,7 +1265,8 @@
 	   (position end)
 	   (mood present-participle)
 	   (controlled {^ partic agent})
-	   (process ((type composite) (relation-type possessive) (lex "trade for")))
+	   (process
+            ((type composite) (relation-type possessive) (lex "trade for")))
 	   (partic
 	    ((agent ((index {^5 partic agent index})))
 	     (possessor {^ agent})
@@ -1257,7 +1289,8 @@
 			  (classifier ((lex "defensive")))
 			  (head ((lex "stopper")))))))))))))))))))))))))
 
-(store-verbs '(("trade for" "trades for" "traded for" "trading for" "traded for")))
+(store-verbs
+ '(("trade for" "trades for" "traded for" "trading for" "traded for")))
 
 ;; Tests: comparison as verbless clause
 ;;        means as adverb
@@ -1275,16 +1308,17 @@
        (mood verbless)
        (process ((type ascriptive)))
        (controlled {^ partic carrier})
-       (partic ((carrier ((index {^5 partic agent index})))
-		(attribute ((cat ap)
-			    (head ((lex "afraid")))
-			    (qualifier ((cat pp)
-					(prep ((lex "of")))
-					(np ((cat common)
-					     (number plural)
-					     (definite no)
-					     (describer ((lex "conventional")))
-					     (head ((lex "treatment")))))))))))))))))
+       (partic
+        ((carrier ((index {^5 partic agent index})))
+         (attribute ((cat ap)
+                     (head ((lex "afraid")))
+                     (qualifier ((cat pp)
+                                 (prep ((lex "of")))
+                                 (np ((cat common)
+                                      (number plural)
+                                      (definite no)
+                                      (describer ((lex "conventional")))
+                                      (head ((lex "treatment")))))))))))))))))
 
 
 ;; Tests: comparison as past-participle clause
@@ -1309,7 +1343,8 @@
 			    (describer ((lex "conventional")))
 			    (head ((lex "treatment")))))))))))))
 
-(store-verbs '(("frighten" "frightens" "frightened" "frightening" "frightened")))
+(store-verbs
+ '(("frighten" "frightens" "frightened" "frightening" "frightened")))
 
 
 ;; Tests: comparison as present-participle clause
@@ -1357,10 +1392,11 @@
 			(definite no)
 			(describer ((lex "conventional")))
 			(head ((lex "treatment")))))))))))
-   (circum ((co-event ((cat clause)
-		       (mood past-participle)
-		       (process ((type material) (lex "complete")))
-		       (partic ((affected ((cat common) (lex "analysis")))))))))))
+   (circum
+    ((co-event ((cat clause)
+                (mood past-participle)
+                (process ((type material) (lex "complete")))
+                (partic ((affected ((cat common) (lex "analysis")))))))))))
 
 
 ;; Alternative analysis, tests: verbless clause with subject
@@ -1404,14 +1440,15 @@
   ((identified ((cat common)
 		(ordinal ((value 1)))
 		(head ((lex "team")))
-		(qualifier ((cat clause)
-			    (mood present-participle)
-			    (process ((type material) (effective no) (lex "win")))
-			    (controlled {^ partic agent})
-			    (partic ((agent ((index {^5 identified index})))
-				     (range ((cat measure)
-					     (quantity ((value 2)))
-					     (unit ((lex "game")))))))))))
+		(qualifier
+                 ((cat clause)
+                  (mood present-participle)
+                  (process ((type material) (effective no) (lex "win")))
+                  (controlled {^ partic agent})
+                  (partic ((agent ((index {^5 identified index})))
+                           (range ((cat measure)
+                                   (quantity ((value 2)))
+                                   (unit ((lex "game")))))))))))
    (identifier
     ((cat common)
      (head ((lex "team")))
@@ -1429,8 +1466,9 @@
 		   (mood past-participle)
 		   (process ((type mental) (lex "recognize") (agentless no)))
 		   (controlled {^ partic phenomenon})
-		   (partic ((processor ((cat basic-proper) (lex "the WSL")))
-			    (phenomenon ((index {^5 range index})))))))))))))))))))
+		   (partic
+                    ((processor ((cat basic-proper) (lex "the WSL")))
+                     (phenomenon ((index {^5 range index})))))))))))))))))))
 
 
 ;; Tests: for-to-infinitive clause with subject as adverbial
@@ -1446,7 +1484,8 @@
 	       (mood for-to-infinitive)
 	       (binder none)
 	       (process ((type mental) (transitive no) (lex "graduate")))
-	       (partic ((processor ((cat personal-pronoun) (person second)))))))))))
+	       (partic ((processor ((cat personal-pronoun)
+                                    (person second)))))))))))
 
 ;; Tests: backward compatibility of condition w/ cond-relater
 (def-test c42

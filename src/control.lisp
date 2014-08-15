@@ -16,9 +16,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -44,7 +44,7 @@
 ;; If the evaluation of <sexpr> is non-nil, unification proceeds
 ;; otw it fails.
 ;; With CONTROL <sexpr> is evaluated at UNIFICATION-time
-;; with TEST    <sexpr> is evaluated at DETERMINATION-time 
+;; with TEST    <sexpr> is evaluated at DETERMINATION-time
 ;; therefore, TEST provides still an "order independent" unification.
 ;; Example:
 ;; ((a v)) // ((alt (((CONTROL (eq #@{a} #@{b})) (c w))
@@ -56,7 +56,7 @@
 (set-dispatch-macro-character #\# #\@
   #'(lambda (stream char arg)
       (declare (ignore char arg))
-      `(gdp *input* (absolute-path 
+      `(gdp *input* (absolute-path
 		     ',(read stream t nil t)
 		     path))))
 
@@ -67,13 +67,13 @@
 	((leaf-p l) l)
 	((path-p l) l)
 	((and (consp l) (eql (car l) 'gdp) (eql (second l) '*input*)
-	      (eql (car (third l)) 'absolute-path) 
+	      (eql (car (third l)) 'absolute-path)
 	      (eql (third (third l)) 'path))
 	 (cons '\@ (cdr (second (third l)))))
 	(t (cons (filter-macro-char (car l))
 		 (filter-macro-char (cdr l))))))
 
-(defun control-unify (fd1 fd2 path1 path2 frame fail success 
+(defun control-unify (fd1 fd2 path1 path2 frame fail success
 			  &key (pair :unknown))
   (if (or *ignore-control*
 	  (eval `(let ((path ',(path-extend path2 'control)) ;; PATH2!!!!
@@ -81,17 +81,17 @@
 		   ,(second (car fd2)))))
       (progn
        (trace-format (frame-trace-flags frame) frame 0
-		     "CONTROL succeeds: ~s at level ~s" 
+		     "CONTROL succeeds: ~s at level ~s"
 		     (filter-macro-char (car fd2)) path1)
        (unify fd1 (cdr fd2) path1 path2 frame fail success :pair pair))
-      (*fail* fail frame path1 path2 pair "Fail in testing ~s at level ~s" 
+      (*fail* fail frame path1 path2 pair "Fail in testing ~s at level ~s"
 	      (filter-macro-char (car fd2)) path2)))
 
 
-(defun test-unify (fd1 fd2 path1 path2 frame fail success 
+(defun test-unify (fd1 fd2 path1 path2 frame fail success
 		       &key (pair :unknown))
   "Just push the test in a global var that will be tested by Determine"
-  (push (make-test :test (second (car fd2)) 
+  (push (make-test :test (second (car fd2))
 		   :path (path-extend path2 'test))  ;; PATH2!!
 	(frame-tests frame))
   (unify fd1 (cdr fd2) path1 path2 frame fail success :pair pair))
@@ -100,5 +100,3 @@
 ;; -----------------------------------------------------------------------
 (provide "$fug5/control")
 ;; -----------------------------------------------------------------------
-
-

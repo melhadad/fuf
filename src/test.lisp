@@ -10,9 +10,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -33,7 +33,7 @@
        (format t "Redefining test ~s~%" ',name)
        (push ',name *ordered-tests*))
      (setf (gethash ',name *tests*) ',(list result input 'not-tested))))
-       
+
 (defun get-test (test)
   (second (gethash test *tests*)))
 
@@ -63,7 +63,7 @@
 		     (input (second val))
 		     (result (first val)))
 		(format t "~%====================~%")
-		(format t "~&~s --> ~s~%" 
+		(format t "~&~s --> ~s~%"
 			key (if (consp result) (car result) result))
 		(multiple-value-bind (fd new)
 		    (uni-fd-string input)
@@ -79,7 +79,7 @@
 		    (t
 		     (push key problems)
 		     (cond ((consp result)
-			    (format t "Expected one of:~%~{         ~s~%~}" 
+			    (format t "Expected one of:~%~{         ~s~%~}"
 				    result))
 			   (t (format t "Expected ~s~%" result)))
 		     (format t "Instead  ~s~%" new)
@@ -89,13 +89,13 @@
 		((symbolp item) (list item))))
     (format t "~%~%~s test~:P run - ~s correct.~%" total correct)
     (when problems
-      (format t "The following tests are incorrect: ~s~%" 
+      (format t "The following tests are incorrect: ~s~%"
 	      (nreverse problems)))
     (values problems)))
 
 
 
-(defun test (&key (fun 'uni-string-limit) (test 'equalp) from to 
+(defun test (&key (fun 'uni-string-limit) (test 'equalp) from to
 		  (timed nil) item)
   (let ((total 0)
 	(correct 0)
@@ -105,8 +105,8 @@
 	      (let* ((val (gethash key *tests*))
 		     (input (second val))
 		     (result (first val))
-		     (ignore (format 
-			      t "~&~s --> ~s~%" 
+		     (ignore (format
+			      t "~&~s --> ~s~%"
 			      key (if (consp result) (car result) result)))
 		     (new (if timed
 			    (time (funcall fun input))
@@ -123,7 +123,7 @@
 		 (t
 		  (push key problems)
 		  (cond ((consp result)
-			 (format t "Expected one of:~%~{         ~s~%~}" 
+			 (format t "Expected one of:~%~{         ~s~%~}"
 				 result))
 			(t (format t "Expected ~s~%" result)))
 		  (format t "Instead  ~s~%" new))))
@@ -133,7 +133,7 @@
 		((symbolp item) (list item))))
     (format t "~%~%~s test~:P run - ~s correct.~%" total correct)
     (when problems
-      (format t "The following tests are incorrect: ~s~%" 
+      (format t "The following tests are incorrect: ~s~%"
 	      (nreverse problems)))
     (values)))
 
@@ -158,9 +158,9 @@
 		     (fun 'uni-string-limit) (item nil))
   (let ((total 0))
     (format t "~%====================~%")
-    (mapc 
+    (mapc
      #'(lambda (test)
-	 (let* 
+	 (let*
 	     ((val (gethash test *tests*))
 	      (input (second val))
 	      (result (first val))
@@ -169,7 +169,7 @@
 		     (funcall fun (u fd (prep-input input))))))
 	   (incf total)
 	   (format t "~&~s --> ~s~%" test result)
-	   (format t "Without fd: ~s~%With fd   : ~s~%" 
+	   (format t "Without fd: ~s~%With fd   : ~s~%"
 		   result new)
 	   (format t "====================~%~%")))
      (cond ((consp item) item)
@@ -197,7 +197,7 @@
 		   (find-symbol (format nil "tense-~s" i)))
 	       (or (find-symbol (format nil "TENSE-~s" i))
 		   (find-symbol (format nil "tense-~s" i)))))
-       ((> i to) 
+       ((> i to)
 	(values))
        (format t "~%=======================~%")
        (format t "~s~%" tense)
@@ -213,10 +213,10 @@
 	   (uni (u '((proc ((voice passive))) (polarity negative)) tfd)
 		:limit *test-limit*))
 	 (when (and polarity question)
-	   (uni (cons '(mood yes-no) 
+	   (uni (cons '(mood yes-no)
 		      (cons '(polarity negative) tfd)) :limit *test-limit*))
 	 (when (and polarity passive question)
-	   (uni (u '((mood yes-no) (polarity negative) 
+	   (uni (u '((mood yes-no) (polarity negative)
 		     (proc ((voice passive)))) tfd)
 		:limit *test-limit*)))))
 
@@ -224,5 +224,3 @@
 ;; ============================================================
 (provide "$fug5/test")
 ;; ============================================================
-
-

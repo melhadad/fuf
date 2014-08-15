@@ -15,6 +15,17 @@
 ;;;                            - Added punctuation choice of others than comma
 ;;;               12 Oct 1997: - Added alt mood in complex clause.
 ;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
+;;; -----------------------------------------------------------------------
 
 ;; Complex constituents are syntactic complexes - either conjunction or
 ;; apposition. The type is specified as (complex T).
@@ -172,7 +183,8 @@
     (alt complex-type (:index complex)
       (((complex conjunction)
 	(constituent1 ((punctuation ((after ((alt (given none))))))))
-	(pattern (dots start constituent1 conjunction constituent2 stop-kernel dots)))
+	(pattern (dots start constituent1 conjunction constituent2
+                       stop-kernel dots)))
        ((complex apposition)
 	(alt apposition-restrictive
 	    (((restrictive no)
@@ -218,12 +230,12 @@
      ((verbal-ellipsis no))))
 
   ;; Add ellipsis of subject
-  (alt subject-ellipsis (:wait (({^ constituent1 synt-roles subject semantics} given)
-				({^ constituent2 synt-roles subject semantics} given)))
+  (alt subject-ellipsis
+       (:wait (({^ constituent1 synt-roles subject semantics} given)
+               ({^ constituent2 synt-roles subject semantics} given)))
     (:ignore-when (;; JR-2/11/93 (cat verbal-clause)
 		     ({^ constituent1 complex} given)   ;; JR-10/9/92
 		     ({^ constituent2 complex} given))) ;; JR-10/9/92
-
     ((({^ constituent1 synt-roles subject semantics}
        {^5 constituent2 synt-roles subject semantics})
       ({^ constituent2 synt-roles subject gap} yes)

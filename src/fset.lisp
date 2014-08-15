@@ -12,9 +12,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -42,12 +42,12 @@
   (let ((new-fset (if pair1
 		      (intersection (second pair1) (second pair2))
 		    (second pair2))))
-    (cond 
+    (cond
      ((and (null new-fset) (path-null path1)) ;; at top level of total fd.
       ;; ***** NOT CLEAR IF THIS IS A LEAF FAILURE
       (*fail* fail frame path1 path2 pair))
      (t
-      (fset-check-existing-atts 
+      (fset-check-existing-atts
        new-fset fd1 fd1 fd2 path1 path2 frame fail
        #'(lambda (fd fail frame)
 	   (declare (ignore fd))
@@ -79,20 +79,20 @@
 	 (fset-check-existing-atts fset orig-fd1 (cdr fd1) fd2 path1 path2
 				   frame fail success pair))
 	;; (car fd1) is a pair not defined in fset: none'ify it.
-	(t  
+	(t
 	 (unify fd1 `((,(caar fd1) none))
-		path1 path2 frame 
+		path1 path2 frame
 		#+ignore(make-failure fail
 		  (trace-format (frame-trace-flags frame) frame 5
 				"Attribute outside of FSET: ~s level ~s - ~
-                                   FSET is ~s" 
+                                   FSET is ~s"
 				(car fd1) path1 fset)
 		  (funcall fail nil))
 		fail
 		#'(lambda (fd fail frame)
 		    (declare (ignore fd))
 		    (fset-check-existing-atts fset orig-fd1 (cdr fd1) fd2
-					      path1 path2 frame 
+					      path1 path2 frame
 					      fail success pair))
 		:pair pair))))
 

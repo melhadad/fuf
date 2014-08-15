@@ -1,7 +1,7 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:FUG5 -*-
 ;;; -----------------------------------------------------------------------
 ;;; File:         PATH.L
-;;; Description:  PATH unification with UNDO and SUCCESS and no STACK and 
+;;; Description:  PATH unification with UNDO and SUCCESS and no STACK and
 ;;;               unif. not at top level.
 ;;; Author:       Michael Elhadad
 ;;; Created:      02-Nov-88
@@ -17,7 +17,7 @@
 ;;;               20 Jun 90 - made pathij ok with equations in pair2.
 ;;;               02 Jul 90 - removed pathij fctns.
 ;;;               20 Feb 91 - added path-equal and equality - fixed bug on 386
-;;;               05 May 91 - made incr-gdp act correctly on a path 
+;;;               05 May 91 - made incr-gdp act correctly on a path
 ;;;                           added safe-path-extend
 ;;;                           (to allow paths in patterns)
 ;;;               16 Aug 91 - fixed safe-path-extend.
@@ -35,15 +35,15 @@
 ;;;                           initial value.
 ;;; Package:      FUG5
 ;;; Status:       Experimental
-;;; Inline:       path-null, path-car, path-cdr, path-last, path-reverse, 
+;;; Inline:       path-null, path-car, path-cdr, path-last, path-reverse,
 ;;;               path-push, path-pop, path-extend, path-append,
 ;;;               path-butlast, the-last-arc-of-path
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -143,13 +143,13 @@
 ;; If ^~ is used not under car, ^~ is equivalent to ^.
 ;; So (a {^~ b}) is equivalent to (a {^ b}).
 (defun absolute-path-from-relative (uplist pathlist)
-  (cond 
+  (cond
    ((eq '^ (car uplist))
     (absolute-path-from-relative (cdr uplist) (butlast pathlist)))
    ;; go up a sequence of the form (cdr cdr cdr car) plus one level.
    ((eq '^~ (car uplist))
     (let ((rp (reverse pathlist)))
-      (when (eq (car rp) 'car) 
+      (when (eq (car rp) 'car)
 	(setf rp (cdr rp))
 	(while (eq (car rp) 'cdr) (pop rp)))
       (pop rp)
@@ -161,7 +161,7 @@
    the right thing according to the type of constituent.
    Must be called from linearize on the value of patterns."
   (cond ((attr-p constituent) (path-extend path constituent))
-	((path-p constituent) (absolute-path constituent 
+	((path-p constituent) (absolute-path constituent
 					     (path-extend path 'pattern)))
 	(t (error "safe-path-extend: constituent should be either a path or a symbol.~@
 Probable cause of error: bad value in a pattern of the grammar."))))
@@ -172,8 +172,8 @@ Probable cause of error: bad value in a pattern of the grammar."))))
 can be represented as simply a."
   (let ((butlast (path-butlast path)))
     (mapcar #'(lambda (p)
-		(if (path-p p) 
-		  (absolute-path p path) 
+		(if (path-p p)
+		  (absolute-path p path)
 		  (path-extend butlast p)))
 	    lpath)))
 
@@ -181,7 +181,7 @@ can be represented as simply a."
 
 ;; ------------------------------------------------------------
 ;; Functions to deal with PATHs.
-;; 
+;;
 ;; General idea : path is a named pointer to any node in an fd.
 ;; An fd is a dag with a single root (path = nil).
 ;; NOTE : 1 - All these functions don't work if fd has alts or opts.
@@ -212,18 +212,18 @@ can be represented as simply a."
   ;;       otw, if we stay within FSET fine, otw it's like having a none.
   ;;       NOTE: FSET is always authorized (even if not mentioned in the
   ;;       FSET)
-  ;; SPECIALs: three cases 
+  ;; SPECIALs: three cases
   ;; 1/ (att <a b S c d>)  <==> (att none)  [cannot go below a special]
   ;; 2/ (S <a b S>) is ok. [call special-unify]
   ;; 3/ (att <a b S>)    <==> (att none) [cannot map non-special to special]
-  (do ((fd fd) 
+  (do ((fd fd)
        (already-tried (list (copy-path path)))
        (path path)
        (reverse-current-path (make-path))
        (current-fset (find-fset fd))
        (arc-tried nil))
       ((and (not (path-p fd)) (path-null path)) fd)
-    (cond 
+    (cond
      ;; Do we stop at any or do we go below it: below is unspecified.
      ((eq fd 'any) (if (path-null path) (return 'any) (return nil)))
      ((eq fd 'given) (if (path-null path) (return 'given) (return nil)))
@@ -240,7 +240,7 @@ can be represented as simply a."
       ;; A non-special cannot point to a special: check validity here.
       (let ((from (car arc-tried))
 	    (to   (car (last (path-l fd)))))
-	(cond 
+	(cond
 	 ((eq from to))  ;; fine - type equality
 	 ((or (member from *special-attributes*)
 	      (member to *special-attributes*))
@@ -256,7 +256,7 @@ can be represented as simply a."
 		  (path-prefix cpath path-prefix)
 		  (member path-prefix already-tried :test #'path-equal))
 	  ;; **************************
-	  ;; Does this line cause trouble? 
+	  ;; Does this line cause trouble?
 	  ;; How does it interact with backtraking?  Can we loose info?
 	  ;; It is needed for (gdp '((s ((p ((l {p l}))))) (p {s p})) {p l r})
 	  ;; or (gdp '((e {e c})) {e f}) -> ((e nil))
@@ -272,7 +272,7 @@ can be represented as simply a."
      ;; but can have a path as value.
      ((member (path-car path) *special-attributes*)
       (cond ((cdr (path-l path)) (return 'none))
-	    ((or (null current-fset) 
+	    ((or (null current-fset)
 		 (member (path-car path) current-fset)
 		 (eq (path-car path) 'fset))
 	     (setf arc-tried (safe-assoc (path-car path) fd))
@@ -331,7 +331,7 @@ can be represented as simply a."
 	   (let ((new-pair (list (path-car missing) 'none)))
 	     (enrich node new-pair frame)
 	     new-pair))
-	  (t 
+	  (t
 	   (multiple-value-bind (ext pair) (build-fd-from-path missing)
 	     (nconc node ext)
 	     pair)))))
@@ -347,10 +347,10 @@ can be represented as simply a."
   ;; NOTE: gdpp can modify *input* to extend it or to break cycles.
   ;; NOTE: probably does not work if *input* contains GIVEN.
 
-  (cond 
+  (cond
    ((path-null path) (list '*TOP* fd))
-   (t 
-    (do* ((fd fd) 
+   (t
+    (do* ((fd fd)
 	  (path path)
 	  (arc (the-last-arc-of-path fd path))
 	  (arc-tried arc))
@@ -369,7 +369,7 @@ can be represented as simply a."
 		(t arc)))
 
 	 ;; we come here  if: 1/ arc is ANY
-	 ;;                   2/ (second arc) is a path 
+	 ;;                   2/ (second arc) is a path
 	 ;;                   3/ arc is NIL.
 	 ;; NOTE: it does not make sense to extend below a GIVEN (so we
 	 ;; return NONE when GIVEN is the last arc).
@@ -385,10 +385,10 @@ can be represented as simply a."
 		      (frame-tests frame))
 		(setq arc (car (second arc))))
 
-	       ;; (SECOND ARC) is a path: need to be careful with cycles. 
+	       ;; (SECOND ARC) is a path: need to be careful with cycles.
 	       ;; Easiest thing to do is to call GDP completely to the end
 	       ;; of path to break any cycle (just for the side effect).
-	       (arc 
+	       (arc
 		(setq arc-tried arc)
 		(setq path (absolute-path (second arc) path))
 		(let ((pointed-to (gdp *input* path)))
@@ -403,11 +403,11 @@ can be represented as simply a."
 
 	       ;; ARC is NIL: extend the graph below it and return (x nil)
 	       ;; Except if contradicts FSET on the way down.
-	       (t   
+	       (t
 		(build-path *input* path frame)
 		(setq arc (the-last-arc-of-path *input* path))
 		(setq fd *input*)))))))
-  
+
 
 ;; find-path-to-leaf
 (defun fptl (fd path)
@@ -423,17 +423,17 @@ can be represented as simply a."
   (if (or (path-null path) (leaf-p fd))
       (values (path-reverse where-in-top) path)
     (let ((node (safe-assoc (path-car path) fd)))
-      (cond 
+      (cond
        ((null node) (values (path-reverse where-in-top) path))
        ((path-p (second node))
 	(fptl-aux *input* (make-path)
-		  (path-append 
-		   (absolute-path 
-		    (second node) 
+		  (path-append
+		   (absolute-path
+		    (second node)
 		    (path-reverse (path-push (path-car path) where-in-top)))
 		   (path-cdr path))))
-       (t 
-	(fptl-aux (second node) 
+       (t
+	(fptl-aux (second node)
 		  (path-push (path-car path)  where-in-top)
 		  (path-cdr path)))))))
 
@@ -442,16 +442,16 @@ can be represented as simply a."
   "given a path, builds an fd from scratch, which is a linear string, with
    val at the leaf."
   (cond ((path-null path) (values val pair))
-	((path-null (path-cdr path)) 
+	((path-null (path-cdr path))
 	 (let ((pair (list (path-car path) val :e)))
 	   (values (list pair) pair)))
-	(t 
+	(t
 	 (multiple-value-bind (fd pair) (build-fd-from-path (path-cdr path) val)
 	   (values (list (list (path-car path) fd)) pair)))))
 
 (defun build-path (fd path frame)
   "given an fd and a path, physically modifies fd so that path points
-  to a real node by adding all the missing nodes. 
+  to a real node by adding all the missing nodes.
   Returns none if addition of nodes is not possible"
   (declare (special *input*))
   (multiple-value-bind (leaf below) (fptl fd path)
@@ -463,7 +463,7 @@ can be represented as simply a."
 		   (push (make-test :test '(any-p path) :path leaf)
 			 (frame-tests frame)))
 	       (update-pair node (build-fd-from-path below) leaf frame))
-	      ((leaf-p (second node)) 
+	      ((leaf-p (second node))
 	       'none)
 	      ((and fset (not (member (path-car below) fset)))
 	       (let ((new-pair (list (path-car below) 'none)))
@@ -519,9 +519,8 @@ can be represented as simply a."
 	 (fd (prep-input fd cset-attribute path))
 	 (pair (gdpp *input* path)))
     (setf (second pair) fd)))
-  
+
 
 ;; -----------------------------------------------------------------------
 (provide "$fug5/path")
 ;; -----------------------------------------------------------------------
-

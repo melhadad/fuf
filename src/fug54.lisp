@@ -24,7 +24,7 @@
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
 ;;;
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
 ;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
@@ -72,7 +72,6 @@
    clear-tests
    complexity
    control-demo
-   control-demo
    def-alt
    def-conj
    def-grammar
@@ -84,6 +83,7 @@
    do-tenses
    draw-grammar
    draw-types
+   draw-test
    enabled-tracing-flags
    external
    fd-p
@@ -123,6 +123,7 @@
    path-null
    path-equal
    path-value
+   redraw-test
    register-categories-not-unified
    register-category-not-unified
    relativize-fd
@@ -231,6 +232,7 @@
    mood
    near
    neuter
+   night
    no
    none
    not-one
@@ -264,6 +266,7 @@
    roman
    root
    second
+   since
    singular
    subjective
    tense

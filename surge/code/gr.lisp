@@ -1,13 +1,24 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package: -*-
 ;;; -----------------------------------------------------------------------
 ;;; File:         gr.lisp
-;;; Description:  System file to load the grammar updated 
-;;;               for testing measure, noun-compound, partitive & 
-;;;               complex proper 
+;;; Description:  System file to load the grammar updated
+;;;               for testing measure, noun-compound, partitive &
+;;;               complex proper
 ;;; Author:       Michael Elhadad
 ;;; Created:      17 Jul 1992
 ;;; Modified:     18 Jan 93: added adverbial, mood, special & nba (JR)
 ;;;                5 Jul 95: SURGE 2.2 VERSION
+;;; -----------------------------------------------------------------------
+;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
+;;; Permission to use, copy, and/or distribute for any purpose and
+;;; without fee is hereby granted, provided that both the above copyright
+;;; notice and this permission notice appear in all copies and derived works.
+;;; Fees for distribution or use of this software or derived works may only
+;;; be charged with express written permission of the copyright holder.
+;;; THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT EXPRESS OR IMPLIED WARRANTY.
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
@@ -62,7 +73,7 @@
     (cd *surge-input-dir*)
     (load "ir.lisp")
     (cd cur)))
-  
+
 ;; (load-gr)
 
 ;; (load-gr-inputs)
@@ -72,8 +83,3 @@
 ;; ------------------------------------------------------------
 (provide "$gr/gr")
 ;; ------------------------------------------------------------
-
-
-
-
-

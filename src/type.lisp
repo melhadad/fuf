@@ -29,9 +29,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -53,7 +53,7 @@
 
 ;; If fctn is given, x is a subtype of name if (funcall fctn x).
 (defmacro define-feature-type (name values)
-  `(progn 
+  `(progn
      (unless (and (symbolp ',name)
 		  (listp ',values)
 		  (every #'symbolp ',values))
@@ -65,7 +65,7 @@
 
 (defun subsume (t1 t2)
   (let ((strict nil))
-    (when (underp t1) 
+    (when (underp t1)
       (setf strict (member (aref t1 0) '(< sunder)))
       (setf t1 (aref t1 1)))
     (when (underp t2) (setf t2 (aref t2 1)))
@@ -77,13 +77,13 @@
 
 
 (defun reset-typed-features ()
-  (mapc #'(lambda (f) 
+  (mapc #'(lambda (f)
 	    (setf (get f :feature-type) nil)
 	    (setf (get f :feature-mark) nil))
 	*typed-features*)
   (setf *typed-features* nil)
   (values))
-	      
+
 
 ;; Perform a breadth-first search on list of open nodes
 ;; At each node, call function f.
@@ -94,7 +94,7 @@
 	(t (let ((node (pop lnodes)))
 	     (cond ((funcall marked node)
 		    (bf-search lnodes f marked))
-		   (t 
+		   (t
 		    (funcall f node)
 		    (bf-search (append lnodes (subtype node)) f marked)))))))
 
@@ -130,8 +130,8 @@
 ;;; components from outside).
 ;;; The unification procedure must be deterministic and must be a real
 ;;; "unification" procedure: that is, the type must be a lattice.
-;;; Usage: (define-procedural-type name function 
-;;;          :syntax checker 
+;;; Usage: (define-procedural-type name function
+;;;          :syntax checker
 ;;;          :copier copier
 ;;;          :relocate relocater)
 ;;; Declares <name> to be a special attribute, whose value can only be
@@ -145,7 +145,7 @@
 ;;; argument and is always neutral, ie, (<FUNCTION> x nil) = x.
 ;;; NOTE: <FUNCTION> must be such that (<FUNCTION> x x) = x
 ;;;
-;;; <CHECKER> must be a function of 1 arg: 
+;;; <CHECKER> must be a function of 1 arg:
 ;;; It must return either True if the object is a syntactically correct
 ;;; element of <TYPE>, otherwise, it must return 2 values:
 ;;; NIL and a string describing the correct syntax of <TYPE>.
@@ -165,7 +165,7 @@
 ;;; By default copy-tree is used.
 ;;; ----------------------------------------
 
-(defun define-procedural-type (name fctn &key syntax 
+(defun define-procedural-type (name fctn &key syntax
 				    (copier 'copy-tree)
 				    (relocater 'copy-tree))
   ;; Check validity of arguments: name is a symbol, fctn a compiled
@@ -197,10 +197,10 @@
 
 (defun reset-procedural-types ()
   (mapc #'reset-procedural-type *special-attributes*)
-  (define-procedural-type 'cset #'unify-cset 
+  (define-procedural-type 'cset #'unify-cset
     :syntax #'check-cset
     :relocater #'relocate-pattern))
-  
+
 (defun register-special-attribute (name)
   (if (member name '(pattern control test alt opt))
       (error "~s is a reserved name." name))
@@ -230,7 +230,7 @@
 (defun special-relocater-function (name)
   (get name :special-relocater-function))
 
-  
+
 ;; ------------------------------
 ;; SPECIAL-UNIFY: perform type specific unification
 ;; ------------------------------
@@ -259,7 +259,7 @@
 			  pair2))
 	 (arg1 (safe-second pointed-pair1))
 	 (arg2 (safe-second pointed-pair2)))
-    (cond 
+    (cond
      ;; Type checking:
      ((not (eq (car pointed-pair1) att))
       (*fail* fail frame path1 path2 pair
@@ -281,7 +281,7 @@
 		  att arg1 arg2 path1))
 	 (t
 	  (trace-format (frame-trace-flags frame) frame 0
-			"Unifying ~s: ~s with ~s" 
+			"Unifying ~s: ~s with ~s"
 			att arg1 arg2)
 	  (trace-format (frame-trace-flags frame) frame 0
 			"Trying ~s: ~s" att unified-value)
@@ -290,8 +290,8 @@
 	   ((and (path-p (safe-second pair1)) (path-p (safe-second pair2)))
 	    ;; we have now 4 pairs involved:
 	    ;; (p1 {x}) (p2 {y}) (x v1) (y v2)  [p2 is in the grammar]
-	    ;; -->  (p1 {x}) (x u(v1,v2)) (y {x}) 
-	    (update-pair pointed-pair1 unified-value p-path1 frame) 
+	    ;; -->  (p1 {x}) (x u(v1,v2)) (y {x})
+	    (update-pair pointed-pair1 unified-value p-path1 frame)
 	    (unless (eq pointed-pair1 pointed-pair2)
 	      (update-pair pointed-pair2 new-path1 p-path2 frame)))
 	   ((path-p (safe-second pair1))
@@ -325,8 +325,8 @@
 
 (defun copy-special (val &optional att path)
   (cond ((leaf-p val) val)
-	((path-p val) 
-	 (absolute-path (copy-path val) 
+	((path-p val)
+	 (absolute-path (copy-path val)
 			(path-extend path att)))
 	((member att '(pattern fset))
 	 (copy-list val))
@@ -341,17 +341,17 @@
 
 (defun relocate-special (q1 val feature rpath tpath cpath)
   (cond ((leaf-p val) val)
-	((path-p val) 
+	((path-p val)
 	 (let* ((path (absolute-path val tpath)))
-	   (multiple-value-bind (pointed-val point-to missing cycle) 
+	   (multiple-value-bind (pointed-val point-to missing cycle)
 	       (gdc *input* path)
 	     (declare (ignore missing))
-	     (cond 
+	     (cond
 	      (cycle nil) ;; points to an ancestor so it must be to itself because
                           ;; a special cannot have descendants.
 	      ((in-scope q1 point-to rpath)
 	       (let ((new-phys (get-new-physical-path point-to)))
-		 (cond 
+		 (cond
 		  ((null new-phys)
 		   (record-new-physical-path point-to cpath)
 		   (relocate-special q1 pointed-val feature rpath point-to cpath))
@@ -404,12 +404,12 @@
 	 (add2 (make-absolute (cdr (safe-assoc '+ c2)) path))
 	 (sub1 (make-absolute (cdr (safe-assoc '- c1)) path))
 	 (sub2 (make-absolute (cdr (safe-assoc '- c2)) path)))
-    (cond 
-     ((null c1) 
+    (cond
+     ((null c1)
       (setf *added-cset* (positive-cset c2))
       c2)
      ((null c2) c1)
-     (t 
+     (t
       (let* ((add (union add1 add2 :test #'path-equal))
 	     (sub (union sub1 sub2 :test #'path-equal))
 	     (iml (union iml1 iml2 :test #'path-equal))
@@ -417,16 +417,16 @@
 			((null eql2) eql1)
 			((set-equal eql1 eql2) eql1)
 			(t :fail)))
-	     (res 
+	     (res
 	      (cond ((eq eql :fail) :fail)
 		    ((intersection add sub :test #'path-equal) :fail)
-		    ((null eql) 
+		    ((null eql)
 		     (list (cons '== iml) (cons '+ add) (cons '- sub)))
 		    ((intersection eql sub :test #'path-equal) :fail)
 		    ((not (subsetp add eql :test #'path-equal)) :fail)
 		    (t (list (cons '= eql))))))
 	;; Did we extend the cset?
-	(setf *added-cset* 
+	(setf *added-cset*
 	      (or (and (null eql1) eql2)
 		  (set-difference add2 add1 :test #'path-equal)
 		  (set-difference iml2 iml1 :test #'path-equal)))
@@ -449,7 +449,7 @@
 	((check-old-cset value) (list (cons '= value)))
 	((check-cset value) value)
 	(t (error "Invalid cset value: ~s" value))))
-	
+
 ;; value in a (cset value) pair
 (defun check-cset (value)
   (or (check-old-cset value)
@@ -470,7 +470,7 @@
   ;; dots and pound are kept identical.
   (let ((nval (new-cset-syntax val)))
     (mapcar #'(lambda (val)
-		(relocate-pattern q1 val rpath tpath)) 
+		(relocate-pattern q1 val rpath tpath))
 	    nval)))
 
 

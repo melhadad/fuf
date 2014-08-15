@@ -24,9 +24,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -70,7 +70,7 @@
 ;     When we unify 2 FDs together, we can find constraints on the ordering
 ;     coming from different patterns specified for the same FD. Unifying
 ;     patterns means creating a single pattern which expresses both sets
-;     of constraints on the ordering of the FD. 
+;     of constraints on the ordering of the FD.
 ;     For example, (dots verb dots object) unified with (subj dots) gives
 ;     as one of the possible results (subj dots verb dots object).
 ;     We also want to be able to deal with cases like unifying together
@@ -117,14 +117,14 @@
 ;     Since we have to deal with a combinatorial problem, and we know
 ;     in advance that we won't need all the solutions in general, I have
 ;     chosen to program this procedure using principles of LAZY EVALUATION.
-;     The idea is that we compute only what we need to find the FIRST 
+;     The idea is that we compute only what we need to find the FIRST
 ;     solution, and keep track of what we need to compute the NEXT solution.
 ;     All of this is incredibly well expressed using the SCHEME notion of
 ;     STREAMS (or GENERATORS) [not to be confused with Common-Lisp notion
 ;     of streams as I/O objects].
 ;     All the tools to manipulate generators are in the package GENERATOR.
 ;     We refer you there for an introduction.
-;     
+;
 ;     The main function to call is UP.
 ;     UP only sets up the environment to call the workhorse function
 ;     UNIFY-PATTERN.
@@ -132,7 +132,7 @@
 ;     INPUT : a list of patterns.
 ;     The basic step is to find which element must be the FIRST one
 ;     in the unified pattern.
-;     We define 2 types of minima : 
+;     We define 2 types of minima :
 ;     NECESSARY MIN : appear as first elements in one pattern.
 ;     POSSIBLE  MIN : appear preceded by dots only in a pattern.
 ;     Minima never have other predecessor than dots.
@@ -140,7 +140,7 @@
 ;     So the basic recursive step is :
 ;     1/ Find all necessary minima in the current patterns.
 ;     2/ Find all possible  minima ...
-;     3/ Choose any number of possible min. 
+;     3/ Choose any number of possible min.
 ;        [This is NON-determinist - backtraking point here]
 ;     4/ Create a constraint that all necessary min. and possible min.
 ;        picked up must be made equivalent.
@@ -157,7 +157,7 @@
 ;     and another is not).
 
 ;     When do we add pound and dots to the result ?
-;     Special care must be exercised to handle pound and dots. See code 
+;     Special care must be exercised to handle pound and dots. See code
 ;     for details.
 ; ------------------------------------------------------------
 
@@ -178,8 +178,8 @@
   FD1 must be a sublist of *INPUT*.
   FD1 must be equal to (gdp *input* PATH).
   FAIL must be a continuation to call when we fail in this function."
-  
- (cond 
+
+ (cond
   ((or (and *use-given* (eq (safe-second pair2) 'given))
        (and *any-at-unification* (eq (safe-second pair2) 'any)))
    (if (safe-second pair1)
@@ -193,7 +193,7 @@
 	   (frame-tests frame)))
    (unify fd1 (cdr fd2) path1 path2 frame fail success :pair pair))
   ((null (safe-second pair1))
-   (update-pair pair1 (safe-second pair2) 
+   (update-pair pair1 (safe-second pair2)
 		(path-extend path1 'pattern) frame)
    (trace-format (frame-trace-flags frame) frame 0
 		 "Enriching input with ~s at level ~s"
@@ -203,11 +203,11 @@
    (unify fd1 (cdr fd2) path1 path2 frame fail success :pair pair))
   (t
    (let ((patterns-stream (up (safe-second pair1) (safe-second pair2))))
-     (one-pattern-unify fd1 fd2 pair1 pair2 path1 path2 frame 
+     (one-pattern-unify fd1 fd2 pair1 pair2 path1 path2 frame
 			patterns-stream fail success pair)))))
 
 
-(defun one-pattern-unify (fd1 fd2 pair1 pair2 path1 path2 frame 
+(defun one-pattern-unify (fd1 fd2 pair1 pair2 path1 path2 frame
 			      patterns-stream fail success pair)
   "The workhorse of the pattern unification, called by PATTERN-UNIFY.
   Tries all the unifications possible given by patterns-stream."
@@ -239,14 +239,14 @@
 		      "Adding constraints : ~s" new-fd)
 	(update-pair pair1 new-pattern (path-extend path1 'pattern) frame)
 	(backtrack frame new-frame nil :pattern ;; patterns have no bk-class
-	  (unify fd1 
+	  (unify fd1
 		 ; add constraints, remove pattern from fd2
-		 (append new-fd (cdr fd2)) 
+		 (append new-fd (cdr fd2))
 		 path1 path2
 		 new-frame
 		 ; next time, we'll have only NEXT to try.
 		 (make-failure fail
-		   (one-pattern-unify 
+		   (one-pattern-unify
 		    fd1 fd2 pair1
 		    pair2 path1 path2 frame
 		    (next patterns-stream) fail success pair))
@@ -287,12 +287,12 @@
 ; CONSTRAINTS to FD
 ; ------------------------------------------------------------
 
-;; Constraint is a list of paths or attributes. 
+;; Constraint is a list of paths or attributes.
 ;; Convention is that attribute att stands for {^ att}.
 ;; Convert (p1 ... pn) to ((p1 p2) .... (p1 pn))
-;; All of this happens at level path (without pattern).  
+;; All of this happens at level path (without pattern).
 ;; Must convert everything to absolute paths to avoid problems.  So a is
-;; converted to (path-extend p a). 
+;; converted to (path-extend p a).
 (defun constraint->fd (constraint path)
   "Converts a constraint of the form (a b c) to an fd of the form
   ((a (^ b)) (a (^ c))) expressing the fact that all nodes must be unified"
@@ -303,7 +303,7 @@
 (defun constraints->fd (constraints path)
   "Transforms a list of constraints in an equivalent Functional description.
   cf constraint->fd"
-  (mapcan #'(lambda (constraint) (constraint->fd constraint path)) 
+  (mapcan #'(lambda (constraint) (constraint->fd constraint path))
 	  constraints))
 
 
@@ -323,7 +323,7 @@
 (defun unmark-mergeable (pattern)
   (mapcar #'(lambda (node)
               (if (marked-mergeable node) (second node) node))
-          pattern)) 
+          pattern))
 
 (defun mergeablep (node)
   "Predicate : a node in a pattern is marked to be mergeable or not"
@@ -331,7 +331,7 @@
   (member node *mergeable* :test #'equality))
 
 (defun mergeable (constraint)
-  "Predicate : a constraint (list of nodes appearing in patterns) is 
+  "Predicate : a constraint (list of nodes appearing in patterns) is
   mergeable or not"
   (< (length (remove-if #'mergeablep constraint)) 2))
 
@@ -340,11 +340,11 @@
   (declare (special *mergeable*))
   (mapc #'(lambda (pattern)
 	    (mapc #'(lambda (node)
-		      (cond ((marked-mergeable node) 
-			     (setq *mergeable* 
+		      (cond ((marked-mergeable node)
+			     (setq *mergeable*
 				   (remove (second node) *mergeable*)))
-			    (t 
-			     (setq *mergeable* 
+			    (t
+			     (setq *mergeable*
 				   (remove node *mergeable*)))))
 		  pattern))
 	patterns)
@@ -359,7 +359,7 @@
 	  (mapcar #'(lambda (pattern)
 		      (mapcar #'(lambda (node)
 				  (if (marked-mergeable node)
-				    (progn 
+				    (progn
 				      (pushnew (second node) *mergeable*
 					       :test #'equality)
 				      (second node))
@@ -382,13 +382,13 @@
 (defun clean-pattern (pattern)
   "Removes DOTS and POUND from pattern. (leaves only names of constituents)
    Then remove mergeable marks (* c) -> c"
-  (remove-if #'(lambda (item) (member item '(dots pound))) 
+  (remove-if #'(lambda (item) (member item '(dots pound)))
 	     (unmark-mergeable pattern)))
 
 
 ; ------------------------------------------------------------
 ; MINIMA
-; Functions to find possible and necessary minima in a list of 
+; Functions to find possible and necessary minima in a list of
 ; patterns.
 ; ------------------------------------------------------------
 
@@ -402,7 +402,7 @@
 		 (when (member second '(dots pound))
 		       (return-from pos nil))
 	         (mapc #'(lambda (pattern)
-			   (let* ((after (member second pattern 
+			   (let* ((after (member second pattern
 						 :test #'equality))
 				  (before (ldiff pattern after)))
 			     (when (and after
@@ -410,7 +410,7 @@
 				   (return-from pos nil))))
 		       patterns)
 		 (return-from pos (list second))))
-	   (mapcar #'second ; take the seconds of the patterns 
+	   (mapcar #'second ; take the seconds of the patterns
 		   (remove-if-not #'(lambda (pattern) ; starting with dots
 				      (and (cdr pattern)
 					   (eq (car pattern) 'dots)))
@@ -428,10 +428,10 @@
 	       (when (not (member first '(dots pound)))
 		 (let ((predec nil))
 		   (mapc #'(lambda (pattern)
-			     (let* ((after (member first pattern 
+			     (let* ((after (member first pattern
 						   :test #'equality))
 				    (before (ldiff pattern after)))
-			       (when (and after before 
+			       (when (and after before
 					  (not (equal before '(dots))))
 				 (push (car (last before)) predec))))
 			    patterns)
@@ -463,8 +463,8 @@
   (mapcar #'(lambda (list)
 	      (cond ((member (car list) min :test #'equality) (cdr list))
 		    ((eq (car list) 'pound)  (cdr list))
-		    ((and (eq (car list) 'dots) 
-			  (member (second list) min :test #'equality)) 
+		    ((and (eq (car list) 'dots)
+			  (member (second list) min :test #'equality))
 		     (cddr list))
 		    (t list)))
 	  patterns))
@@ -475,13 +475,13 @@
 ; Workhorse of the module
 ; ------------------------------------------------------------
 
-(defun unify-patterns (patterns necessary possible min-stream 
+(defun unify-patterns (patterns necessary possible min-stream
 				ordered constraints fail)
   "Unify a list of patterns by accumulating minima in the list ORDERED.
   Returns a generator containing all possible unifications.
   An ordering is a pair (ordered-elts constraints).
   Should be called by top-level function UP."
-  (cond ((every #'empty-pattern patterns) 
+  (cond ((every #'empty-pattern patterns)
 	 (unless (some #'null patterns) ; is this a "hard" end or need a dots ?
 	   (setq ordered (append ordered '(dots))))
 	 (cons (list ordered constraints) fail)); returns a stream.
@@ -493,9 +493,9 @@
 	((some #'null patterns)                 ; if some but not all are empty
 	 (funcall fail))                        ; we have reached the end of
 	                                        ; one pattern too soon.
-	((empty min-stream) 
+	((empty min-stream)
 	 (funcall fail))     ; no more min to try.
-	; if we have at least a pound and only dots or pounds in front, 
+	; if we have at least a pound and only dots or pounds in front,
 	; min-stream is just {}, we don't have to fail.
 	; We add a pound in front of ordered and go down our way.
 	; but if there is no pound, we need to try another solution.
@@ -507,7 +507,7 @@
 	   (let* ((next-patterns (remove-min-pattern patterns the-min))
 		  (next-necessary (necessary-mins next-patterns))
 		  (next-possible  (possible-mins next-patterns))
-		  (next-min-stream 
+		  (next-min-stream
 		   (stream-of-mins next-necessary next-possible))
 		  (next-constraints
 		   (if (cdr the-min)
@@ -516,14 +516,14 @@
 		  (next-ordered
 		   (cond ((and (null the-min) (some #'poundp patterns))
 			  (append ordered (list 'pound)))
-			 ((null necessary) 
+			 ((null necessary)
 			  (if (or (cdr the-min) (mergeablep (car the-min)))
 			      (setq the-min (mark-mergeable (car the-min)))
 			      (setq the-min (car the-min)))
 			  (if (some #'poundp patterns)
 			      (append ordered (list the-min))
 			      (append ordered (list 'dots the-min))))
-			 (t 
+			 (t
 			  (if (or (cdr the-min) (mergeablep (car the-min)))
 			      (setq the-min (mark-mergeable (car the-min)))
 			      (setq the-min (car the-min)))
@@ -538,7 +538,7 @@
 	      next-constraints
 	      ; find next-fail
 	      (freeze
-	       (unify-patterns patterns necessary possible 
+	       (unify-patterns patterns necessary possible
 			       (next min-stream)
 			       ordered constraints fail))))))))
 

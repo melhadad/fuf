@@ -23,9 +23,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -64,7 +64,7 @@
      (declare (special *counter* *counter-limit* *first-bp*))
      ;; Check for limited resources: *counter* remembers # bps used
      (incf *counter*)
-     (when *trace-bp* 
+     (when *trace-bp*
        (if (= 0 (mod *counter* *trace-bp-freq*)) (format t ".")))
      (when (> *counter* *counter-limit*)
        (signal-stop *counter* *input*)
@@ -74,19 +74,19 @@
      (setf (frame-name new-frame) (if ,name ,name :anonymous))
      (setf (frame-undo new-frame) (list 'root))
      (trace-format *top* frame 0 "Creating Point ~s" this-one)
-     ;; Try to evaluate the expression.  
+     ;; Try to evaluate the expression.
      ;; If it fails, we get back a continuation to call and the path where
      ;; it failed (failure address).  The failure address is *same* if it
      ;; is a non-leaf failure (something that is not the direct cause of a
      ;; failure but the result of backtracking).  In this case, the failure
      ;; address remains the previous one.
      (multiple-value-bind (fd fail path1 path2 pair) (progn ,@exprs)
-       (cond 
+       (cond
 	((or (eq fd *fail*) (eq fd *restart*))
-	 (trace-format *top* ,frame 0 "~a point ~s~%" 
+	 (trace-format *top* ,frame 0 "~a point ~s~%"
 		       (if (eq fd *fail*) "Fail" "Restart")
 		       this-one)
-	 (trace-format *trace-alts* ,frame 0 "Fail in alt ~s" 
+	 (trace-format *trace-alts* ,frame 0 "Fail in alt ~s"
 		       (frame-name new-frame))
 	 (if (match-bk-class path1 path2 pair ,bk-class new-frame)
 	   (cond ((eq fd *fail*)
@@ -125,10 +125,10 @@
 ;; send a fail to last backtracking point, that will kill it
 ;; and print a message.
 ;; Args are: path1 and path2 paths where failure occured in input (total
-;; fd) and grammar.  
+;; fd) and grammar.
 ;; pair is the pair within which failure occured.
 (defmacro *fail* (closure frame path1 path2 pair &optional msg &rest args)
-  (let ((msg (when msg `((trace-format 
+  (let ((msg (when msg `((trace-format
 			   (frame-trace-flags ,frame) ,frame 0
 			   ,msg
 			   ,@args)))))
@@ -170,7 +170,7 @@
 
 (defmacro trace-format (flag frame level msg . args)
   "Like format if flag is true, but preceded by an indentation"
-  `(when (and *global-tracing* *local-tracing* 
+  `(when (and *global-tracing* *local-tracing*
 	      ,flag (trace-enabled ,flag)
 	      (>= ,level *level-tracing*))
      (trace-indent ">" ,frame)
@@ -179,7 +179,7 @@
 
 (defmacro trace-demo (flag frame level msg . args)
   "Like trace format but with only spaces, no arrow"
-  `(when (and *global-tracing* *local-tracing* 
+  `(when (and *global-tracing* *local-tracing*
 	      ,flag (trace-enabled ,flag)
 	      (>= ,level *level-tracing*))
      (format t (make-sequence 'string (+ 3 (* 2 (frame-trace-level ,frame)))
@@ -195,7 +195,7 @@
   `(let ((%flag% (frame-trace-flags %frame%)))
      (when (and *global-tracing* %flag% (trace-enabled %flag%)
 		(<= *level-tracing* 12))
-       (format t (make-sequence 
+       (format t (make-sequence
 		  'string (1+ (* 2 (frame-trace-level %frame%)))
 		  :initial-element #\space))
        (format t ,msg ,@args)
@@ -264,7 +264,7 @@
 ; ----------
 (defmacro leaf-p (expr)
   `(and (not (path-p ,expr))
-	(or (symbolp ,expr) (numberp ,expr) 
+	(or (symbolp ,expr) (numberp ,expr)
 	    (arrayp ,expr) (characterp ,expr))))
 
 ; ----------

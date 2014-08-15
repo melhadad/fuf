@@ -17,9 +17,9 @@
 ;;; -----------------------------------------------------------------------
 ;;;
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
-;;;  
-;;; Copyright (c) 1987-2011 by Michael Elhadad. all rights reserved.
-;;;  
+;;;
+;;; Copyright (c) 1987-2014 by Michael Elhadad. all rights reserved.
+;;;
 ;;; Permission to use, copy, and/or distribute for any purpose and
 ;;; without fee is hereby granted, provided that both the above copyright
 ;;; notice and this permission notice appear in all copies and derived works.
@@ -33,12 +33,12 @@
 
 ;; ---------------------------------------------------------------------
 ;; RALT-UNIFY-SIMPLE: Traverse each branch, and backtrack
-;;                    to a next branch, randomly chosen, if fail. 
+;;                    to a next branch, randomly chosen, if fail.
 ;;                    When no more branches, fail.
 ;;                   (change the fail argument when trying a branch)
 ;; ---------------------------------------------------------------------
 
-(defun ralt-unify-simple (fd1 fd2 path1 path2 bk-class frame fail success after-wait 
+(defun ralt-unify-simple (fd1 fd2 path1 path2 bk-class frame fail success after-wait
 			 traced branches branch-number orig-branches
 			 &key (pair :unknown))
 
@@ -62,9 +62,9 @@
 		(the-branch (nth chosen branches))
 		(tmp (car branches)))
 	   (trace-format traced frame 10
-			"Entering Ralt ~s -- ~:R try: Branch #~s" 
-			traced branch-number 
-			(let ((pos (position the-branch orig-branches 
+			"Entering Ralt ~s -- ~:R try: Branch #~s"
+			traced branch-number
+			(let ((pos (position the-branch orig-branches
 					     :test #'equalp)))
 			  (if (integerp pos)
 			    (1+ pos)
@@ -75,16 +75,16 @@
 	  (backtrack frame new-frame bk-class traced
 	    (unify fd1 (car branches) path1 path2 new-frame
 		   (make-failure fail
-		      (ralt-unify-simple 
-		       fd1 fd2 path1 path2 bk-class frame fail success after-wait 
+		      (ralt-unify-simple
+		       fd1 fd2 path1 path2 bk-class frame fail success after-wait
 		       traced
-		       (cdr branches) 
+		       (cdr branches)
 		       (1+ branch-number)
 		       orig-branches
 		       :pair pair))
 		   #'(lambda (fd fail frame)
 		       (when (trace-enabled traced)
-			 (trace-format 
+			 (trace-format
 			  traced frame 10
 			  "Success with branch ~s in Ralt ~s~%"
 			  (let ((pos (position the-branch orig-branches
@@ -93,7 +93,7 @@
 			  traced)
 			 (handle-trace traced frame t))
 		       (when after-wait (funcall after-wait))
-		       (unify fd fd2 path1 path2 frame fail success 
+		       (unify fd fd2 path1 path2 frame fail success
 			      :pair pair))
 		   :pair pair))))))
 

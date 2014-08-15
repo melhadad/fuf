@@ -4,14 +4,14 @@
 ;;; Description:  Test search strategy used for fuf
 ;;; Author:       Michael Elhadad
 ;;; Created:       5 Sep 1995
-;;; Modified:     
+;;; Modified:
 ;;; Package:      FUG5
 ;;; -----------------------------------------------------------------------
 
 (in-package "FUG5")
 
 (def-grammar gr ()
-  (setq *wait-grammar* 
+  (setq *wait-grammar*
 	'((alt root
 	   (((cat root)
 	     (cset ((== constituent-1)))
@@ -37,4 +37,3 @@
 
 
 (setf tw1 '((cat root)))
-

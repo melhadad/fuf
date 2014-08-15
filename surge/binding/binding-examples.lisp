@@ -4,7 +4,7 @@
 ;;; Description:  Examples for binding implemantation for SURGE
 ;;; Author:       Yael Dahan Netzer.
 ;;; Created:      22 Apr 1996
-;;; Modified:     
+;;; Modified:
 ;;; Package:      FUG5
 ;;; -----------------------------------------------------------------------
 
@@ -16,9 +16,9 @@
   "Mary likes herself."
   ((cat clause)
    (process ((type mental) (lex "like")))
-   (partic ((processor ((cat proper) (lex "Mary") 
+   (partic ((processor ((cat proper) (lex "Mary")
 			(gender feminine) (animate yes)))
-	    (phenomenon ((cat proper) (lex "Mary") 
+	    (phenomenon ((cat proper) (lex "Mary")
 			 (index {^2 processor index})))))))
 
 (try (get-test 'b1))
@@ -30,9 +30,9 @@
   "Mary thinks that John likes her."
   ((cat clause)
    (process ((type mental) (lex "think") (object-clause that)))
-   (partic ((processor ((cat proper) (lex "Mary") 
+   (partic ((processor ((cat proper) (lex "Mary")
 			(gender feminine) (animate yes)))
-	    (phenomenon 
+	    (phenomenon
 	     ((cat clause)
 	      (process ((type mental) (lex "like")))
 	      (partic ((processor ((cat proper) (lex "John")))
@@ -66,12 +66,12 @@
 		       (qualifier ((cat pp)
 				   (prep ((lex "of")))
 				   (np ((cat proper) (lex "John")
-                                        (reflexive-type reflexive) 
+                                        (reflexive-type reflexive)
 					(index {^4 agent index})))))))))))
 
 (try (get-test 'b4))
 
-;;; from Pollard and Sag 
+;;; from Pollard and Sag
 ;(def-test b5
 ;  "John thought that it would be illegal to undress himself."
 ;  ((cat clause)
@@ -91,11 +91,11 @@
    (proc ((type material) (lex "meet")))
    (partic ((agent ((cat personal-pronoun) (number plural)))
             (affected ((index {^2 agent index}) (reflexive-type reciprocal)))))))
-  
+
 (try (get-test 'b7))
 
-;; The following does not work because a conjunction does not have a common index of
-;; its components.
+;; The following does not work because a conjunction
+;; requires set-based indexes.
 ;(def-test b8
 ;  "Anne and Cathy met each other."
 ;  ((cat clause)
@@ -120,11 +120,11 @@
    (proc ((type material)
           (lex "talk")))
    (partic ((agent ((lex "John") (cat proper) (animate yes)))
-            (affected ((cat pp) (prep ((lex "to"))) 
+            (affected ((cat pp) (prep ((lex "to")))
 		       (np ((lex "Paul") (cat proper)))))))
    (pred-modif ((matter ((cat pp)
                          (prep ((lex "about")))
-                         (np ((lex "John") (cat proper) 
+                         (np ((lex "John") (cat proper)
 			      (index {^4 partic agent index})))))))))
 
 
@@ -146,25 +146,25 @@
    (proc ((type material)
           (lex "talk")))
    (partic ((agent ((lex "John") (cat proper) (animate yes)))
-            (affected ((cat pp) (prep ((lex "to"))) 
+            (affected ((cat pp) (prep ((lex "to")))
 		       (np ((lex "Paul") (cat proper)
 			    (animate yes)))))))
    (pred-modif ((manner ((cat pp)
                          (prep ((lex "about")))
-                         (np ((lex "Paul") (cat proper) 
+                         (np ((lex "Paul") (cat proper)
 			      (index {^4 partic affected np index})))))))))
 
 
 (try (get-test 'b6a))
 
-				    
+
 ;;; John's book that his mother wrote, about himself.
 
 (setf test-list-within-np
       '((cat common)
 	(possessor ((cat proper) (lex "John") (gender masculine)))
 	(lex "book")
-	(qualifier 
+	(qualifier
 	 ((cat list)
 	  (distinct
 	   ~(
@@ -184,7 +184,7 @@
 		   (index {^6 possessor index}))))))))))
 
 (try2 test-list-within-np)
-        
+
 
 
 (setf aa
@@ -192,15 +192,12 @@
 	(proc ((lex "eat")
 	       (type material)))
 	(partic ((agent ((lex "man") (cat common) (animate yes) (definite no)))
-		 (affected ((lex "man") (cat common) 
+		 (affected ((lex "man") (cat common)
 			    (index {^2 agent index})))))))
 
 (try aa)
-;;;"The analysis completed, they treated him homeopatically as if to avoid conventional treatments." 
+;;;"The analysis completed, they treated him homeopatically as if to avoid conventional treatments."
 
 ;; John sold the slave to himself
 
 ;;; John's book [that his mother wrote] [ about himself] - is it possible?
-
-
-
