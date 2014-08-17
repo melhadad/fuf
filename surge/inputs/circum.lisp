@@ -1580,3 +1580,83 @@
 		       (prep ((lex "on")))
 		       (np ((cat common)
 			    (lex "nose")))))))))
+
+;; Tests: time as present-participle clause
+(def-test c45
+  "Before jumping, check your watch."
+  ((cat clause)
+   (mood imperative)
+   (process ((type mental) (lex "check")))
+   (partic ((processor ((cat pronoun)
+                        (index ((person second)
+                                (number singular)))))
+            (phenomenon ((cat np)
+                         (possessor ((cat pronoun)
+                                     (index {^3 processor index})))
+                         (lex "watch")))))
+   (circum
+    ((time
+      ((cat clause)
+       (position front)
+       (mood present-participle)
+       (binder ((lex "before")))
+       (process ((type material) (lex "jump")))
+       (controlled {^ partic agent})
+       (partic ((agent ((cat pronoun)
+                        (effective no)
+			(index {^5 partic processor index})))))))))))
+
+(def-test c46
+  "We must discover how to do it."
+  ((cat clause)
+   (process ((type mental)
+	     (lex "discover")
+	     (transitive yes)
+	     (deontic-modality "must")))
+   (partic ((processor ((cat personal-pronoun)
+                        (index ((concept we1)
+                                (person first)
+                                (number plural)))))
+	    (phenomenon ((cat clause)
+			 (mood infinitive)
+			 (binder ((lex "how")))
+			 (controlled {^ partic agent})
+                         (process ((type material) (lex "do")))
+                         (partic ((agent ((semantics ((concept we1)))))
+				  (affected ((cat pronoun)))))))))))
+
+(def-test c47
+  "As soon as koed by Iron Mike, he found himself a millionaire."
+  ((cat clause)
+   (process ((type composite)
+             (relation-type ascriptive)
+             (mode equative)
+	     (lex "find")))
+   (tense past)
+   (partic ((agent ((cat personal-pronoun)
+                    (index ((concept he1)
+                            (person third)
+                            (gender masculine)
+                            (number singular)))))
+            ;; Without binding - specify reflexive in input
+	    (identified ((cat personal-pronoun)
+                         (lex "himself")))
+            (identifier ((cat np)
+                         (definite no)
+                         (lex "millionaire")))))
+   (circum
+    ((time ((position front)
+            (cat clause)
+            (binder ((lex "as soon as")))
+            (mood past-participle)
+            (controlled {^ partic affected})
+            (agentless no)
+            (process ((type material)
+                      (lex "ko")))
+            (tense past)
+            (partic ((agent ((head ((cat person-name)
+                                    (first-name ((lex "Iron")))
+                                    (last-name ((lex "Mike")))))))
+                     (affected ((index {^5 partic processor})))))))))))
+
+(store-verbs '(("find" "finds" "found" "finding" "found")))

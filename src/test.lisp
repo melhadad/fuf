@@ -51,10 +51,10 @@
 ;; --------------------------------------------------
 ;; TEST
 ;; --------------------------------------------------
-(defun uni-string-limit (fd)
-  (uni-string fd :limit *test-limit*))
+(defun uni-string-limit (fd &key (limit *test-limit*))
+  (uni-string fd :limit limit))
 
-(defun test3 (&key item from to)
+(defun test3 (&key item from to (limit *test-limit*))
   (let ((total 0)
 	(correct 0)
 	(problems nil))
@@ -66,7 +66,7 @@
 		(format t "~&~s --> ~s~%"
 			key (if (consp result) (car result) result))
 		(multiple-value-bind (fd new)
-		    (uni-fd-string input)
+		    (uni-fd-string input :limit limit)
 		  (add-test-result key fd)
 		  (incf total)
 		  (cond

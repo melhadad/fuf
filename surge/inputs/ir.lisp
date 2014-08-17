@@ -15,19 +15,6 @@
 
 (clear-tests)
 
-;; The following tests are incorrect:
-;; (T28 MINE3      T356 T364 T377 T390 T407BIS T409 T410 T412 T413 T414 T421 T422 C26 C33 C35 NP2)
-;; (T28 MINE3      T356 T390 T407BIS T409 T410 T412 T413 T414 T419 T420 T421 T422 C26 C33 C35 NP2)
-;; (T28 MINE3 T355 T356 T390 T407BIS T409 T410 T412 T413 T414 T419 T420 T421 T422 C26 C33 C35 NP2)
-;; (T28 MINE3           T390 T407BIS T409 T410 T412 T413 T414 T419 T420 T421 T422 C26 C33 C35 NP2)
-;; (T28 MINE3                T407BIS T409 T410 T412 T413 T414 T419 T420 T421 T422 C26 C33 C35 NP2)
-;; (T28 MINE3                                  T412 T413 T414 T419 T420 T421 T422 C26 C33 C35 NP2)
-;; (T28 MINE3                                                           T421 T422 C26 C33 C35 NP2)
-;; (    MINE3                                                           T421 T422 C26 C33 C35 NP2)
-;; (MINE3               T390                                            T421 T422 C26 C33     NP2)
-;; (MINE3 T421 T422 C26 C33 C35 NP2)
-;; (MINE3 T421 T422 C26     C35 NP2)
-;; (MINE3 T421 T422 C26         NP2)
 
 (def-test t1
   "This car is expensive."
@@ -6185,3 +6172,4 @@
 	       (held ((cat np)
 		      (definite yes)
 		      (lex "key")))))))
+
