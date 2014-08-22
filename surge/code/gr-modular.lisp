@@ -344,7 +344,7 @@
         (pattern (prep np))
         (prep ((cat prep) (lex given)))
         (np ((cat ((alt (np #(under date)))))
-             (case objective))))
+             (syntax ((case objective))))))
 
        ;;==============================================================
        ;; 09 CAT DET : Determiners ------------------------------------

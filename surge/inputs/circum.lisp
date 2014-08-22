@@ -1660,3 +1660,52 @@
                      (affected ((index {^5 partic processor})))))))))))
 
 (store-verbs '(("find" "finds" "found" "finding" "found")))
+
+;; Use framenet lex-roles: Grant-permission
+(def-test c48
+  "Within 10 feet, no smoking is allowed."
+  ((cat clause)
+   (process ((type lexical) (lex "allow")
+             (object-clause to-infinitive)
+             (subcat ((1 {^3 lex-roles grantor})
+                      (2 {^3 lex-roles grantee})
+                      (3 {^3 lex-roles action})))))
+   (lex-roles ((action ((cat common)
+                        (total -)
+                        (lex "smoking")))
+               (grantor none)
+               (grantee none)))
+   (circum ((distance ((cat pp)
+                       (position front)
+		       (prep ((lex "within")))
+		       (np ((cat measure)
+			    (quantity ((value 10) (digit yes)))
+                            (unit ((lex "foot")))))))))))
+
+(store-plurals '(("foot" "feet")))
+
+;; Variation on Grant-permission
+;; Position default is end
+(def-test c48bis
+  "You are not allowed to smoke within 10 feet."
+  ((cat clause)
+   (process ((type lexical) (lex "allow")
+             (object-clause to-infinitive)
+             (subcat ((1 {^3 lex-roles grantor})
+                      (2 {^3 lex-roles grantee})
+                      (3 {^3 lex-roles action})))))
+   (polarity negative)
+   (lex-roles ((action ((cat clause)
+                        (proc ((lex "smoke")
+                               (type lexical)
+                               (subcat ((1 {^3 lex-roles ingestor})
+                                        (2 {^3 lex-roles substance})))))
+                        (lex-roles ((ingestor ((index {^4 grantee index})))))))
+               (grantor none)
+               (grantee ((cat pronoun)
+                         (person second)))))
+   (circum ((distance ((cat pp)
+		       (prep ((lex "within")))
+		       (np ((cat measure)
+			    (quantity ((value 10) (digit yes)))
+                            (unit ((lex "foot")))))))))))

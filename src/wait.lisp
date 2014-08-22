@@ -183,6 +183,7 @@
 ;;        non-leaf   | thaw    thaw    thaw
 ;;
 ;; NOTE: NONE plays no special role... (think about it).
+;; 20 Aug 14: (eq val none) -> don't wait.
 (defun check-wait (wait path)
   (every
    #'(lambda (pair)
@@ -191,6 +192,7 @@
 	      (val (gdp *input* (absolute-path p (path-extend path :wait)))))
 	 (cond
 	  ((empty-fd val) nil)
+          ((eq val 'none) t)
 	  ((not (leaf-p val)) t)
 	  ((eq v 'given) t)
 	  ((subsume v val)))))

@@ -71,11 +71,8 @@
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject))
 		 (subject ((lex "it")
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))
-			   (synt-funct subject)
-			   (number singular)
-			   (cat personal-pronoun))))))
+			   (cat personal-pronoun)
+			   (number singular))))))
 
    ;; EXISTENTIAL
    ((process-type #(under existential))
@@ -85,15 +82,9 @@
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject subj-comp))
 		 (subject ((lex "there")
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))
-			   (synt-funct subject)
-			   (number {^ ^ ^ oblique 1 number})
-			   (cat demonstrative-pronoun)))
-		 (subj-comp {^ ^ oblique 1})
-		 (subj-comp ((synt-funct subj-comp)
-			     (clause-level ((scoped {^4 scoped})
-					    (embedded {^4 embedded}))))))))
+			   (cat demonstrative-pronoun)
+			   (number {^ ^ ^ oblique 1 number})))
+		 (subj-comp {^ ^ oblique 1}))))
 
    ;; ASCRIPTIVE EQUATIVE: passive with copula is special
    ;; passive is just a swap of the order of arguments around the copula.
@@ -105,6 +96,71 @@
    ((dummy-constituent none)
     (:! voice-normal))))
 
+;; ===============================
+;; 7 possible synt-roles
+;; subject, object, iobject, subj-comp, obj-comp, dative, by-obj
+;; Each one is either present (cat specified) or not
+;; If present, normalize synt-funct and propagate clause-level.
+;; ===============================
+
+(def-alt subject-voice
+    (:wait {^ synt-roles subject cat})
+  (((synt-roles ((subject none))))
+   ((synt-roles ((subject ((synt-funct subject)
+                           (clause-level ((scoped {^4 scoped})
+                                          (embedded {^4 embedded}))))))))))
+(def-alt object-voice
+    (:wait (({^ synt-roles object cat} given)))
+  (((synt-roles ((object none))))
+   ((synt-roles ((object ((synt-funct object)
+                          (clause-level ((scoped {^4 scoped})
+                                         (embedded {^4 embedded}))))))))))
+(def-alt subj-comp-voice
+    (:wait (({^ synt-roles subj-comp cat} given)))
+  (((synt-roles ((subj-comp none))))
+   ((synt-roles ((subj-comp ((synt-funct subj-comp)
+                             (clause-level ((scoped {^4 scoped})
+                                            (embedded {^4 embedded}))))))))))
+
+(def-alt obj-comp-voice
+    (:wait (({^ synt-roles obj-comp cat} given)))
+  (((synt-roles ((obj-comp none))))
+   ((synt-roles ((obj-comp ((synt-funct obj-comp)
+                            (clause-level ((scoped {^4 scoped})
+                                           (embedded {^4 embedded}))))))))))
+
+(def-alt iobject-voice
+    (:wait (({^ synt-roles iobject cat} given)))
+  (((synt-roles ((iobject none))))
+   ((synt-roles ((iobject ((synt-funct iobject)
+                           (syntax ((case objective)))
+                           (clause-level ((scoped {^4 scoped})
+                                          (embedded {^4 embedded}))))))))))
+
+(def-alt dative-voice
+    (:wait (({^ synt-roles dative cat} #(under pp))))
+  (((synt-roles ((dative none))))
+   ((synt-roles ((dative ((synt-funct dative)
+                          (clause-level ((scoped {^4 scoped})
+                                         (embedded {^4 embedded})))
+			  (question-embedded yes)
+			  (relative-embedded yes))))))))
+
+(def-alt by-obj-voice
+    (:wait (({^ synt-roles by-obj cat} #(under pp))))
+  (((synt-roles ((by-obj none))))
+   ((synt-roles ((by-obj ((synt-funct by-obj)
+                          (clause-level ((scoped {^4 scoped})
+                                         (embedded {^4 embedded}))))))))))
+
+(def-conj voice-synt-roles
+  (:! subject-voice)
+  (:! object-voice)
+  (:! iobject-voice)
+  (:! subj-comp-voice)
+  (:! obj-comp-voice)
+  (:! dative-voice)
+  (:! by-obj-voice))
 
 
 (def-alt equative-voice (:index (process voice))
@@ -115,13 +171,7 @@
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject subj-comp))
 		 (subject {^ ^ oblique 1})
-		 (subj-comp {^ ^ oblique 2})
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (subj-comp ((synt-funct subj-comp)
-			     (clause-level ((scoped {^4 scoped})
-					    (embedded {^4 embedded}))))))))
+		 (subj-comp {^ ^ oblique 2}))))
    ((process ((voice passive)))
     (alt equative-passive (:index (process voice))
       (((process ((copula no)))
@@ -129,12 +179,14 @@
 		  {^ synt-roles obj-comp} {^ synt-roles iobject}
 		  {^ synt-roles dative})))
 	(:! clause-level-at-1)
-	(synt-roles ((fset (subject by-obj))
-		     (subject {^ ^ oblique 2})
-		     (subject ((synt-funct subject)
-			       (clause-level ((scoped {^4 scoped})
-					      (embedded {^4 embedded})))
-			       (question-pronoun ((restrictive yes))))))))
+	(synt-roles
+         ((fset (subject by-obj))
+          (subject {^2 oblique 2})
+          (alt subject-equative-copula-no
+               (:wait (({^ subject cat} #(under lexical-cat))))
+               (((subject none))
+                ((subject ((question-pronoun ((restrictive yes)))))))))))
+
        ;; This is the real special case
        ((process ((copula yes)))
 	(cset ((- {^ synt-roles object}
@@ -144,67 +196,66 @@
          ((fset (subject subj-comp))
           (subject {^ ^ oblique 2})
           (subj-comp {^ ^ oblique 1})
-          (subject ((synt-funct subject)
-                    (clause-level ((scoped {^4 scoped})
-                                   (embedded {^4 embedded})))
-                    (question-pronoun ((restrictive yes)))))
-          (subj-comp ((synt-funct subj-comp)
-                      (clause-level ((scoped {^4 scoped})
-                                     (embedded {^4 embedded})))
-                      (question-pronoun ((restrictive no)))))))))))))
+          (alt subject-equative-copula-yes
+               (:wait (({^ subject cat} #(under lexical-cat))))
+               (((subject none))
+                ((subject ((question-pronoun ((restrictive yes))))))))))
+          (alt subj-comp-equative-copula-yes
+               (:wait (({^ subj-comp cat} #(under lexical-cat))))
+               (((subj-comp none))
+                ((subj-comp ((question-pronoun ((restrictive no))))))))))))))
 
 
-(def-alt voice-normal (:index (oblique 2))
+(def-alt voice-normal 
   ;; Voice system when there is no dummy constituent like it/there
   ;; All patterns of obliqueness are:
   ;; 1, 12, 123, 124, 13, 14
   ;; For all passives, the decision with/wo by-obj is made in the
   ;; agent-less alt.
-  (;; JR 1-25-93, to allow partic-less clauses (e.g. non-effective imperative)
-   ((oblique none))
+  (
+   ;; JR 1-25-93, to allow partic-less clauses (e.g. non-effective imperative)
+   ;; Go, Rest.
+   ((oblique none)
+    (cset ((- {^ synt-roles subject} {^ synt-roles object}
+              {^ synt-roles subj-comp}
+	      {^ synt-roles obj-comp} {^ synt-roles iobject}
+	      {^ synt-roles dative} {^ synt-roles by-obj}))))
 
-   ((oblique ((2 any)
-	      (fset (1 2))))
+   ((oblique ((fset (1))))
+    ;; (process ((voice active)))
+    (cset ((- {^ synt-roles object} {^ synt-roles subj-comp}
+	      {^ synt-roles obj-comp} {^ synt-roles iobject}
+	      {^ synt-roles dative} {^ synt-roles by-obj})))
+    (synt-roles ((fset (subject))
+		 (subject {^2 oblique 1}))))
+
+   ((oblique ((fset (1 2))
+              (2 any)))
     (:! voice-12))
+
    ((oblique ((2 any)
 	      (3 any)
 	      (fset (1 2 3))))
     (:! voice-123))
+
    ((oblique ((2 any)
 	      (4 any)
 	      (fset (1 2 4))))
     (:! voice-124))
-   ((oblique ((2 none)
-	      (4 any)
-	      (fset (1 4))))
+
+   ((oblique ((fset (1 3))
+	      (3 any)))
+    (:! voice-13))
+
+   ((oblique ((fset (1 4))
+	      (4 any)))
     (process ((voice active)))
     (cset ((- {^ synt-roles object}
 	      {^ synt-roles obj-comp} {^ synt-roles iobject}
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject subj-comp))
 		 (subject {^ ^ oblique 1})
-		 (subj-comp {^ ^ oblique 4})
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (subj-comp ((synt-funct subj-comp)
-			     (clause-level ((scoped {^4 scoped})
-					    (embedded {^4 embedded}))))))))
-   ((oblique ((2 none)
-	      (fset (1))))
-    ;; (process ((voice active)))
-    (cset ((- {^ synt-roles object} {^ synt-roles subj-comp}
-	      {^ synt-roles obj-comp} {^ synt-roles iobject}
-	      {^ synt-roles dative} {^ synt-roles by-obj})))
-    (synt-roles ((fset (subject))
-		 (subject {^ ^ oblique 1})
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded}))))))))
-   ((oblique ((2 none)
-	      (3 any)
-	      (fset (1 3))))
-    (:! voice-13))))
+		 (subj-comp {^ ^ oblique 4}))))))
 
 
 (def-alt voice-12 (:index (process voice))
@@ -215,12 +266,6 @@
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject object))
 		 (subject {^ ^ oblique 1})
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (object ((synt-funct object)
-			  (clause-level ((scoped {^4 scoped})
-					 (embedded {^4 embedded})))))
 		 (object  {^ ^ oblique 2}))))
    ((process ((voice passive)
 	      (copula no)))
@@ -229,9 +274,6 @@
 	      {^ synt-roles dative})))
     (:! clause-level-at-1)
     (synt-roles ((fset (subject by-obj))
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
 		 (subject {^ ^ oblique 2}))))))
 
 
@@ -240,25 +282,16 @@
   ;; No dative move if possessor is scope of question or relative.
   ;; Easiest way around is to add question-embedded yes to possessor.
   ;; and a prep of to even if there is a dative move.
-  (:wait {^ dative-move})
+         ;; (:wait {^ dative-move})
   (((dative-move yes)
-    (alt voice221 (:index (process voice))
+    (alt voice-123-dative (:index (process voice))
       (((process ((voice active)))
 	(cset ((- {^ synt-roles subj-comp}
 		  {^ synt-roles obj-comp}
 		  {^ synt-roles dative} {^ synt-roles by-obj})))
 	(synt-roles ((fset (subject object iobject))
 		     (subject {^ ^ oblique 1})
-		     (subject ((synt-funct subject)
-			       (clause-level ((scoped {^4 scoped})
-					      (embedded {^4 embedded})))))
 		     (iobject {^ ^ oblique 2})
-		     (iobject ((synt-funct iobject)
-			       (clause-level ((scoped {^4 scoped})
-					      (embedded {^4 embedded})))))
-		     (object ((synt-funct object)
-			      (clause-level ((scoped {^4 scoped})
-					     (embedded {^4 embedded})))))
 		     (object  {^ ^ oblique 3}))))
        ((process ((voice passive)
 		  (copula no)))
@@ -268,23 +301,9 @@
 	(:! clause-level-at-1)
 	(synt-roles ((fset (subject object by-obj))
 		     (subject {^ ^ oblique 2})
-		     (subject ((synt-funct subject)
-			       (clause-level ((scoped {^4 scoped})
-					      (embedded {^4 embedded})))))
-		     (object ((synt-funct object)
-			      (clause-level ((scoped {^4 scoped})
-					     (embedded {^4 embedded})))))
 		     (object  {^ ^ oblique 3})))))))
    ((dative-move no)
-    (synt-roles ((subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (dative ((synt-funct dative)
-			  (clause-level ((scoped {^4 scoped})
-					 (embedded {^4 embedded})))
-			  (question-embedded yes)
-			  (relative-embedded yes)))))
-    (alt voice222 (:index (process voice))
+    (alt voice123-no-dative (:index (process voice))
       (((process ((voice active)))
 	(cset ((- {^ synt-roles subj-comp}
 		  {^ synt-roles obj-comp} {^ synt-roles iobject}
@@ -293,9 +312,6 @@
 		     (subject {^2 oblique 1})
 		     (dative ((np {^3 oblique 2})
 			      (np ((clause-level {^4})))))
-		     (object ((synt-funct object)
-			      (clause-level ((scoped {^4 scoped})
-					     (embedded {^4 embedded})))))
 		     (object  {^2 oblique 3})))
 	(oblique ((2 ((cset ((- realization)))
 		      (realization {^3 synt-roles dative}))))))
@@ -317,15 +333,6 @@
     (cset ((- {^ synt-roles iobject} {^ synt-roles subj-comp}
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject object obj-comp))
-		 (subject ((synt-roles subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (object ((synt-roles object)
-			  (clause-level ((scoped {^4 scoped})
-					 (embedded {^4 embedded})))))
-		 (obj-comp ((synt-roles obj-comp)
-			    (clause-level ((scoped {^4 scoped})
-					   (embedded {^4 embedded})))))
 		 (subject {^ ^ oblique 1})
 		 (object  {^ ^ oblique 2})
 		 (obj-comp {^ ^ oblique 4}))))
@@ -336,12 +343,6 @@
     (:! clause-level-at-1)
     (synt-roles ((fset (subject by-obj subj-comp))
 		 (subject {^ ^ oblique 2})
-		 (subject ((synt-roles subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (subj-comp ((synt-roles subj-comp)
-			     (clause-level ((scoped {^4 scoped})
-					    (embedded {^4 embedded})))))
 		 (subj-comp {^ ^ oblique 4}))))))
 
 
@@ -353,13 +354,7 @@
 	      {^ synt-roles dative} {^ synt-roles by-obj})))
     (synt-roles ((fset (subject object))
 		 (subject {^ ^ oblique 1})
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded})))))
-		 (object  {^ ^ oblique 3})
-		 (object ((synt-funct object)
-			  (clause-level ((scoped {^4 scoped})
-					 (embedded {^4 embedded}))))))))
+		 (object  {^ ^ oblique 3}))))
    ((process ((voice passive)
 	      (copula no)))
     (cset ((- {^ synt-roles object} {^ synt-roles subj-comp}
@@ -367,21 +362,16 @@
 	      {^ synt-roles dative})))
     (:! clause-level-at-1)
     (synt-roles ((fset (subject by-obj))
-		 (subject {^ ^ oblique 3})
-		 (subject ((synt-funct subject)
-			   (clause-level ((scoped {^4 scoped})
-					  (embedded {^4 embedded}))))))))))
-
-
+		 (subject {^ ^ oblique 3}))))))
 
 ;; Before deciding whether to use a by-obj or not, place a pointer to the
 ;; clause-level in the constituent that would become by-obj.
 (def-alt clause-level-at-1
+    (:wait {^ oblique 1 cat})
   (((oblique ((1 none))))
    ((oblique ((1 given)
 	      (1 ((clause-level ((scoped {^4 scoped})
 				 (embedded {^4 embedded}))))))))))
-
 
 (def-alt agentless (:index (process voice))
   ;; Decide whether by-obj is included in passive (non ascriptive equative)
@@ -390,6 +380,7 @@
 	      (agentless {^2 agentless})))
     (alt agentless2 (:index agentless)
       ;; If by-obj would be scope of question or relative, it must be used.
+         (:wait {^ synt-roles by-obj cat})
       (((agentless yes)
 	(scoped no)
 	(cset ((- {^ synt-roles by-obj})))
@@ -408,8 +399,6 @@
 	    (((process ((passive-prep given)))
 	      (synt-roles ((by-obj ((prep {^3 process passive-prep}))))))
 	     ((synt-roles ((by-obj ((prep ((lex "by"))))))))))))))))
-
-
 
 
 ;; ============================================================

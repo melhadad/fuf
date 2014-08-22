@@ -102,8 +102,14 @@
 	 ;; make it a cat modal.
 	 (going-to ((lex "going to")
 		    (cat modal))))))
-  (opt ((aux none)
-	(cset ((- aux)))))
+
+  (alt aux-specified
+       (:wait aux-specified)
+       (((aux-specified no)
+         (aux none))
+        ((aux given))
+        ((aux none)
+         (cset ((- aux))))))
 
   ;; Put everything together. Notf and adverb have already been placed.
   ;; For interrogative, the tensed-feature has been fronted, so
@@ -125,6 +131,7 @@
 		   (lex {^ ^ ^ fronted-not lex})
 		   (cat {^ ^ ^ fronted-not cat}))))))
       (alt adverb-interrogative
+           (:wait aux-specified)
 	  (((adverb none))
 	   ((aux given))
 	   ;; No aux: front adverb "who never owned this book"
@@ -833,6 +840,7 @@
 	    (event ((ending root))))
 	   ((polarity positive) 	;; e.g. I saw it
 	    (alt simple-interrogative (:index interrogative)
+                 (:wait {^ scope synt-funct})
 	      ((;; When wh question where scope is subject NOT EMBEDDED
 		;; don't use aux.
 		;; Example: Who do you think really won the prize?
@@ -840,26 +848,32 @@
 		({^ scope} ((synt-funct #(under subject))
 			    (clause-level ((embedded no)))))
 		(aux none)
+                (aux-specified yes)
 		(event { ^ tensed-feature}))
 	       ((interrogative interrogative)
 		(aux ((lex "do") (cat verb)))
 		(aux {^ tensed-feature})
+                (aux-specified yes)
 		(event ((ending root))))
 	       ((alt simple-insistence (:index insistence)
 		  (((insistence no)
 		    (aux none)
+                    (aux-specified yes)
 		    (event { ^ tensed-feature}))
 		   ((insistence yes)
 		    (aux ((lex "do") (cat verb)))
 		    (aux {^ tensed-feature})
+                    (aux-specified yes)
 		    (event ((ending root)))))))))))))
        ((simple no)
 	;; there is an aux of one kind or another,
 	;; the default ending of the event should be
 	;; set event ending???
+        (aux-specified yes)
 	(event ((ending {^ ^ verb-aspect})))))))
    ((voice passive)
     (copula no)
+    (aux-specified yes)
     (alt passive-simple (:index simple)
       (;; no auxilliary necessarily
        ((simple yes)
@@ -873,10 +887,12 @@
 
 (def-alt notf-adverb-placement (:index polarity)
   ;; ***** WORK ON NEGATION OF NON-FINITE
+  ;; @@TODO: HERE - AUX NONE must wait - for what?????
   (((polarity positive)
     (adverb none))
    (
     (alt aux-notf (:index aux)
+         (:wait aux-specified)
       (((aux given)
 	(pattern (dots aux notf adverb dots)))
        ((aux none)

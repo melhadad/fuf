@@ -38,7 +38,7 @@
 	(generic-mood declarative)
 	(pattern ({^ headers 1} {^ headers 2} stop-header dots start dots)))
 
-       ((mood interrogative)
+       ((mood #(under interrogative))
 	(generic-mood interrogative)
 	;; for both yes-no and wh questions, front the tensed part
 	;; of the verb group and the not particle.
@@ -47,12 +47,13 @@
 	;; Note: these are all the features known to the morphology.
 	(scope ((gap yes)))
 	;; For wh questions don't use dative-move
-	(alt (((mood wh)
+	(alt wh-dative-move
+             (((mood wh)
 	       (dative-move no))
 	      ((mood yes-no))))
 	(process ((interrogative {^2 mood})))
 	(cset ((- fronted-aux)))
-	(alt AUX (:wait {^ verb tensed-feature})
+	(alt aux (:wait {^ verb tensed-feature})
 	  (((fronted-aux
 	     ((person {^2 verb tensed-feature person})
 	      (number {^2 verb tensed-feature number})
@@ -61,7 +62,7 @@
 	      (cat    {^2 verb tensed-feature cat})
 	      (lex    {^2 verb tensed-feature lex})))))))
 
-       ((mood bound)
+       ((mood #(under bound))
 	;; For conjunctions like:
 	;; I know who he is and whether he is coming.
 	(generic-mood declarative)
@@ -69,7 +70,7 @@
 	(binder ((cat conj)))
 	(alt bound-moods (:index mood)
 	  (((mood bound-nominal)
-	    (binder ((lex ((alt (given "that" "whether" "if"))))))
+	    (binder ((lex ((alt binder-lex (given "that" "whether" "if"))))))
 	    ;; If clause is scoped by a long distance dependency, don't use
 	    ;; binder: the person who you think [that] won the prize.
 	    (alt bound-scoped (:index scoped) (:wait scoped)
@@ -92,13 +93,13 @@
 
        ;; relative -- mapping scope/role is done in voice system.
        ;; Just indicate here that scope has a gap.
-       ((mood relative)
+       ((mood #(under relative))
 	(generic-mood relative)
 	;; JR-note: origin of the dgsB1c failure
 	;; (dative-move no)
 	(scope ((gap yes)))))))
 
-   ((mood non-finite)
+   ((mood #(under non-finite))
     (modality none)
     (epistemic-modality none)
     (deontic-modality none)
@@ -106,9 +107,9 @@
       (((mood imperative)
 	(generic-mood imperative)
 	(process ((ending root) (voice active)))
-	(innermost-role ((alt (none ((gap yes))))))
+	(innermost-role ((alt imperative-subject (((gap yes)) none))))
 	(pattern (stop-header dots start dots)))
-       ((pattern (stop-header binder dots start dots))
+       ((pattern (stop-header dots binder dots start dots))
 	;; - All cases can have a binder:
 	;;   "BEFORE JUMPING, check your watch."
 	;;   "We must discover HOW TO DO IT."
@@ -148,21 +149,26 @@
   (:demo "Is a subject required or does it need a special treatment?")
   (
    ;; Moods w/ obligatory subjects
-   ((mood ((alt (declarative yes-no bound relative))))
+   ((mood ((alt subject-mood-obligatory (declarative yes-no bound relative))))
     (synt-roles ((subject given))))
 
    ;; Moods w/ possibly absent subject due to question scoping
    ((mood wh)
-    (alt scoped-subject (((synt-roles ((subject given))))
-			 ((scope {^ synt-roles subject})))))
+    (alt scoped-subject
+         (:wait {^ synt-roles subject})
+         (((synt-roles ((subject given))))
+          ((scope {^ synt-roles subject})))))
 
    ;; Moods w/ possibly absent subject due to control by embedding clause
    ((mood ((alt (past-participle verbless))))
-    (alt controlled-subject (((synt-roles ((subject given)))
-			      (controlled none))
-			     ((controlled given)
-			      (controlled ((gap yes)))
-			      (controlled {^ synt-roles subject})))))
+    (alt controlled-subject
+         (:wait controlled)
+         (((synt-roles ((subject given)))
+           (controlled none))
+          ((synt-roles ((subject none))))
+          ((controlled given)
+           (controlled ((gap yes)))
+           (controlled {^ synt-roles subject})))))
 
    ((mood present-participle)
     (alt present-participle-subject
@@ -206,7 +212,7 @@
     (synt-roles ((subject given)
 		 (subject ((cat given)
 			   (gap none)
-			   (case objective)))))
+                           (syntax ((case objective)))))))
     ;; If this is the case - add a for
     (pattern (stop-header dots for start dots))
     (for ((cat prep) (lex "for"))))
@@ -260,7 +266,8 @@
 
    ((mood wh)
     ;; Find pointer to scope realization - this is scoper.
-    (alt (((scope ((synt-funct given)))
+    (alt wh-scope-realization
+         (((scope ((synt-funct given)))
 	   (scoper {^ scope}))
 	  ((scope ((realization head)))
 	   (scoper {^ scope}))
@@ -272,7 +279,6 @@
     (:! question-embedded)
     ;; Add the question element in front.
     ;; Adverb is fronted in cases like "who never owned this book"
-
     (pattern
      (stop-header dots question
                   fronted-adverb fronted-aux fronted-not start dots)))
@@ -280,7 +286,8 @@
    ;; MOOD RELATIVE
    ((mood relative)
     ;; Find pointer to scope realization - this is scoper.
-    (alt (((scope ((synt-funct given)))
+    (alt relative-scope-realization
+         (((scope ((synt-funct given)))
 	   (scoper {^ scope}))
 	  ((scope ((realization head)))
 	   (scoper {^ scope}))
@@ -289,7 +296,6 @@
 	     (clause-level ((scoped yes)))
 	     (relative-marker {^2 scope relative-marker})
 	     (relative-embedded {^2 scope relative-embedded})))
-
     (pattern (stop-header relative-marker dots start dots))
 
     (:! relative))
@@ -327,13 +333,15 @@
 	       (possessive {^2 scope possessive})
 	       (syntax {^2 scoper syntax})
 	       (semantics ((index {^3 scoper semantics index})))))
-    (alt (((question ((lex given)))
+    (alt question-embedded-question
+         (((question ((lex given)))
 	   (cset ((- question))))
 	  ((cset ((+ question)))))))
    ((scope ((question-embedded yes)))
     (cset ((+ question)))
     (question ((cat pp)
-	       (alt (((prep {^2 scope question-prep})
+	       (alt question-embedded-prep
+                    (((prep {^2 scope question-prep})
 		      (prep given))
 		     ((prep {^2 scope prep})
 		      (prep given))
@@ -382,7 +390,8 @@
 		      (restrictive {^2 restrictive})
 		      (syntax {^2 scoper syntax})
 		      (semantics {^2 scoper semantics})))
-    (alt (((relative-marker ((lex given)))
+    (alt relative-marker-restrictive
+         (((relative-marker ((lex given)))
 	   (cset ((- relative-marker))))
 	  ;; Rule (Winograd p.479 B.1.4)
 	  ;; Stylistic rule: restrictive pronoun -> that vs. which
@@ -405,7 +414,8 @@
     ;; ***** Copying any type of NP in any form (annoying).
     ;; Done here only for common and partitive.
     ;; @@Todo: example with partitive scoper
-    (alt (((scoper ((cat #(under partitive))))
+    (alt possessive-relative-marker
+         (((scoper ((cat #(under partitive))))
 	   (relative-marker ((cat partitive)
 			     (part {^2 scoper part})
 			     (part-of {^2 scoper part-of})
@@ -451,7 +461,8 @@
 			   (animate {^3 scope animate})
 			   (possessive {^3 scope possessive})
 			   (semantics {^3 scoper np semantics})))))
-    (alt (((relative-marker ((np ((lex given)))))
+    (alt embedded-relative-marker
+         (((relative-marker ((np ((lex given)))))
 	   (cset ((- relative-marker))))
 	  ((cset ((+ relative-marker)))))))
 

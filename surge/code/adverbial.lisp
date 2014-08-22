@@ -44,7 +44,7 @@
   '(score manner means instrument comparison matter direction distance
 	  location path origin destination duration time))
 
-(def-alt predicate-modifiers (:index pred-modif)
+(def-alt predicate-modifiers
   (((pred-modif none))
    ((pred-modif given)
     (pred-modif
@@ -70,7 +70,7 @@
     (:! time-pred-modif)
     (:! duration-pred-modif))))
 
-(def-alt circumstantials (:index circum)
+(def-alt circumstantials 
   (((circum none))
    ((circum given)
     (circum ((fset (location distance origin time duration frequency
@@ -334,7 +334,7 @@
 
 ;; Putting punctuation in the header and capitalize the first constituent
 ;; after it.
-(def-alt header (:index headers)
+(def-alt header
   (((headers none))
    ((headers given)
     (headers ((fset (1 2))))
@@ -876,8 +876,7 @@
 	(((accomp-polarity +)
 	  (prep ((lex ((alt with (given "with")))))))
 	 ((accomp-polarity -)
-	  (prep ((lex ((alt without (given "without")))))))))
-    (np ((case objective))))))
+	  (prep ((lex ((alt without (given "without"))))))))))))
 
 (make-map-circum accompaniment sent-adjunct)
 

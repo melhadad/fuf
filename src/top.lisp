@@ -62,6 +62,7 @@
 ;;;               16 Jan 94: Fixed u-disjunctions.
 ;;;               08 Feb 12: Added relocate in hyper-trace
 ;;;               08 Jul 14: Added uni-fd-string
+;;;               22 Aug 14: Amazing bug fixed ((1 {..}) (1 ((cat np)))) input
 ;;; Package:      FUG5
 ;;; Status:       Experimental
 ;;; -----------------------------------------------------------------------
@@ -259,7 +260,7 @@
   ;; with fd2 using the generator of fd1 as a fail continuation.
   (setf fd2 (use-grammar fd2))
   (toplevel-uni
-   nil fd1 limit cset-attribute
+   `((top nil)) fd1 limit cset-attribute
    (unify nil fd1 path path new-frame
 	  (make-failure failure *fail*)
 	  #'(lambda (fd fail frame)
@@ -349,6 +350,14 @@
 				       fd2 cat-attribute
 				       cset-attribute :no-cset)))))))
 
+;; 22 Aug 2014
+;; An input of the form:
+;; ((cat clause) (proc ((subcat ((1 {^3 lex-roles a) (1 ((cat np))))))))
+;; was not processed correctly!!!
+;; The second occurrence of (1 ...) was skipped.
+;; The following preparation fixes this.
+(defun prep-input2 (fd)
+  (filter-flags (u-disjunctions (prep-input (get-fd fd)) nil)))
 
 ;; Top-level for unification.
 (defun unify-top (input grammar &key non-interactive
@@ -360,26 +369,28 @@
   "Unify a fd with a grammar.
    Preprocess input, unify top-level, then constituents.
    If non-interactive is nil, statistics are printed."
-  (toplevel-uni
-   input grammar limit cset-attribute
-   (unify-sub-constituents
-    *input* grammar path new-frame
-    (make-failure failure *fail*)
-    #'(lambda (fd fail frame)
-	(unless non-interactive
-	  (format t "~%[Used ~D backtracking points ~
+  (let ((input (prep-input2 input))
+        (grammar (get-fd grammar)))
+    (toplevel-uni
+     input grammar limit cset-attribute
+     (unify-sub-constituents
+      *input* grammar path new-frame
+      (make-failure failure *fail*)
+      #'(lambda (fd fail frame)
+          (unless non-interactive
+            (format t "~%[Used ~D backtracking points ~
 		      - ~D wrong branches - ~D undo~:P]~%"
-		  *counter* *wrong-branches* *number-of-undo*))
-	(determine fd fail frame
-		   #'(lambda (fd fail frame)
-		       (unless non-interactive
-			 (format t "~%[Used ~D backtracking points ~
+                    *counter* *wrong-branches* *number-of-undo*))
+          (determine fd fail frame
+                     #'(lambda (fd fail frame)
+                         (unless non-interactive
+                           (format t "~%[Used ~D backtracking points ~
 		      - ~D wrong branches - ~D undo~:P]~%"
-				 *counter* *wrong-branches* *number-of-undo*))
-		       (funcall success fd fail frame))
-		   grammar cat-attribute cset-attribute))
-    cat-attribute
-    cset-attribute)))
+                                   *counter* *wrong-branches* *number-of-undo*))
+                         (funcall success fd fail frame))
+                     grammar cat-attribute cset-attribute))
+      cat-attribute
+      cset-attribute))))
 
 
 ;; ------------------------------------------------------------

@@ -12,11 +12,11 @@
 
 ;; needs to include:
 ;; - a composite process
-;; - a lexical process ''i bet you $40 that houston is going to win tonight''
+;; - a lexical process ''I bet you $40 that houston is going to win tonight.''
 ;;                     4 roles so really does not match anything
-;;                     ''they charged me $40 for the room''
+;;                     ''They charged me $40 for the room.''
 ;; - a subordinated clause w/ controlled subject 
-;; - a binded object or complement 
+;; - a bound object or complement 
 ;; - 1 pred-modif & 1 circum w/ same semantic label
 ;; - 1 complex np, eg, "a playoff record 6th 4th quarter 3 pointers"
 ;; - 1 complex det "lots of shots" or "too many shots"

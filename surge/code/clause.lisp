@@ -63,11 +63,13 @@
   (verb {^ process})
   (proc {^ process})
   (partic {^ participants})
+  (lex-roles {^ lexical-roles})
   (circum   {^ circumstances})
   (pred-modif {^ predicate-modifiers})
-  (process ((type {^ process-type})))
+  (process ((type {^ process-type})
+            (dative-move {^2 dative-move})
+            (subcat {^2 oblique})))
   (process-type {^ process process-type})
-  (lex-roles {^ lexical-roles})
 
   ;; General structure of a clause
   ;; lexical-roles      : semantic roles specific to a lexical item
@@ -81,6 +83,8 @@
   ;; disjuncts          : peripheral movable optional syntactic constituents
   ;; sentence-adjuncts  : central movable optional syntactic constituents
   ;; predicate-adjuncts : non-movable optional syntactic constituents
+  ;; relaters           : if, then, firstly
+  ;; headers            : news-genre - time - location - ...
   ;;
   ;; Processing of semantic arguments:
   ;; Map from partic -> oblique -> synt-roles.
@@ -88,13 +92,37 @@
   ;; First stage is transitivity, second is voice.
   ;; Government pattern of verbs is specified under subcat which is
   ;; unified with synt-roles (ala Mel'cuk and vaguely subcat of HPSG).
+
+  ;; Specify fset for all components
   (participants ((fset (agent affected created range
-      		        processor phenomenon
+                        processor phenomenon
 			sayer addressee verbalization
 			carrier attribute
 			identified identifier
 			located location time
 			possessor possessed))))
+
+  (oblique ((fset (1 2 3 4 5 6 7 8))))
+
+  (synt-roles
+   ((fset (subject object iobject subj-comp obj-comp dative by-obj))))
+  (innermost-role {^ oblique 1})
+
+  (pred-modif
+   ((fset (score manner means instrument comparison matter direction
+                 distance location path origin destination duration time))))
+
+  (circum
+   ((fset (location distance origin time duration frequency
+                    co-event reason result purpose behalf
+                    condition concessive-condition concession contrast
+                    exception inclusion substitution addition accompaniment
+                    opposition manner means comparison matter standard
+                    perspective to-loc from-loc at-loc on-loc in-loc))))
+
+  (relaters ((fset (time cond))))
+  (headers ((fset (1 2))))
+
   ;; Choice is either lexical-roles or partic or none but not both
   (alt type-of-roles
       (((lexical-roles none)
@@ -104,6 +132,7 @@
 	(process-type lexical))
        ((lexical-roles none)
 	(partic none)
+        (oblique none)
 	(alt (((process-type natural-phenom))
 	      ;; JR 1/19/93 to avoid stub roles in mono-role imperative clauses
 	      ((mood #(under imperative))
@@ -113,14 +142,37 @@
 				(transitive #(under no))))))))
 	      ((partic any)))))))
 
-  (oblique ((fset (1 2 3 4 5 6 7 8))))
-  (synt-roles
-   ((fset (subject object iobject subj-comp obj-comp dative by-obj))))
-  (innermost-role {^ oblique 1})
-  (:! mood)
   (:! transitivity)
   (:! voice)
+  (:& voice-synt-roles)
+  (:! mood)
+  (:! subject-mood)
+  (:! agentless)
   ;; END OF TREATMENT OF INHERENT PARTICIPANTS
+
+  ;; Depends on adverbials
+  (:! displaced-constituent)
+
+  ;; If dative-move is not bound yet, it should be yes
+  ;; Do not use dative-move if object is a pronoun
+  ;; * Mary gave the library it.
+  ;; Mary gave it to the library.
+  (alt dative-move-default (:bk-class dative-move)
+    (((dative-move yes)
+      (oblique ((3 given)
+		(3 ((cat ((alt (common proper)))))))))
+     ;; @TODO: Revise this point: dative-move with lex-roles
+     ((process-type lexical)
+      (dative-move yes))
+     ((dative-move no))))
+
+  ;; check cat of each syntactic role subcategorization system
+  (:& subcat)
+
+  (alt controlled (:wait {^ controlled})
+    (((controlled none))
+     ((:! controller-constituent)
+      (controlled ((gap yes))))))
 
   ;; Process optional participants
   (:! old-circum)
@@ -128,7 +180,6 @@
   (:! circumstantials)
   (:& relaters)
   (:& clause-pattern)
-
   (alt adverb (:index adverb)
     (((adverb none))
      ((adverb given)
@@ -148,30 +199,6 @@
     (((synt-funct main-clause) (embedded no))
      ((control (not (equal #@{^ synt-funct} 'main-clause)))
       (embedded yes))))
-
-  (:! agentless)
-  (:! displaced-constituent)
-
-  (alt controlled (:wait {^ controlled})
-    (((controlled none))
-     ((:! controller-constituent)
-      (controlled ((gap yes))))))
-
-  ;; If dative-move is not bound yet, it should be yes
-  ;; Do not use dative-move if object is a pronoun
-  ;; * Mary gave the library it.
-  ;; Mary gave it to the library.
-  (process ((dative-move {^2 dative-move})))
-  (alt dative-move-default (:bk-class dative-move)
-    (((dative-move yes)
-      (oblique ((3 given)
-		(3 ((cat ((alt (common proper)))))))))
-     ((process-type lexical)
-      (dative-move yes))
-     ((dative-move no))))
-
-  ;; check cat of each syntactic role subcategorization system
-  (:& subcat)
 
   ;; START OF GENERAL THINGS: ORDERING PLUS AGREEMENT
   ;; General things: arrange syntactic roles together and do the agreements.
@@ -230,20 +257,8 @@
 	 {^ synt-roles object} dots
 	 particle dots
 	 {^ synt-roles subj-comp} {^ synt-roles obj-comp} dots
-	 {^ synt-roles by-obj} {^ synt-roles dative} stop-kernel dots))
+	 {^ synt-roles by-obj} {^ synt-roles dative} stop-kernel dots)))
 
-
-  ;; Case assignment
-  ;; Subject of present-participle mood can be possessive mood.
-  (alt synt-role-case
-    (;; JR-added 1/28/93 to allow partic-less material clauses (e.g., Go!).
-     ((synt-roles none))
-     ((synt-roles given)
-      (synt-roles ((alt (:wait {^ subject syntax case})
-                     (((subject ((syntax ((case subjective))))))
-		      ((subject ((syntax ((case given))))))))
-		   (opt ((object  ((syntax ((case objective)))))))
-		   (opt ((iobject ((syntax ((case objective)))))))))))))
 
 
 ;; ============================================================
@@ -251,150 +266,133 @@
 ;; ============================================================
 
 (def-conj subcat
-  ;; Get lexical information on government pattern
-  (process ((subcat {^2 oblique})))
-  ;; special treatment of subject clauses (this is the right time
-  ;; because the subject is now bound).
-  (:! subject-mood)
   (:! subject-subcat)
   (:! object-subcat)
-  (:& subj-comp-cat)
-  (:& obj-comp-cat)
-  (:! by-obj-cat)
-  (synt-roles ((:! dative-cat)))
+  (synt-roles ((subj-comp ((:! subj-comp-cat)))
+               (obj-comp ((:! obj-comp-cat)))))
+  (synt-roles ((:! dative-cat)
+               (:! by-obj-cat)))
 )
 
 
 (def-alt subject-subcat
+    (:index (synt-roles subject cat))
+  (:wait (({^ synt-roles subject cat} given)))
   ;; Syntactic category of subject is compatible with verb?
   ;; This depends on particular verb, information we will get from the
   ;; lexicon. So far, we check whether subject-clause and object-clause
   ;; are ok.
   ;; SUBJECT CAT = NP, CLAUSE.
   (((synt-roles ((subject none))))
-   ((alt subject-subcat2 (:index (synt-roles subject cat))
-
-;; JR-11-17-92: commented out the wait
-      (:wait (({^ synt-roles subject cat} #(under lexical-cat))))
-
-      (((synt-roles ((subject none))))
-       ((synt-roles ((subject ((cat np))))))
-       ((synt-roles ((subject ((cat #(under clause))))))
-	(alt subject-clause	(:index (process subject-clause))
-	  (:demo "For clausal subjects, what type of clause ~
-                     must be used?")
-	  (((process ((subject-clause infinitive)))
-	    (synt-roles ((subject ((mood {^3 process subject-clause}))))))
-	   ((process ((subject-clause #(under present-participle))))
-	    (synt-roles ((subject ((mood {^3 process subject-clause}))))))
-	   ((process ((subject-clause that)))
-	    (synt-roles ((subject ((mood bound-nominal)))))))))
-       ((synt-roles ((subject ((cat #(under list)))))))))
-    (opt ((synt-roles ((subject ((synt-funct subject))))))))))
+   ((synt-roles
+     ((subject ((cat np)
+                (syntax ((case ((alt (given subjective)))))))))))
+   ((synt-roles ((subject ((cat #(under clause))))))
+    (alt subject-clause (:index (process subject-clause))
+         (:demo "For clausal subjects, what type of clause must be used?")
+         (((process ((subject-clause infinitive)))
+           (synt-roles ((subject ((mood {^3 process subject-clause}))))))
+          ((process ((subject-clause #(under present-participle))))
+           (synt-roles ((subject ((mood {^3 process subject-clause}))))))
+          ((process ((subject-clause that)))
+           (synt-roles ((subject ((mood bound-nominal)))))))))
+   ((synt-roles ((subject ((cat #(under list)))))))))
 
 
 (def-alt object-subcat
-  ;; OBJECT CAT = NP, CLAUSE, PP? (deal with?)
+    ;; OBJECT CAT = NP, CLAUSE, PP? (deal with?)
+    (:index  (synt-roles object cat))
+  (:wait (({^ synt-roles object cat} given)))
   (((synt-roles ((object none))))
-   ((alt object-subcat1 (:index  (synt-roles object cat))
-
-;; JR-11-17-92: commented out the wait
-       (:wait (({^ synt-roles object cat} #(under lexical-cat))))
-
-      (((synt-roles ((object none))))
-       ((synt-roles ((object ((cat np))))))
-       ((synt-roles ((object ((cat pp))))))
-       ((synt-roles ((object ((cat #(under clause))))))
-	(alt object-clause (:index (process object-clause))
-	  (:demo "For clausal objects, what type of clause ~
-                    must be used?")
-	  (((process ((object-clause infinitive)))
-	    (synt-roles ((object ((mood infinitive))))))
-	   ((process ((object-clause #(under present-participle))))
-	    (synt-roles ((object ((mood present-participle))))))
-	   ((process ((object-clause that)))
-	    (synt-roles ((object ((mood bound-nominal))))))
-	   ((process ((object-clause wh)))
-	    (synt-roles ((object ((mood wh)))))))))
-       ((synt-roles ((object ((cat #(under list)))))))))
-    (opt ((synt-roles ((object ((synt-funct object))))))))))
+   ((synt-roles ((object ((cat np)
+                          (syntax ((case objective))))))))
+   ((synt-roles ((object ((cat pp))))))
+   ((synt-roles ((object ((cat #(under clause))))))
+    (alt object-clause (:index (process object-clause))
+         (:demo "For clausal objects, what type of clause must be used?")
+         (((process ((object-clause infinitive)))
+           (synt-roles ((object ((mood infinitive))))))
+          ((process ((object-clause #(under present-participle))))
+           (synt-roles ((object ((mood present-participle))))))
+          ((process ((object-clause that)))
+           (synt-roles ((object ((mood bound-nominal))))))
+          ((process ((object-clause wh)))
+           (synt-roles ((object ((mood wh)))))))))
+   ((synt-roles ((object ((cat #(under list)))))))))
 
 
-(def-conj subj-comp-cat
-  ;; SUBJ-COMP CAT = NP, AP, PP, ADV,
-  ;; + ADDRESS, DATE JR-11-21-92
-  ;; + participles JR-1-30-93
-  ;; + phrases JR-3-8-95
-  (synt-roles ((subj-comp ((alt subj-comp-cat1 (:index cat)
-				(:wait (({^ cat} #(under lexical-cat))))
-				(none
-				 ((cat ap))
-				 ((cat #(under np)))
-				 ((cat #(under pp)))
-				 ((cat #(under list)))
-				 ;; JR-1-30-93: added
-				 ((cat #(under verb))
-				  (ending ((alt (#(under past-participle)
-						 #(under present-participle))))))
-				 ;; JR-11-21-92: added
-				 ((cat #(under address)))
-				 ((cat #(under date)))
-				 ((cat #(under phrase)))
-				 ((cat #(under adv)))))
-			   (opt ((synt-funct subj-comp))))))))
+(def-alt subj-comp-cat
+    ;; SUBJ-COMP CAT = NP, AP, PP, ADV,
+    ;; + ADDRESS, DATE JR-11-21-92
+    ;; + participles JR-1-30-93
+    ;; + phrases JR-3-8-95
+    (:index cat)
+  (:wait cat)
+  (none
+   ((cat ap))
+   ((cat #(under np)))
+   ((cat #(under pp)))
+   ((cat #(under list)))
+   ;; JR-1-30-93: added
+   ((cat #(under verb))
+    (ending ((alt (#(under past-participle)
+                    #(under present-participle))))))
+   ;; JR-11-21-92: added
+   ((cat #(under address)))
+   ((cat #(under date)))
+   ((cat #(under phrase)))
+   ((cat #(under adv)))))
 
 
-(def-conj obj-comp-cat
-  ;; OBJ-COMP CAT = NP, AP, PP, ADV,
-  ;; + ADDRESS, DATE JR-11-21-92
-  ;; + participles JR-1-30-93
-  ;; + phrases JR-3-8-95
-  (synt-roles ((obj-comp ((alt obj-comp-cat1 (:index cat)
-			       (:wait (({^ cat} #(under lexical-cat))))
-			       (none
-				((cat ap))
-				((cat #(under np)))
-				((cat #(under pp)))
-				((cat #(under list)))
-				;; JR-1-30-93: added
-				((cat #(under verb))
-				 (ending ((alt (#(under past-participle)
-					        #(under present-participle))))))
-				;; JR-11-21-92:
-				((cat #(under address)))
-				((cat #(under date)))
-				((cat #(under phrase)))
-				((cat #(under adv)))))
-			  (opt ((synt-funct obj-comp))))))))
+(def-alt obj-comp-cat
+    ;; OBJ-COMP CAT = NP, AP, PP, ADV,
+    ;; + ADDRESS, DATE JR-11-21-92
+    ;; + participles JR-1-30-93
+    ;; + phrases JR-3-8-95
+    (:index cat)
+  (:wait cat)
+  (none
+   ((cat ap))
+   ((cat #(under np)))
+   ((cat #(under pp)))
+   ((cat #(under list)))
+   ;; JR-1-30-93: added
+   ((cat #(under verb))
+    (ending ((alt (#(under past-participle)
+                    #(under present-participle))))))
+   ;; JR-11-21-92:
+   ((cat #(under address)))
+   ((cat #(under date)))
+   ((cat #(under phrase)))
+   ((cat #(under adv)))))
 
 
 (def-alt by-obj-cat
-  ;; BY-OBJ CAT = PP, set prep
-  (((synt-roles ((by-obj none))))
-   ((synt-roles ((alt by-obj-cat1 (:index (by-obj cat))
-		   (((by-obj none))
-		    ((by-obj given)
-		     (by-obj ((cat pp)
-			      (synt-funct by-obj)
-			      ;; Prep set in alt agentless - no need here
-			      ;; (prep ((lex "by")))
-			      (np ((cat np)
-				   (syntax ((case objective)))))))))))))))
+    ;; BY-OBJ CAT = PP, set prep
+    (:wait (({^ by-obj cat} #(under pp))))
+  (((by-obj none))
+   ((by-obj given)
+    (by-obj ((cat pp)
+             (synt-funct by-obj)
+             ;; Prep set in alt agentless - no need here
+             ;; (prep ((lex "by")))
+             (np ((cat np))))))))
+
 
 (def-alt dative-cat
   ;; DATIVE CAT = PP, set prep
+    (:index (dative cat))
+  (:wait (({^ dative cat} #(under pp))))
   (((dative none))
    ((dative given)
     (dative ((cat pp)
 	     ({^ ^ process dative-prep} given)
 	     (prep ((lex {^4 process dative-prep})))
-	     (np ((cat np)
-		  (syntax ((case objective))))))))
+	     (np ((cat np))))))
    ((dative ((cat pp)
 	     (prep ((lex "to")))
 	     (synt-funct dative)
-	     (np ((cat np)
-		  (syntax ((case objective))))))))))
+	     (np ((cat np))))))))
 
 
 ;; ============================================================

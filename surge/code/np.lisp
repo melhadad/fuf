@@ -319,50 +319,59 @@
   ;; COMMON NOUNS -------------------------------------------
   (((cat common)
     (np-type common)
+    ;; @@@TODO: Check that common is not specified
+    ;; @@@TODO: gap
+    #+ignore(alt np-common-gap
+     (((gap given)
+       (head ((gap {^2 gap}))))
+      ((gap none))))
     (alt common-determiner
 	 (((gap given) (determiner none))
           ((determiner ((head-cat common)))
            (:! np-determiner)
 	   (pattern (determiner dots)))
 	  ((determiner none))))
-    (head ((cat np-head)
-	   (synt-funct head)
-	   (a-an {^2 syntax a-an})
-	  ;; Single head or conjunction of nouns?
-	   (alt common-head (:index cat)
-	     (((lex given)
-	       (cat noun)
-	       ;; these only accepted by morphology.
-	       ;; (fset (cat generic-cat lex number a-an feature semr kind))
-	       (number {^2 syntax number})
-	       )
-	      ((gap given))
-	      ;; For measure and partitive, no agreement number head/np
-	      ;; Allow for "a season high 27 points."
-	      ;; Allow for "a season high 47 of 53 free throws."
-	      ;; Allow for "Six assignments IS a lot."
-	      ((cat #(under measure))
-	       ({^}
-		((alt measure-head-det
-		     (:demo "Does an NP with a measure as head take a det?")
-		   (((classifier given)
-		     (determiner ((head-cat common))))
-		    ((classifier none)
-		     (possessor given)
-		     (determiner ((head-cat common))))
-		    ((classifier none)
-		     (possessor none)
-		     (determiner none)))))))
-	      ((cat #(under partitive)))
-	      ((cat #(under noun-compound))
-	       (number {^2 syntax number}))
-	      ((complex given)
-	       ;; to make morphology understand this is not a
-	       ;; simple noun.
-	       (cat np-head)
-	       (number {^2 syntax number})
-	       (common ((cat noun))))))))
-
+    (alt np-head
+     (((gap given)
+       (head none))
+      ((head ((cat np-head)
+              (synt-funct head)
+              (a-an {^2 syntax a-an})
+              ;; Single head nor conjunction of nouns?
+              (alt common-head (:index cat)
+                   (((lex given)
+                     (cat noun)
+                     ;; these only accepted by morphology.
+                     ;; (fset (cat generic-cat lex number a-an feature semr kind))
+                     (number {^2 syntax number})
+                     )
+                    ((gap given))
+                    ;; For measure and partitive, no agreement number head/np
+                    ;; Allow for "a season high 27 points."
+                    ;; Allow for "a season high 47 of 53 free throws."
+                    ;; Allow for "Six assignments IS a lot."
+                    ((cat #(under measure))
+                     ({^}
+                      ((alt measure-head-det
+                            (:demo "Does an NP with a measure as head take a det?")
+                            (((classifier given)
+                              (determiner ((head-cat common))))
+                             ((classifier none)
+                              (possessor given)
+                              (determiner ((head-cat common))))
+                             ((classifier none)
+                              (possessor none)
+                              (determiner none)))))))
+                    ((cat #(under partitive)))
+                    ((cat #(under noun-compound))
+                     (number {^2 syntax number}))
+                    ((complex given)
+                     ;; to make morphology understand this is not a
+                     ;; simple noun.
+                     (cat np-head)
+                     (number {^2 syntax number})
+                     (common ((cat noun)))))))))))
+       
     (person third)
     (alt definite (:wait definite)
       (((definite yes))
@@ -670,21 +679,20 @@
 	    (((mood relative))
 
 	     ;; The car repaired by the mechanic
-	     ((mood past-participle)
+	     ((mood #(under past-participle))
 	      (subject none)
 	      (binder none))
 
 	     ;; "The time remaining before the buzzer"
-	     ((mood present-participle)
+	     ((mood #(under present-participle))
 	      (subject none)
 	      (binder none))
 
 	     ;; "The game to be played tomorrow"
-	     ((mood to-infinitive)
+	     ((mood #(under to-infinitive))
 	      (binder none))
 
-	     ((cat #(under clause))
-	      (mood for-to-infinitive)
+	     ((mood #(under for-to-infinitive))
 	      (binder none)))))))
 
       (alt qualifier-restrictive (:index restrictive)

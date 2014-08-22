@@ -1,0 +1,257 @@
+The following tests are incorrect:
+
+(T14 T15 T15-BIS T28 T61 T64 T67 T69 T69BIS T71 T75 T77QUAD
+ T77QUIN T77SEX T77SEPT T82 T82BIS T86 T89 T99BIS
+ T142 C13 C48BIS NP2)
+
+458 tests run - 437 correct.
+The following tests are incorrect: (T28 T61 T64 T67 T69 T69BIS T71 T75
+                                    T77QUAD T77QUIN T77SEX T77SEPT T82
+                                    T82BIS T86 T89 T99BIS T142 C13 C48BIS
+                                    NP2)
+
+458 tests run - 438 correct.
+The following tests are incorrect: (T28 T61 T64 T67 T69 T69BIS T71 T75
+                                    T77QUAD T77QUIN T77SEX T77SEPT T82
+                                    T82BIS T86 T89 T99BIS C13 C48BIS NP2)
+
+458 tests run - 443 correct.
+The following tests are incorrect: (T28 T61 T64 T67 T69 T69BIS T71 T75
+                                    T77QUAD T77QUIN T77SEX T77SEPT T99BIS
+                                    C48BIS NP2)
+                                    
+458 tests run - 444 correct.
+The following tests are incorrect: (T28 T61 T64 T67 T69 T69BIS T71 T75
+                                    T77QUAD T77QUIN T77SEX T77SEPT T99BIS
+                                    NP2)
+
+// Add wait synt-func in verb-group aux                                     
+458 tests run - 437 correct.
+The following tests are incorrect: (T19BIS T28 T62 T68 T68BIS T70 T70BIS
+                                    T74 T76 T77 T77TER T77QUAD T77QUIN
+                                    T77SEX T77SEPT T99BIS NP2 JC J4 J4-1
+                                    C101)
+
+   Fixes: t61 - t64 - t67 - t69 - t69bis - t71 - t75
+   Regressions: t19bis t62 t68 t68bis t70 t70bis t74 t76 t77 t77ter jc j4 j4-1 c101
+// Add wait for aux-specified in verb-group
+458 tests run - 449 correct.
+The following tests are incorrect: (T28 T68BIS T70BIS T77QUAD T77QUIN
+                                    T77SEX T77SEPT T99BIS NP2)
+
+T68BIS --> "What does she sometimes have?"
+Expected "What does she sometimes have?"
+Instead  "What sometimes has she?"
+                                    
+T70BIS --> "Which does she possibly own?"
+Expected "Which does she possibly own?"
+Instead  "Which possibly owns she?"
+
+// Add wait aux-specified in adverb-interrogative
+458 tests run - 451 correct.
+The following tests are incorrect: (T28 T77QUAD T77QUIN T77SEX T77SEPT
+                                    T99BIS NP2)
+
+// Switch order of mood AFTER voice in clause
+458 tests run - 450 correct.
+The following tests are incorrect: (T28 T93BIS T214 T412 T412B C48 NP2 C102)
+
+PASSIVE FAILS
+T93BIS --> "The person by whom this book is owned."
+Expected "The person by whom this book is owned."
+Instead  "The person this book owned."
+T214 --> "Migraine abortive treatment is used to abort migraine."
+fail
+T412 --> "How to generate time adjuncts in SURGE must be discovered."
+fail
+T412B --> "How for time adjuncts to be generated in SURGE must be discovered."
+fail
+C48 --> "Within 10 feet, no smoking is allowed."
+fail
+C102 --> "By what is TPR controled?"
+fail
+
+// Force mood non-declarative to be given
+// Move mood after voice
+// Passive are now ok (when oblique 1 not given)
+// does not select imperative anymore
+// Still passive fails in wh-mood and relative-mood
+// Surprise in t26-t27
+458 tests run - 452 correct.
+The following tests are incorrect: (T26 T27 T93BIS T419 NP2 C102)
+
+T26 --> "Take the hammer and hit the nail."
+Instead  "<fail>"
+T27 --> "First, take the hammer and then, hit the nail."
+Instead  "<fail>"
+T93BIS --> "The person by whom this book is owned."
+Instead  "The person this book owned."
+T419 --> "The bear, which bites people and whose claws are sharp, is big."
+;;; Unification stopped after 2001 backtracking points.
+C102 --> "By what is TPR controled?"
+Instead  "<fail>"
+
+// Fix embedded by-obj (relative / question)
+// by waiting in agentless, subcat 
+458 tests run - 437 correct.
+The following tests are incorrect: (T13 T26 T27 T53 T54 T123 T140 T141
+                                    T142 T215 T218 T219 T363 T364 T376
+                                    T401 T419 T600 NP2 JB J2B)
+Fixed: (T93BIS C102)
+Still broken: (T26 T27 T419 NP2)
+New: (T13 T53 T54 T123 T140 T141 T142 T215 T218 T219 T363 T364 T376
+      T401 T600 JB J2B)
+
+T26 --> "Take the hammer and hit the nail."
+Instead  "<fail>"
+T27 --> "First, take the hammer and then, hit the nail."
+Instead  "<fail>"
+
+// Dative
+T53 --> "Will John give Mary a blue book?" (Fail)
+T54 --> "John did give Mary a blue book." (Fail)
+T123 --> "Bo gave the Raiders the victory."
+T363 --> "Dr. Rufus T. Firefly gave Prof. Hugo Z. Hackenbush his best regards."
+T364 --> "The highly respected Dr. Rufus T. Firefly gave Prof. Hugo Z. Hackenbush, who received the Turing award yesterday, his best regards."
+T376 --> "John gives Mary his book."
+
+T140 --> "The customer persuaded the programmer that there is a bug."
+T141 --> "The customer persuaded the programmer to revise the code."
+T142 --> "The customer wants him to do it."
+T215 --> "Migraine abortive treatment requires you to take a drug at the immediate onset of headaches."
+T218 --> "This DLC refinement demanded ALL-DLC to be activated for CSA 2119 in 1992Q1."
+T219 --> "This DLC refinement demanded that ALL-DLC be activated for CSA 2119 in 1992Q1."
+
+T401 --> "They believe that it works."
+Instead  "They believe to work."
+
+T600 --> "Illusion holds to the key."
+Instead  "It holds to it."
+
+JB --> "Michael Jordan scored two-thirds of his 36 points with 3 point shots, to enable a season high sixth straight loss to be handed by Chicago to New York."
+J2B --> "Michael Jordan enabled a season high sixth straight loss to be handed by Chicago to New York."
+
+// fix iobject-voice wait - wrong cat (pp)
+458 tests run - 445 correct.
+The following tests are incorrect: (T26 T27 T140 T141 T142 T218 T219 T401
+                                    T419 T600 NP2 JB J2B)
+The following tests are incorrect: (T13 T26 T27 T53 T54 T123 T140 T141
+                                    T142 T215 T218 T219 T363 T364 T376
+                                    T401 T419 T600 NP2 JB J2B)
+Fixed: (T13 T53 T54 T123 T215 T219 T363 T364 T376)
+Still broken: (T26 T27 T140 T141 T142 T218 T219 T401 T419 T600 NP2 JB J2B)
+New: none
+
+// Fix the bug in top.lisp about ((1 {...}) (1 ((cat np))))
+458 tests run - 430 correct.
+The following tests are incorrect: (T26 T27 T46 MINE3 T214 T325A T325 T371
+                                    T407BIS T417 T419 T424 C4 C10 C22 C26
+                                    C29 C40 C41 C48 C48BIS NP2 JA JB JC J1
+                                    J2A J2B)
+Fixed: (T140 T141 T142 T218 T219 T401 T600)
+Still broken: (T26 T27 T419 NP2 JB J2B)
+New: (T46 MINE3 T214 T325A T325 T371 T407BIS T417 T424 C4 C10 C22 C26
+      C29 C40 C41 C48 C48BIS JA JC J1 J2A)
+
+// Fix removal of none in top
+458 tests run - 454 correct.
+The following tests are incorrect: (T26 T27 T419 NP2)
+
+// Fail
+T419 --> "The bear, which bites people and whose claws are sharp, is big."
+T26 --> "Take the hammer and hit the nail."
+T27 --> "First, take the hammer and then, hit the nail."
+
+
+
+
+
+
+T19BIS --> "Where does the marker move?"
+Expected "Where does the marker move?"
+Instead  "Where moves the marker?"
+
+T62 --> "What does the seal cover?"
+Expected "What does the seal cover?"
+Instead  "What covers the seal?"
+
+T68 --> "What does she have?" / T68bis
+Expected "What does she have?"
+Instead  "What has she?"
+
+T70 --> "Which does she own?" / T70bis
+Expected "Which does she own?"
+Instead  "Which owns she?"
+
+T74 --> "What does Deborah prefer?"
+Expected "What does Deborah prefer?"
+Instead  "What prefers Deborah?"
+
+T76 --> "Why does he do it?"
+Expected "Why does he do it?"
+Instead  "Why does he it?"
+
+T77 --> "From where does the SIG-display marker move to the right?"
+Expected "From where does the SIG-display marker move to the right?"
+Instead  "From where moves the sig-display marker to the right?"
+
+T77TER --> "Do you think that John won the prize?"
+Expected "Do you think that John won the prize?"
+Instead  "Think you that John won the prize?"
+
+T77QUAD --> "Who do you think won the prize?"
+fail
+
+J4-1/J4/JC --> "Who do you think scored two-thirds of his 36 points with 3 point shots, to enable Chicago to hand New York a season high sixth straight loss?"
+Instead  "Who think you scored two-thirds of his 36 points with 3 point shots, to enable Chicago to hand New York a season high sixth straight loss?"
+
+
+// Missing syntax / case
+t14 - t15 - t15bis
+Expected "For her to do it."
+Instead  "For it to do it."
+t412B
+"How for time adjuncts to be generated in SURGE must be discovered."
+Fail
+
+t28
+<fail>
+;; does not fail
+
+t61 - t64 - t69 - t69bis - t71 - 
+Expected "What covers the opening?"
+Instead  "What does cover the opening?"
+
+t77quad - t77quin - t77sex - t77sept
+Who do you think won the prize?
+Fail
+
+t99bis
+The person, who you think won the prize.
+fail
+
+
+// Missing case for iobject
+t142
+Expected "The customer wants him to do it."
+Instead  "The customer wants he to do it."
+
+// Fixed voice for particless
+// Fixed subj-comp-cat / obj-comp-cat
+// Fixed controlled-subject in case of subject none
+c13
+Expected "Whenever pain resurfaces, rest as long as necessary."
+Instead  "Whenever pain resurfaces, rest nil nil as long as it nil."
+// same fix as c13
+t82 - t82bis - t86 - t89
+The house where your mother is.
+fail
+
+// Fixed voice-normal
+// Order oblique patterns by order of spec 1/12/13/14/123...
+C48BIS
+Expected "You are not allowed to smoke within 10 feet."
+Instead  "You are not allowed to smoke nil within 10 feet."
+
+
+

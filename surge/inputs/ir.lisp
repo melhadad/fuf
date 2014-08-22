@@ -358,11 +358,7 @@
 		   (2 ((cat np)))
 		   (3 ((cat clause)
 		       (mood to-infinitive)
-		       ;; JR-1-21-93: New treatment of control
 		       (controlled {^ oblique 1})))))))
-   ;;		       (oblique ((1 ((index {^4 2 index})  ;; controlled
-   ;;				     (gap yes)))))))))))
-
    (lex-roles
     ((influence ((cat clause)
 		 (proc ((type material)
@@ -735,8 +731,6 @@
 		      (controlled {^ partic agent})
 		      (partic ((affected ((cat common)
 					  (head === "battery")))))))))))
-
-
 
 (def-test t30
   "The SIG-display marker can move to the right."
@@ -2851,9 +2845,6 @@
 					(definite no)
 					(lex "bug")))))))))))
 
-
-
-
 (def-test t141
   "The customer persuaded the programmer to revise the code."
   ((cat clause)
@@ -2867,21 +2858,13 @@
 		   (2 ((cat np)))
 		   (3 ((cat clause)
 		       (mood to-infinitive)
-
-;; JR-1-21-93: New treatment of control
 		       (controlled {^ oblique 1})))))))
-;;		       (oblique ((1 ((index {^4 2 index})  ;; controlled
-;;				     (gap yes)))))))))))
-
    (lex-roles
     ((persuader === customer)
      (persuadee === programmer)
      (soa ((proc ((type material)
 		  (lex "revise")))
 	   (partic ((affected === code)))))))))
-
-
-
 
 ;; With a more general approach ala HPSG/S&P91
 ;; Roles influence/influencer/soa
@@ -2897,12 +2880,7 @@
 		   (3 {^3 lex-roles soa})
 		   (3 ((cat clause)
 		       (mood to-infinitive)
-
-;; JR-1-21-93: New treatment of control
 		       (controlled {^ oblique 1})))))))
-;;		       (oblique ((1 ((index {^4 2 index})  ;; controlled
-;;				     (gap yes)))))))))))
-
    (lex-roles
     ((influence === customer)
      (influenced ((cat personal-pronoun)
@@ -2915,10 +2893,6 @@
 			       (person third)
 			       (gender neuter)
 			       (number singular)))))))))))
-
-
-
-
 
 ;; ------------------------------------------------------------
 ;; Test of determiner sequence
@@ -3426,7 +3400,7 @@
 		       (np ((cat date) (year ((value "1992Q2"))))))))))))))
 
 
-;; @@@ Problem of circum on conjunction
+;; Problem of circum on conjunction
 (def-test mine3a
  "In 1986, you filed late."
   ((cat clause)
@@ -3501,12 +3475,7 @@
 		      (2 ((cat np)))
 		      (3 ((cat clause)
 			  (mood to-infinitive)
-
-;; JR-1-21-93: New treatment of control
 			  (controlled {^ oblique 1})))))
-;;		          (oblique ((1 ((index {^4 2 index})  ;; controlled
-;;	                                (gap yes)))))))))))
-
 	     (type lexical)))
    (lex-roles ((influence
 		((lex "migraine abortive treatment") (cat proper)))
@@ -3527,8 +3496,6 @@
 		     (partic ((affected ((lex "drug") (definite no)
 					 (cat common)))))))))))
 
-
-
 (def-test t216
   "Logic makes AI difficult."
   ((cat clause)
@@ -3538,8 +3505,6 @@
 		  (attribute ((cat ap) (lex "difficult")))
 		  (affected {^ carrier})
 		  (agent ((cat basic-proper) (lex "Logic")))))))
-
-
 
 (def-test t217
   "This DLC refinement activated ALL-DLC for CSA 2119 in 1992Q1."
@@ -3577,7 +3542,6 @@
 		   (np ((cat basic-proper)
 			(lex "1992Q1")))))))))
 
-
 (def-test t218
   "This DLC refinement demanded ALL-DLC to be activated for CSA 2119 in 1992Q1."
   ((cat clause)
@@ -3602,11 +3566,7 @@
 	      (3 {^3 lex-roles soa})
 	      (3 ((cat clause)
 		  (mood to-infinitive)
-
-;; JR-1-21-93: New treatment of control
 		  (controlled {^ synt-roles subject})))))))
-;;		  (synt-roles ((subject ((index {^4 2 index})
-;;					 (gap yes)))))))))))
    (lex-roles
     ((influence ((semr {^3 mess-attrs message-class})
 		 (distance near)

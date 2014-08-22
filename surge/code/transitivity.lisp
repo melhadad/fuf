@@ -43,6 +43,7 @@
     ;; Need to have the mapping lexical-roles -> oblique in lexicon
     ;; The mapping is under the subcat feature of the process.
     (process ((subcat given)))
+    (partic none)
     (oblique {^ process subcat}))
 
    ;; Following are the general classes of verbs

@@ -249,6 +249,10 @@
   ;; And what features must be in common for each.
   (((cat clause)
     (generic-mood {^2 common generic-mood}) ;; all conjuncts have same mood.
+    (alt constituent-mood
+         (:demo "Is constituent mood specified or inherited from complex?")
+         (((mood #(under mood)))
+          ((mood {^ generic-mood}))))
     (restrictive {^2 common restrictive}))
    ((cat np)
     (syntax ((case {^3 common syntax case}))))
