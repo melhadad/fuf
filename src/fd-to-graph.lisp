@@ -992,13 +992,21 @@ rest of the fd."
     (format t "~%Graph ready.~%")
     (fd-to-pattern-tree-traverse {})))
 
-(defun make-label (lex cat)
+(defun make-label (lex cat gap mood)
   (let ((lexs (if (null lex) "" (path-entry-value lex)))
-	(cats (if (null cat) "" (path-entry-value cat))))
+	(cats (if (null cat) "" (path-entry-value cat)))
+        (gaps (if (null gap) 'no (path-entry-value gap)))
+        (moods (if (null mood) "" (path-entry-value mood))))
     (cond ((and (null lex) (null cat)) nil)
 	  ((and (equal lexs "") (equal cats "")) nil)
-	  ((or (null lex) (null lexs) (equal lexs "")) cats)
+          ((subsume 'clause cats)
+           (format nil "~a:~a" cats moods))
+	  ((or (null lex) (null lexs) (equal lexs ""))
+           (if (equal gaps 'yes)
+               (format nil "~a:gap" cats)
+               cats))
 	  ((null cat) lexs)
+          ((equal gaps 'yes) (format nil "~a:~a:gap" lexs cats))
 	  (t (format nil "~a:~a" lexs cats)))))
 
 (defun make-pattern-tree (label edges)
@@ -1013,10 +1021,12 @@ rest of the fd."
 	fd
 	(let ((cat (find-entry (path-extend path 'cat)))
 	      (pattern (find-entry (path-extend path 'pattern)))
+              (mood (find-entry (path-extend path 'mood)))
+              (gap (find-entry (path-extend path 'gap)))
 	      (lex (find-entry (path-extend path 'lex))))
-	  (cond ((null pattern) (make-label lex cat))
+	  (cond ((null pattern) (make-label lex cat gap mood))
 		(t (make-pattern-tree
-		    (make-label lex cat)
+		    (make-label lex cat gap mood)
 		    (mapcar
                      #'(lambda (pattern-elt)
                          (let ((target-path
@@ -1057,10 +1067,11 @@ rest of the fd."
    (list pattern-tree)
    :node-id #'(lambda (n) (gensym))
    :node-children #'pattern-tree-children
-   :node-name #'(lambda (edge) (if (consp (second edge))
-				   (format nil "~s" (first edge))
-				   (format nil "~s: ~s"
-                                           (first edge) (second edge)))))
+   :node-name #'(lambda (edge)
+                  (if (consp (second edge))
+                      (format nil "~s" (first edge))
+                      (format nil "~s: ~s"
+                              (first edge) (second edge)))))
   (values))
 
 
