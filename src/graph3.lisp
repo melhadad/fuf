@@ -206,10 +206,15 @@
    ((or (leaf-p fd1) (empty-fd fd1))
     (unify-leaf12 fd1 fd2 path1 path2 frame fail
 		  #'(lambda (fd fail frame)
-		      (trace-format
-		       (frame-trace-flags frame) frame 0
-		       "Updating ~s with ~s at level ~s"
-		       pair1 fd path1)
+                      (if (and (consp pair1) (equal (second pair1) fd))
+                          (trace-format
+                           (frame-trace-flags frame) frame 0
+                           "Passing with ~s at level ~s"
+                           pair1 path1)
+                          (trace-format
+                           (frame-trace-flags frame) frame 0
+                           "Updating ~s with ~s at level ~s"
+                           pair1 fd path1))
 		      (update-pair pair1 fd path1 frame)
 		      (funcall success fd fail frame))
 		  pair1))
