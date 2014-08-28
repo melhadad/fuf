@@ -399,6 +399,9 @@
 			     (animate no)
 			     (lex "that")))
 	   (cset ((- relative-marker))))
+          ((use-that #(under yes))
+           (cset ((- relative-marker)))
+           (relative-marker ((lex "that"))))
 	  ((cset ((+ relative-marker)))))))
 
    ;; possessive relative - scope is NOT determiner of an NP

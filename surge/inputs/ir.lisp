@@ -468,18 +468,22 @@
 
 
 (def-test t17
-  "The man that I know."
+    ;; Use-that to force that
+  ("The man that I know."
+   "The man whom I know.")
   ((cat common)
    (head === "man")
    (animate yes)
    (qualifier ((cat clause)
-	       (restrictive yes)    ;; ***** here is the difference
-	       (scope {^ participants phenomenon})
-	       (proc ((type mental)
-		      (lex "know")))
-	       (participants
-		((processor ((cat personal-pronoun)
-			     (person first)))))))))
+               ;; ***** here is the difference
+               (restrictive yes)
+               (use-that yes)
+               (scope {^ participants phenomenon})
+               (proc ((type mental)
+                      (lex "know")))
+               (participants
+                ((processor ((cat personal-pronoun)
+                             (person first)))))))))
 
 
 
@@ -1879,7 +1883,8 @@
 
 
 (def-test t80
-  "The man that is your father."
+  ("The man who is your father."
+   "The man that is your father.")
   ((cat common)
    (head === man)
    (animate yes)
@@ -2099,7 +2104,8 @@
   ;; that = restrictive / which = non-restrictive
   ;; who/whom = either (not that).
   ;; Not critical
-  "The person that owns this book."
+  ("The person that owns this book."
+   "The person who owns this book.")
   ((cat common)
    (head === person)
    (animate yes)
@@ -6151,4 +6157,24 @@
 	       (held ((cat np)
 		      (definite yes)
 		      (lex "key")))))))
+
+;;"He who knows nothing is closer to the truth than he whose mind is filled with falsehoods and errors."
+;; (Thomas Jefferson)
+
+(def-test t601a
+  "He who knows nothing is happy."
+  ((cat clause)
+   (proc ((type ascriptive)
+          (mode attributive)))
+   (partic
+    ((carrier ((cat personal-pronoun)
+               (gender masculine)
+               (person third)
+               (qualifier
+                ((cat clause)
+                 (proc ((type mental) (lex "know")))
+                 (scope {^ partic processor})
+                 (partic ((phenomenon ((cat pronoun)
+                                       (lex "nothing")))))))))
+     (attribute ((cat ap) (lex "happy")))))))
 
