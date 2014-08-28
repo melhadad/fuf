@@ -143,8 +143,6 @@
 	   ((mood infinitive)
 	    (process ((ending infinitive))))))))))))
 
-;; @todo: index on mood (reorg #1)
-;; @todo: tests on presence of synt-role must be on (cat given).
 (def-alt subject-mood
   (:demo "Is a subject required or does it need a special treatment?")
   (
@@ -160,34 +158,34 @@
           ((scope {^ synt-roles subject})))))
 
    ;; Moods w/ possibly absent subject due to control by embedding clause
+   ;; Default is no subject unless (controlled none)
    ((mood ((alt (past-participle verbless))))
     (alt controlled-subject
          (:wait controlled)
          (((synt-roles ((subject given)))
            (controlled none))
           ((synt-roles ((subject none))))
-          ((controlled given)
-           (controlled ((gap yes)))
-           (controlled {^ synt-roles subject})))))
+          ((synt-roles ((subject given)))
+           (controlled {^ synt-roles subject})
+           (controlled ((gap yes)))))))
 
    ((mood present-participle)
     (alt present-participle-subject
       (
        ;; For nominal functions,
-       ;; subject present ==> possessive (or objective) case
+       ;; subject present ==> possessive (or objective) case - t13
        ((synt-roles ((subject given)))
 	(controlled none)
-	(synt-funct #(under synt-role))
+	(synt-funct ((alt (#(under synt-role) none))))
 	(synt-roles
 	 ((subject ((cat np)
 		    (gap none)
 		    (syntax ((case ((alt (possessive objective)))))))))))
-       ((synt-roles ((subject given)))
-	(controlled none))
+       ((synt-roles ((subject given))))
+       ((synt-roles ((subject none))))
 
        ;; If subject absent it is controlled by embedding clause
-       ((controlled given)
-	(controlled ((gap yes)))
+       ((controlled ((gap yes)))
 	(controlled {^ synt-roles subject})))))
 
    ((mood to-infinitive)
@@ -219,8 +217,9 @@
 
    ((mood imperative)
     ;; Subject absent or gapped
-    (synt-roles ((alt imperative-subject (((subject none))
-					  ((subject ((gap yes)))))))))))
+    (synt-roles ((alt imperative-subject
+                      (((subject none))
+                       ((subject ((gap yes)))))))))))
 
 
 

@@ -160,6 +160,7 @@
   (:! subj-comp-voice)
   (:! obj-comp-voice)
   (:! dative-voice)
+  (:! agentless)
   (:! by-obj-voice))
 
 
@@ -381,11 +382,7 @@
     (alt agentless2 (:index agentless)
       ;; If by-obj would be scope of question or relative, it must be used.
          (:wait {^ synt-roles by-obj cat})
-      (((agentless yes)
-	(scoped no)
-	(cset ((- {^ synt-roles by-obj})))
-	(synt-roles ((by-obj none))))
-       ((agentless no)
+      (((agentless no)
 	(oblique ((1 given)
 		  (1 ((realization {^3 synt-roles by-obj})
 		      (cset ((- realization)))))))
@@ -398,7 +395,11 @@
 	(alt passive-prep
 	    (((process ((passive-prep given)))
 	      (synt-roles ((by-obj ((prep {^3 process passive-prep}))))))
-	     ((synt-roles ((by-obj ((prep ((lex "by"))))))))))))))))
+	     ((synt-roles ((by-obj ((prep ((lex "by")))))))))))
+       ((agentless yes)
+	(scoped no)
+	(cset ((- {^ synt-roles by-obj})))
+	(synt-roles ((by-obj none)))))))))
 
 
 ;; ============================================================

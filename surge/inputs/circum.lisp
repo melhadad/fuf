@@ -259,7 +259,7 @@
 ;; Tests: time as past-participle clause
 ;;        duration as adverb
 (def-test c9
-  "Once refused a new contract, Bo held out indefinitely."
+  "Once refused a new contract by the Knicks, Bo held out indefinitely."
   ((cat clause)
    (tense past)
    (process ((type composite) (relation-type locative) (lex "hold")))
@@ -274,15 +274,16 @@
 		   (process ((type composite)
 			     (relation-type possessive)
 			     (lex "refuse")))
-		   (partic ((possessor ((index {^5 partic processor index})))
+		   (partic ((possessor ((index {^5 partic agent index})))
 			    (possessed ((cat common)
 				        (definite no)
 					(describer ((lex "new")))
 					(head ((lex "contract")))))
+                            (agent ((head ((cat team-name)
+                                           (franchise ((lex "Knick")))))
+                                    (cat compound-proper)
+                                    (number plural)))
 			    (affected {^ possessor})))))))))
-;; no agent allowed despite default (agentive yes),
-;; since automatically ellided by part-participle mood
-;; which implies (voice agentless-passive)
 
 (store-verbs '(("hold" "holds" "held" "holding" "held")))
 
@@ -1095,6 +1096,7 @@
   ((cat clause)
    (tense past)
    (process ((type material) (lex "trade") (voice passive)))
+   (agentless yes)
    (partic ((agent ((cat compound-proper)
 		    (number plural)
 		    (head ((cat team-name) (franchise ((lex "Knick")))))))
@@ -1709,3 +1711,45 @@
 		       (np ((cat measure)
 			    (quantity ((value 10) (digit yes)))
                             (unit ((lex "foot")))))))))))
+
+;; Framenet sample on duration
+;; "For a short time, 100 hikers were trapped in the mountains and a boy scout camp was also threatened by the blaze."
+;; @TODO: at least
+(def-test c49a
+    "For a short time, 100 hikers were trapped in the mountains."
+  ((cat clause)
+   (process ((type material) (lex "trap")))
+   (tense past)
+   (partic ((affected ((cat common)
+                       (lex "hiker")
+                       (definite no)
+                       (cardinal ((value 100)))
+                       (degree +)))))
+   (pred-modif ((location ((cat pp)
+                           (prep ((lex "in")))
+                           (np ((cat common)
+                                (lex "mountain")
+                                (number plural)))))))
+   (circum ((duration ((cat pp)
+		       (np ((cat common)
+                            (definite no)
+                            (describer ((lex "short")))
+                            (lex "time")))))))))
+
+(def-test c49b
+    "A boy scout camp was also threatened by the blaze."
+  ((cat clause)
+   (process ((type material) (lex "threaten")))
+   ;; (agentless no)
+   (focus {^ partic affected})
+   (tense past)
+   (partic ((affected ((cat common)
+                       (lex "camp")
+                       (definite no)
+                       (classifier ((lex "boy scout")))))
+            (agent ((cat common)
+                    (definite yes)
+                    (lex "blaze")))))
+   (adverb ((lex "also")))))
+
+(store-verbs '(("threaten" "threatens" "threatened" "threatening" "threatened")))

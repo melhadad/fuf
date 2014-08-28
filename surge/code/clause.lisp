@@ -147,7 +147,6 @@
   (:& voice-synt-roles)
   (:! mood)
   (:! subject-mood)
-  (:! agentless)
   ;; END OF TREATMENT OF INHERENT PARTICIPANTS
 
   ;; Depends on adverbials
