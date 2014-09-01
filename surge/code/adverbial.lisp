@@ -327,7 +327,7 @@
                (concatenate 'string (string sem-role) "-qrel"))
      (question-prep ((lex ((alt (given ,q-prep))))))
      (question-pronoun ((lex ((alt (given ,q-pron))))))
-    (relative-marker ((lex ((alt (given ,rel-mark))))))
+     (relative-marker ((lex ((alt (given ,rel-mark))))))
      (question-embedded ((alt (given ,q-embedded))))
      (relative-embedded ((alt (given ,rel-embedded))))))
 
@@ -963,6 +963,7 @@
 
 (def-alt cat-concession-disjunct (:index cat)
   (((cat pp) (prep ((lex ((alt (given "in spite of")))))))
+   ((cat adv))    ;; at least
    ((cat clause)
     (mood ((alt concession-mood
 	       (bound-adverbial present-participle past-participle verbless))))

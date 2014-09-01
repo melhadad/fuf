@@ -605,9 +605,10 @@
    ((describer given)
     ({^ pattern} (dots describer dots head dots))
     (describer
-     ((alt describer-cat (:index cat)
+     ((synt-funct describer)
+      (alt describer-cat (:index cat)
 	(((cat adj))    ;; either a single adj
-	 ((cat ap)      ;; or an ap with no modifiers
+	 ((cat ap)      ;; or an ap with no modifiers @@check
 	  (describer none)
 	  (qualifier none))
 	 ((cat list))   ;; no check on lists

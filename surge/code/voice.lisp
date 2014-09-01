@@ -149,7 +149,8 @@
 (def-alt by-obj-voice
     (:wait (({^ synt-roles by-obj cat} #(under pp))))
   (((synt-roles ((by-obj none))))
-   ((synt-roles ((by-obj ((synt-funct by-obj)
+   ((synt-roles ((by-obj ((cat pp)
+                          (synt-funct by-obj)
                           (clause-level ((scoped {^4 scoped})
                                          (embedded {^4 embedded}))))))))))
 
@@ -387,7 +388,8 @@
 		  (1 ((realization {^3 synt-roles by-obj})
 		      (cset ((- realization)))))))
 	(synt-roles
-	 ((by-obj ((np {^3 oblique 1})
+	 ((by-obj ((cat pp)
+                   (np {^3 oblique 1})
 		   ;; (clause-level ((scoped {^4 scoped})))
 		   (relative-embedded yes)
 		   (question-embedded yes)

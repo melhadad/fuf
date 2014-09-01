@@ -373,8 +373,7 @@
    ((by-obj given)
     (by-obj ((cat pp)
              (synt-funct by-obj)
-             ;; Prep set in alt agentless - no need here
-             ;; (prep ((lex "by")))
+             ;; Prep set in alt agentless
              (np ((cat np))))))))
 
 

@@ -410,9 +410,10 @@
    ;; If you had trace on {affected possessor} and were not defining
    ;; possessive-relative as a separate mood, you would get:
    ;; "The man WHOSE I WASH [trace] CAR."
-   ;; Must force dative-move to no
    ((mood possessive-relative)
-    (dative-move no)
+    ;; @@Todo: clean up the dative-move vs. lexical-role story.
+    ;; Must force dative-move to no
+    ;; (dative-move no)
     ;; ***** Copying any type of NP in any form (annoying).
     ;; Done here only for common and partitive.
     ;; @@Todo: example with partitive scoper
@@ -444,7 +445,30 @@
 			     (syntax {^2 scoper syntax})
 			     (describer {^2 scoper describer})
 			     (classifier {^2 scoper classifier})
-			     (qualifier {^2 scoper qualifier})))))))
+			     (qualifier {^2 scoper qualifier}))))
+          ;; Embedded possessive relative:
+          ;; They know by whose boat he has been crushed.
+	  ((scoper ((cat pp)
+                    (relative-embedded yes)
+                    (np ((semantics ((index {^5 semantics index})))))))
+           (relative-marker ((cat pp)
+                             (prep {^2 scoper prep})
+                             (np ((cat np)
+                                  (lex {^3 scoper np lex})
+                                  (head {^3 scoper np head})
+                                  (possessor ((cat relative-pronoun)))
+                                  (cardinal {^3 scoper np cardinal})
+                                  (ordinal {^3 scoper np ordinal})
+                                  (reference {^3 scoper np reference})
+                                  (semantics {^3 scoper np semantics})
+                                  (syntax ((case objective)))
+                                  (describer {^3 scoper np describer})
+                                  (classifier {^3 scoper np classifier})
+                                  (qualifier {^3 scoper np qualifier})
+                                  (restrictive {^3 scoper np restrictive})
+                                  (animate {^3 scoper np animate})))))
+           (cset ((+ scoper relative-marker))))
+          )))
 
    ;; embedded relative - scope is within a PP
    ((mood embedded-relative)
