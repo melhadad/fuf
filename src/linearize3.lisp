@@ -362,6 +362,7 @@
        ((adj adv) (morph-adj lex
 			     (check-superlative (incr-gdp 'superlative fd path))
 			     (check-comparative (incr-gdp 'comparative fd path))
+                             (check-polarity (incr-gdp 'polarity fd path))
 			     (check-inflection (incr-gdp 'inflected fd path))))
        (noun (morph-noun
 	      lex
@@ -439,6 +440,11 @@
   "Returns person, DEFAULT is THIRD."
   (cond ((member person '(first second third)) person)
         (t 'third)))
+
+(defun CHECK-POLARITY (polarity)
+  "Return polarity for adjectives, DEFAULT is POSITIVE."
+  (cond ((member polarity '(positive negative equal)) polarity)
+        (t 'positive)))
 
 (defun CHECK-TENSE (tense)
   "Returns tense, DEFAULT is PRESENT."
@@ -829,16 +835,20 @@
 	(t (format nil "~s/~s" num den))))
 
 
-;;; YD add morphology for the superlative/comparative inflections
-(defun MORPH-ADJ (word superlative comparative inflection)
-  (let ((ending  (if (eq superlative 'no)
-                      (if (eq comparative 'no) '() 'comparative)
-                      'superlative)))
-    (if (or (eq inflection 'no) (null ending)) word
-      (cond ((lexfetch word ending))
-            ((eq ending 'superlative) (form-adj word "est"))
-            (t (form-adj word "er"))))))
-
+;;; Morphology for the superlative/comparative inflections
+(defun MORPH-ADJ (word superlative comparative polarity inflection)
+  (cond ((eq polarity 'positive)
+         ;; taller / tallest
+         (let ((ending  (if (eq superlative 'no)
+                            (if (eq comparative 'no) '() 'comparative)
+                            'superlative)))
+           (if (or (eq inflection 'no) (null ending)) word
+               (cond ((lexfetch word ending))
+                     ((eq ending 'superlative) (form-adj word "est"))
+                     (t (form-adj word "er"))))))
+        ;; as tall as / less tall / more intelligent / most intelligent
+        (t word)))
+        
 (defun FORM-ADJ (word ending)
   "changes in spelling:
    1. final base consonants are doubled when preceding vowel is stressed and

@@ -5417,6 +5417,7 @@
    (partic ((affected ((cat common) (lex "process")))))
    (circum ((result ((cat clause)
 		     (mood present-participle)
+                     (controlled {^ lex-roles cause})
 		     (process ((type lexical)
 			       (lex "result")
 			       (subcat ((1 {^3 lex-roles cause})
@@ -6178,3 +6179,799 @@
                                        (lex "nothing")))))))))
      (attribute ((cat ap) (lex "happy")))))))
 
+(def-test t601b
+  "He whose mind is filled with falsehoods and errors is far from the truth."
+  ((cat clause)
+   (proc ((type locative)))
+   (partic
+    ((located
+      ((cat personal-pronoun)
+       (gender masculine)
+       (qualifier
+        ((cat clause)
+         (mood possessive-relative)
+         (scope {^ partic location})
+         (focus {^ partic location})
+         (proc ((type locative)
+                (lex "fill")
+                (passive-prep ((lex "with")))
+                (mode equative)))
+         (partic ((location ((cat np) (lex "mind")))
+                  (located ((complex conjunction)
+                            (cat np)
+                            (number plural)
+                            (distinct ~( ((lex "falsehood")
+                                          (definite no)
+                                          (number plural))
+                                         ((lex "error")
+                                          (definite no)
+                                          (number plural))))))))))))
+     (location ((cat ap)
+                (lex "far")
+                (qualifier
+                 ((cat pp)
+                  (prep ((lex "from")))
+                  (np ((lex "truth") (definite yes)))))))))))
+
+(def-test t601
+  "He who knows nothing is closer to the truth than he whose mind is filled with falsehoods and errors."
+  ((cat clause)
+   (complex conjunction)
+   (conjunction ((cat conj) (lex "than")))
+   (distinct
+    ~( ((cat clause)
+        (proc ((type ascriptive)
+               (mode attributive)))
+        (partic
+         ((carrier ((cat personal-pronoun)
+                    (gender masculine)
+                    (person third)
+                    (qualifier
+                     ((cat clause)
+                      (proc ((type mental) (lex "know")))
+                      (scope {^ partic processor})
+                      (partic ((phenomenon ((cat pronoun)
+                                            (lex "nothing")))))))))
+          (attribute ((cat ap)
+                      (lex "close")
+                      (inflected yes)
+                      (comparative yes)
+                      (qualifier
+                       ((cat pp)
+                        (prep ((lex "to")))
+                        (np ((lex "truth") (definite yes))))))))))
+
+       ;; than as conjunction
+       ((cat clause)
+        (proc ((type locative))) ;; ellipsis obtained by complex
+        (partic
+         ((located
+           ((cat personal-pronoun)
+            (gender masculine)
+            (qualifier
+             ((cat clause)
+              (mood possessive-relative)
+              (scope {^ partic location})
+              (focus {^ partic location})
+              (proc ((type locative)
+                     (lex "fill")
+                     (passive-prep ((lex "with")))
+                     (mode equative)))
+              (partic ((location ((cat np) (lex "mind")))
+                       (located ((complex conjunction)
+                                 (cat np)
+                                 (number plural)
+                                 (distinct ~( ((lex "falsehood")
+                                               (definite no)
+                                               (number plural))
+                                              ((lex "error")
+                                               (definite no)
+                                               (number plural))))))))))))
+          (location
+           ((gap yes) ;; ellipsis of obj-comp is not computed - must specify
+            (cat ap)
+            (lex "close")
+            (qualifier ((cat pp)
+                        (prep ((lex "to")))
+                        (np ((lex "truth") (definite yes))))))))))))))
+
+(def-test t602a
+  "He is tall."
+  ((cat clause)
+   (proc ((type ascriptive) (mode attributive)))
+   (partic ((carrier ((cat personal-pronoun) (gender masculine)))
+            (attribute ((cat ap) (lex "tall")))))))
+
+(def-test t602b
+  "He is taller."
+  ((cat clause)
+   (proc ((type ascriptive) (mode attributive)))
+   (partic ((carrier ((cat personal-pronoun) (gender masculine)))
+            (attribute ((cat ap) (lex "tall")
+                        (comparative yes)
+                        (inflected yes)))))))
+
+(def-test t602c
+  "He is less tall."
+  ((cat clause)
+   (proc ((type ascriptive) (mode attributive)))
+   (partic ((carrier ((cat personal-pronoun) (gender masculine)))
+            (attribute ((cat ap) (lex "tall")
+                        (polarity negative)
+                        (comparative yes)
+                        (inflected yes)))))))
+
+(def-test t602d
+  "He is as tall."
+  ((cat clause)
+   (proc ((type ascriptive) (mode attributive)))
+   (partic ((carrier ((cat personal-pronoun) (gender masculine)))
+            (attribute ((cat ap) (lex "tall")
+                        (polarity equal)
+                        (comparative yes)
+                        (inflected yes)))))))
+
+(def-test t602e
+  "He is less tall than John."
+  ((cat clause)
+   (proc ((type ascriptive) (mode attributive)))
+   (partic ((carrier ((cat personal-pronoun) (gender masculine)))
+            (attribute ((cat ap) (lex "tall")
+                        (polarity negative)
+                        (comparative yes)
+                        (inflected yes)
+                        (comparison ((np ((cat trivial-proper)
+                                          (lex "John")))))))))))
+
+(def-test t602f
+  "He is as tall as John."
+  ((cat clause)
+   (proc ((type ascriptive) (mode attributive)))
+   (partic ((carrier ((cat personal-pronoun) (gender masculine)))
+            (attribute ((cat ap) (lex "tall")
+                        (polarity equal)
+                        (comparative yes)
+                        (inflected yes)
+                        (comparison ((np ((cat trivial-proper)
+                                          (lex "John")))))))))))
+
+(def-test t602g
+  "He is the tallest of all men."
+  ((cat clause)
+   (proc ((type ascriptive) (mode equative)))
+   (partic ((identified ((cat personal-pronoun) (gender masculine)))
+            (identifier ((cat ap)
+                         (lex "tall")
+                         (polarity positive)
+                         (superlative yes)
+                         (inflected yes)
+                         (comparison ((np ((cat common)
+                                           (number plural)
+                                           (definite no)
+                                           (total +)
+                                           (lex "man")))))))))))
+
+(def-test t602h
+  "The tallest man moved."
+  ((cat clause)
+   (proc ((type material) (effective no) (lex "move")))
+   (tense past)
+   (partic
+    ((agent
+      ((cat np)
+       (lex "man")
+       (describer
+        ((lex "tall")
+         (polarity positive)
+         (superlative yes)
+         (inflected yes)))))))))
+
+(def-test t603
+  "Ten filmmakers whose names you need to know."
+  ((cat np)
+   (cardinal ((value 10) (digit no)))
+   (definite no)
+   (lex "filmmaker")
+   (qualifier
+    ((cat clause)
+     (mood possessive-relative)
+     (scope {^ partic phenomenon})
+     (proc ((type mental) (lex "know")))
+     (deontic-modality "need to")
+     (partic ((processor ((cat personal-pronoun) (person second)))
+              (phenomenon ((cat common) (lex "name") (number plural)))))))))
+
+(def-test t604a
+  "He is on his side."
+  ((cat clause)
+   (proc ((type locative)))
+   (partic ((located ((cat personal-pronoun) (gender masculine)))
+            (location ((cat pp)
+                       (prep ((lex "on")))
+                       (np ((cat common)
+                            (lex "side")
+                            (possessor ((cat personal-pronoun)
+                                        (gender masculine)))))))))))
+
+(def-test t604b
+  "The man whose side he is on."
+  ((cat common)
+   (lex "man")
+   (qualifier
+    ((cat clause)
+     (mood possessive-relative)
+     (scope {^ partic location np})
+     (proc ((type locative)))
+     (partic ((located ((cat personal-pronoun) (gender masculine)))
+              (location ((cat pp)
+                         (prep ((lex "on")))
+                         (np ((cat common)
+                              (lex "side")
+                              (possessor
+                               ((cat personal-pronoun)
+                                (gender masculine)))))))))))))
+
+;; @TODO: Allow relative-clauses as pronominal.
+;; - I know what you think.
+;; - I know where you are going.
+;; - I know who thinks this.
+;; - What you do is what counts.
+;; - Which way you decide to take leads to where you end up.
+(def-test t604
+  "We know whose side he is on."
+  ((cat clause)
+   (proc ((type mental) (lex "know")))
+   (partic ((processor ((cat personal-pronoun)
+                        (person first) (number plural)))
+            (phenomenon
+             ((cat personal-pronoun)
+              (head ((gap yes)))
+              (qualifier
+               ((cat clause)
+                (mood possessive-relative)
+                (scope {^ partic location np})
+                (proc ((type locative)))
+                (partic ((located ((cat personal-pronoun) (gender masculine)))
+                         (location ((cat pp)
+                                    (prep ((lex "on")))
+                                    (np ((cat common)
+                                         (lex "side")
+                                         (possessor
+                                          ((cat personal-pronoun)
+                                           (gender masculine)))))))))))))))))
+
+(def-test t605a
+  "Suspected burglar did not really know anything."
+  ((cat clause)
+   (proc ((type mental) (lex "know")))
+   (tense past)
+   (polarity negative)
+   (adverb ((lex "really")))
+   ;; (pred-modif ((manner ((cat adv) (lex "really")))))
+   (partic ((processor ((cat common)
+                        (lex "burglar")
+                        (definite no)
+                        (determiner ((gap yes))) ;; News genre
+                        (describer ((cat verb) (lex "suspect")))))
+            (phenomenon ((cat pronoun)
+                         (lex "anything")))))))
+
+(def-test t605b
+  "A burglar was breaking into his house."
+  ((cat clause)
+   (proc ((type lexical) (lex "break")
+          (subcat ((1 ((cat np)))
+                   (2 ((cat pp) (prep ((lex "into")))))
+                   (1 {^3 lex-roles agent})
+                   (2 ((np {^4 lex-roles place})))))))
+   (tense past-progressive)
+   (lex-roles ((agent ((cat common)
+                       (lex "burglar")
+                       (definite no)))
+               (place ((cat common)
+                       (lex "house")
+                       (possessor ((cat personal-pronoun)
+                                   (gender masculine)))))))))
+
+(store-verbs '(("break" "breaks" "broke" "breaking" "broken")))
+
+(def-test t605c
+  "The man whose house a burglar was breaking into."
+  ((cat common)
+   (lex "man")
+   (definite yes)
+   (qualifier
+    ((cat clause)
+     (mood possessive-relative)
+     (scope {^ lex-roles place})
+     (tense past-progressive)
+     (proc ((type lexical) (lex "break")
+            (subcat ((1 ((cat np)))
+                     (2 ((cat pp)
+                         (prep ((lex "into")))))
+                     (1 {^3 lex-roles agent})
+                     (2 ((np {^4 lex-roles place})))))))
+     (lex-roles ((agent ((cat common)
+                         (lex "burglar")
+                         (definite no)))
+                 (place ((cat common)
+                         (lex "house")
+                         (possessor ((cat personal-pronoun)
+                                     (gender masculine)))))))))))
+
+;; break-in as composite [material+locative] / effective no.
+(def-test t605d
+  "The man whose house a burglar was breaking into."
+  ((cat common)
+   (lex "man")
+   (definite yes)
+   (qualifier
+    ((cat clause)
+     (mood possessive-relative)
+     (scope {^ partic location np})
+     (tense past-progressive)
+     (proc ((type composite)
+            (relation-type locative)
+            (effective no)
+            (lex "break")))
+     (partic ((located ((cat common)
+                        (lex "burglar")
+                        (definite no)))
+              (location
+               ((cat pp)
+                (prep ((lex "into")))
+                (np ((cat common)
+                     (lex "house")
+                     (possessor ((cat personal-pronoun)
+                                 (gender masculine)))))))))))))
+
+(def-test t605
+  "Suspected burglar did not really know whose house he was breaking into."
+  ((cat clause)
+   (proc ((type mental) (lex "know")))
+   (tense past)
+   (polarity negative)
+   (adverb ((lex "really")))
+   (partic
+    ((processor ((cat common)
+                 (lex "burglar")
+                 (semantics ((index ((concept burglar)
+                                     (gender masculine)))))
+                 (definite no)
+                 (determiner ((gap yes))) ;; News genre
+                 (describer ((cat verb) (lex "suspect")))))
+     (phenomenon
+      ((cat pronoun)
+       (head ((gap yes)))
+       (qualifier
+        ((cat clause)
+         (mood possessive-relative)
+         (scope {^ partic location np})
+         (tense past-progressive)
+         (proc ((type composite)
+                (relation-type locative)
+                (effective no)
+                (lex "break")))
+         (partic
+          ((located
+            ((cat personal-pronoun)
+             (semantics ((index {^6 processor semantics index})))))
+           (location
+            ((cat pp)
+             (prep ((lex "into")))
+             (np ((cat common)
+                  (lex "house")
+                  (possessor ((cat personal-pronoun)
+                              (gender masculine)))))))))))))))))
+
+(def-test t606a
+  "It is impossible to say whose voice that was."
+  ((cat clause)
+   (proc ((type ascriptive)))
+   (partic
+    ((carrier ((cat pronoun)))
+     (attribute
+      ((cat ap)
+       (lex "impossible")
+       (qualifier
+        ((cat clause)
+         (mood infinitive)
+         (proc ((type mental) (lex "say")))
+         (partic ((phenomenon
+                   ((cat pronoun)
+                    (head ((gap yes)))
+                    (qualifier
+                     ((cat clause)
+                      (mood possessive-relative)
+                      (scope {^ partic identifier})
+                      (tense past)
+                      (proc ((type ascriptive) (mode equative)))
+                      (partic ((identified ((cat demonstrative-pronoun)
+                                            (distance far)))
+                               (identifier ((cat common)
+                                            (lex "voice")))))))))))))))))))
+
+
+(def-test t606b
+  "He made some compelling points."
+  ((cat clause)
+   (proc ((type mental) (lex "make")))
+   (tense past)
+   (partic ((processor ((cat personal-pronoun) (gender masculine)))
+            (phenomenon ((cat common)
+                         (number plural)
+                         (definite no)
+                         (lex "point")
+                         (total none)
+                         (selective yes)
+                         (describer ((cat verb) (lex "compell")
+                                     (modifier-type subjective)))))))))
+
+(def-test t606
+  "It is impossible to say whose voice that was, but he made some compelling points."
+  ((cat clause)
+   (complex conjunction)
+   (conjunction ((lex "but")))
+   (distinct
+    ~(
+      ((cat clause)
+       (punctuation ((after ",")))
+       (proc ((type ascriptive)))
+       (partic
+        ((carrier ((cat pronoun)))
+         (attribute
+          ((cat ap)
+           (lex "impossible")
+           (qualifier
+            ((cat clause)
+             (mood infinitive)
+             (proc ((type mental) (lex "say")))
+             (partic ((phenomenon
+                       ((cat pronoun)
+                        (head ((gap yes)))
+                        (qualifier
+                         ((cat clause)
+                          (mood possessive-relative)
+                          (scope {^ partic identifier})
+                          (tense past)
+                          (proc ((type ascriptive) (mode equative)))
+                          (partic ((identified ((cat demonstrative-pronoun)
+                                                (distance far)))
+                                   (identifier ((cat common)
+                                                (lex "voice"))))))))))))))))))
+      ((cat clause)
+       (proc ((type mental) (lex "make")))
+       (tense past)
+       (partic ((processor ((cat personal-pronoun) (gender masculine)))
+                (phenomenon ((cat common)
+                             (number plural)
+                             (definite no)
+                             (lex "point")
+                             (total none)
+                             (selective yes)
+                             (describer ((cat verb) (lex "compell")
+                                         (modifier-type subjective))))))))
+      ))))
+
+(def-test t607a
+  "The husband died at Hillsborough."
+  ((cat clause)
+   (proc ((type material) (agentive no) (lex "die")))
+   (tense past)
+   (partic ((affected ((cat common)
+                       (lex "husband")))))
+   (circum ((location ((cat pp)
+                       (prep ((lex "at")))
+                       (np ((cat trivial-proper)
+                            (lex "Hillsborough")))))))))
+
+(def-test t607
+  "Mum whose husband died at Hillsborough pleads with jury."
+  ((cat clause)
+   (proc ((type verbal) (lex "plead")))
+   (partic ((sayer ((cat common)
+                    (lex "mum")
+                    (determiner ((gap yes)))
+                    (definite no)
+                    (qualifier
+                     ((cat clause)
+                      (mood possessive-relative)
+                      (scope {^ partic affected})
+                      (proc ((type material) (agentive no) (lex "die")))
+                      (tense past)
+                      (partic ((affected ((cat common)
+                                          (lex "husband")))))
+                      (circum ((location
+                                ((cat pp)
+                                 (prep ((lex "at")))
+                                 (np ((cat trivial-proper)
+                                          (lex "Hillsborough")))))))))))
+            (addressee ((cat pp)
+                        (prep ((lex "with")))
+                        (np ((cat common)
+                             (lex "jury")
+                             (definite no)
+                             (countable no)))))))))
+
+(def-test t608a
+  "These are woods."
+  ((cat clause)
+   (proc ((type ascriptive) (mode equative)))
+   (partic ((identified ((cat demonstrative-pronoun)
+                         (distance near)
+                         (number plural)))
+            (identifier ((cat common)
+                         (lex "wood")
+                         (number plural)
+                         (definite no)))))))
+
+(def-test t608b
+  "The man whose woods these are."
+  ((cat common)
+   (lex "man")
+   (definite yes)
+   (qualifier ((cat clause)
+               (mood possessive-relative)
+               (scope {^ partic identifier})
+               (proc ((type ascriptive) (mode equative)))
+               (partic ((identified ((cat demonstrative-pronoun)
+                                     (distance near)
+                                     (number plural)))
+                        (identifier ((cat common)
+                                     (lex "wood")
+                                     (number plural)))))))))
+
+(def-test t608c
+  "I know whose woods these are."
+  ((cat clause)
+   (proc ((type mental) (lex "know")))
+   (partic ((processor ((cat personal-pronoun) (person first)))
+            (phenomenon
+             ((cat pronoun)
+              (head ((gap yes)))
+              (qualifier
+               ((cat clause)
+                (mood possessive-relative)
+                (scope {^ partic identifier})
+                (proc ((type ascriptive) (mode equative)))
+                (partic ((identified ((cat demonstrative-pronoun)
+                                      (distance near)
+                                      (number plural)))
+                         (identifier ((cat common)
+                                      (lex "wood")
+                                      (number plural)))))))))))))
+
+(def-test t608d
+  "I think I know whose woods these are."
+  ((cat clause)
+   (proc ((type mental) (lex "think")))
+   (partic
+    ((processor ((cat personal-pronoun) (person first)))
+     (phenomenon
+      ((cat clause)
+       (mood bound-nominal)
+       (binder ((gap yes)))
+       (proc ((type mental) (lex "know")))
+       (partic ((processor ((cat personal-pronoun) (person first)))
+                (phenomenon
+                 ((cat pronoun)
+                  (head ((gap yes)))
+                  (qualifier
+                   ((cat clause)
+                    (mood possessive-relative)
+                    (scope {^ partic identifier})
+                    (proc ((type ascriptive) (mode equative)))
+                    (partic ((identified ((cat demonstrative-pronoun)
+                                          (distance near)
+                                          (number plural)))
+                             (identifier ((cat common)
+                                          (lex "wood")
+                                          (number plural)))))))))))))))))
+
+(def-test t609
+  "Man stabbed by relative whose name he did not know."
+  ((cat common)
+   (lex "man")
+   (definite no)
+   (determiner ((gap yes)))
+   (semantics ((index ((concept man1)))))
+   (qualifier
+    ((cat clause)
+     (mood past-participle)
+     (proc ((type material) (lex "stab")))
+     (controlled {^ partic affected})
+     (partic
+      ((affected ((semantics ((index {^5 semantics index})))))
+       (agent
+        ((cat common)
+         (lex "relative")
+         (definite no)
+         (determiner ((gap yes)))
+         (qualifier
+          ((cat clause)
+           (mood possessive-relative)
+           (scope {^ partic phenomenon})
+           (tense past)
+           (polarity negative)
+           (proc ((type mental) (lex "know")))
+           (partic ((processor ((cat personal-pronoun) (gender masculine)))
+                    (phenomenon ((cat common)
+                                 (lex "name")))))))))))))))
+
+(def-test t610a
+  "There is a man I have come to know."
+  ((cat clause)
+   (proc ((type existential)))
+   (partic
+    ((located
+      ((cat common)
+       (lex "man")
+       (definite no)
+       (qualifier
+        ((cat clause)
+         (tense present-perfect)
+         (relative-marker ((gap yes)))
+         (scope {^ lex-roles soa partic phenomenon})
+         (proc ((type lexical)
+                (lex "come")
+                (subcat ((1 ((cat np)))
+                         (2 ((cat clause) (mood infinitive)))
+                         (1 {^3 lex-roles agent})
+                         (2 {^3 lex-roles soa})))))
+         (lex-roles
+          ((agent ((cat personal-pronoun) (person first)))
+           (soa
+            ((proc ((type mental) (lex "know")))
+             (partic
+              ((phenomenon
+                ((semantics ((index {^7 semantics index})))))))))))))))))))
+
+(def-test t610b
+  "His hands are hard like ancient stone."
+  ((cat clause)
+   (proc ((type ascriptive)))
+   (partic ((carrier ((cat common)
+                      (lex "hand")
+                      (number plural)
+                      (possessor ((cat personal-pronoun)
+                                  (gender masculine)))))
+            (attribute
+             ((cat ap)
+              (lex "hard")
+              (qualifier
+               ((cat pp)
+                (prep ((lex "like")))
+                (np ((cat common)
+                     (lex "stone")
+                     (countable no)
+                     (describer ((cat ap)
+                                 (lex "ancient")))))))))))))
+
+(def-test t610c
+  "His eyes are gentle like a child's just before sleep."
+  ((cat clause)
+   (proc ((type ascriptive)))
+   (partic
+    ((carrier ((cat common) (lex "eye") (number plural)
+               (possessor ((cat personal-pronoun) (gender masculine)))))
+     (attribute
+      ((cat ap)
+       (lex "gentle")
+       (qualifier
+        ((cat pp)
+         (prep ((lex "like")))
+         (np ((cat common)
+              (head ((gap yes)))
+              (possessor ((cat common)
+                          (lex "child")
+                          (definite no)))
+              (qualifier ((cat pp)
+                          (prep ((lex "before")
+                                 (adverb ((lex "just")))))
+                          (np ((cat common)
+                               (countable no)
+                               (lex "sleep")))))))))))))))
+
+(def-test t610
+  "There is a man I have come to know, whose hands are hard like ancient stone, and whose eyes are gentle like a child's just before sleep."
+  ((cat clause)
+   (proc ((type existential)))
+   (partic
+    ((located
+      ((cat common)
+       (lex "man")
+       (definite no)
+       (qualifier
+        ((cat clause)
+         (complex conjunction)
+         (distinct
+          ~(
+            ((cat clause)
+             (tense present-perfect)
+             (relative-marker ((gap yes)))
+             (scope {^ lex-roles soa partic phenomenon})
+             (proc ((type lexical)
+                    (lex "come")
+                    (subcat ((1 ((cat np)))
+                             (2 ((cat clause) (mood infinitive)))
+                             (1 {^3 lex-roles agent})
+                             (2 {^3 lex-roles soa})))))
+             (lex-roles
+              ((agent ((cat personal-pronoun) (person first)))
+               (soa
+                ((proc ((type mental) (lex "know")))
+                 (partic
+                  ((phenomenon
+                    ((semantics ((index {^7 semantics index}))))))))))))
+
+            ((cat clause)
+             (punctuation ((after ",")))
+             (mood possessive-relative)
+             (scope {^ partic carrier})
+             (proc ((type ascriptive)))
+             (partic ((carrier ((cat common)
+                                (lex "hand")
+                                (number plural)))
+                      (attribute
+                       ((cat ap)
+                        (lex "hard")
+                        (qualifier
+                         ((cat pp)
+                          (prep ((lex "like")))
+                          (np ((cat common)
+                               (lex "stone")
+                               (countable no)
+                               (describer ((cat ap)
+                                           (lex "ancient"))))))))))))
+
+            ((cat clause)
+             (mood possessive-relative)
+             (scope {^ partic carrier})
+             (proc ((type ascriptive)))
+             (partic
+              ((carrier ((cat common) (lex "eye") (number plural)
+                         (possessor ((cat personal-pronoun)
+                                     (gender masculine)))))
+               (attribute
+                ((cat ap)
+                 (lex "gentle")
+                 (qualifier
+                  ((cat pp)
+                   (prep ((lex "like")))
+                   (np ((cat common)
+                        (head ((gap yes)))
+                        (possessor ((cat common)
+                                    (lex "child")
+                                    (definite no)))
+                        (qualifier ((cat pp)
+                                    (prep ((lex "before")
+                                           (adverb ((lex "just")))))
+                                    (np ((cat common)
+                                         (countable no)
+                                         (lex "sleep"))))))))))))))
+            ))))))))))
+
+(def-test t611
+  "At least, they will know by whose boat he was crushed."
+  ((cat clause)
+   (tense future)
+   (proc ((type mental) (lex "know")))
+   (circum ((concession ((cat adv) (lex "at least")
+                         (position front)))))
+   (partic ((processor ((cat personal-pronoun) (number plural)))
+            (phenomenon
+             ((cat pronoun)
+              (head ((gap yes)))
+              (qualifier
+               ((cat clause)
+                (tense past)
+                (mood possessive-relative)
+                (scope {^ partic agent})
+                ;; (focus {^ partic affected})
+                (proc ((type material)
+                       (voice passive)
+                       (lex "crush")))
+                (partic ((agent ((cat common)
+                                 (lex "boat")))
+                         (affected ((cat personal-pronoun)
+                                    (gender masculine)))))))))))))

@@ -15,6 +15,7 @@
 ;;;               05 May 96 - added (case objective) to np in (cat pp) (Yael)
 ;;;               24 Sep 96 - added call to date and address in np.
 ;;;               31 Mar 97 - added support for comparative/superlative (Yael)
+;;;               31 Aug 14 - completed support for comp/superlative
 ;;; ============================================================
 ;;; FUF - a functional unification-based text generation system. (Ver. 5.4)
 ;;;
@@ -212,7 +213,7 @@
        ;; 3. less,least and as degrees of comparison
 
        ;; comparative - comparison between two
-       ;; superlative - comparison between more than two.[
+       ;; superlative - comparison between more than two.
        ;; comparatives are available for adjectives that refer to
        ;; a quality that is thought of as having values on a scale.
 
@@ -270,50 +271,93 @@
        ;; intensifier very.
        ;; * The very most careful man.
 
+       ;; Controversial:
+       ;; When used as clause-level constituent, use "the"
+       ;; for superlative:
+       ;; He is the tallest of all men.
+       ;; The tallest led the group. (As opposed to a gapped nominal head)
        ((cat simple-ap)
         (complex none)
         (generic-cat ap)
+        #+ignore(fset (cat generic-cat lex
+                   concept polarity comparative superlative
+                   inflected intensifier as the
+                   head classifier qualifier modifier comparison
+                   ;; from embedding phrase:
+                   question-pronoun synt-funct))
         (head ((cat adj)
                ;; Superlative: yes/no
                ;; Comparative: yes/no
                ;; Inflected: yes/no (yes: er/est no: more/most)
                (concept {^ ^ concept})
                (polarity {^ ^ polarity})
-               (comparative {^ ^ comparative}) ;; YD add these
-               ;; features to the
-               ;; head
-               (superlative {^ ^ superlative})      ;;
-               (inflected {^ ^ inflected}) ;; can adj be inflected
+               (comparative {^ ^ comparative})
+               (superlative {^ ^ superlative})
+               (inflected {^ ^ inflected})
                (lex {^ ^ lex})))
-        ;; YD superlative and compartive must be mutual exclusive
-        (alt (((comparative no)
-               (superlative no))
-              ((comparative yes)
+
+        ;; Superlative and compartive are mutually exclusive
+        ;; Add intensifier (more / less / most / least)
+        ;; if negative or adj not inflected
+        (alt ap-comparative-superlative
+             (((comparative no)
                (superlative no)
-               (alt (((inflected no)
-                      (intensifier ((cat phrase) (lex "more"))))
-                     ((inflected yes)))))
+               (as none)
+               (the none)
+               (polarity none))
+              ((comparative yes)
+               (the none)
+               (superlative no)
+               (alt ap-comparative-polarity
+                    (((polarity positive)
+                      (as none)
+                      (alt ap-comparative-pos-inflected
+                           (((inflected yes))
+                            ((inflected no)
+                             (intensifier ((cat phrase) (lex "more")))))))
+                     ((polarity #(under negative))
+                      (as none)
+                      (intensifier ((cat phrase) (lex "less"))))
+                     ((polarity #(under equal))
+                      (as ((cat phrase) (lex "as")))
+                      ))))
               ((superlative yes)
                (comparative no)
-               (alt (((inflected no)
-                      (intensifier ((cat phrase) (lex "most"))))
-                     ((inflected yes)))))))
+               (as none)
+               ;; When ap is a describer - no "the" and no comparison
+               ;; Describer: the [tallest] man
+               ;; Not describer:
+               ;; He is [by far the tallest of all men].
+               ;; The play [most talked about].
+               (alt ap-superlative-the
+                    (((synt-funct describer)
+                      (the none)
+                      (comparison none))
+                     ((the ((cat phrase) (lex "the"))))))
+               (alt ap-superlative-polarity
+                    (((polarity positive)
+                      (alt ap-superlative-positive-inflected
+                           (((inflected yes)) ;; tallest
+                            ((inflected no)
+                             (intensifier ((cat phrase) (lex "most")))))))
+                     ((polarity #(under negative))
+                      (intensifier ((cat phrase) (lex "least")))))))))
 
-
-        ;; YD My problem: modifiers (or intensifiers) to
-        ;; superlatives and comparatives
+        ;; Modifiers (or intensifiers) to superlatives and comparatives
         ;; can only be: most, least, more and less (and some more...)
-        ;; here I assume a superlative cannot have a classifier.
+        ;; here assume a superlative cannot have a classifier.
 
         ;; "light blue" (light is the classifier)
-        (alt (((classifier none))
+        (alt ap-classifier
+             (((classifier none))
               ((classifier given)
-               (superlative no) ;; YD assume a superlative
-               ;; cannot have a classifier.
+               (superlative no)
                (classifier ((cat ((alt (adj #(under np-head)))))
                             (synt-funct classifier))))))
+
         ;; "visible in the cutaway view" (qualifier)
-        (alt (((qualifier none))
+        (alt ap-qualifier
+             (((qualifier none))
               ((qualifier given)
                (qualifier
                 ((alt adj-qualifier-cat
@@ -328,12 +372,47 @@
                                      bound-nominal-declarative))))))))))))
 
         ;; modifier is an adverb: can be intensifier detensifier adv-p
-        (alt (((modifier none))
+        (alt ap-modifier
+             (((modifier none))
               ((modifier given)
                (modifier ((cat adv))))))
 
-        (pattern (modifier classifier intensifier head
-                           qualifier)))
+        ;; Comparison - for comparative and superlative, follow the qualifier
+        ;; Use "than" as prep (as opposed to conj across clauses):
+        ;; He is taller than her. (Objective = prep)
+        ;; He is taller than she is. (Subjective = conj of 2 clauses)
+        ;; He is the tallest of all men. (as AP)
+        ;; He is as tall as heavy.
+        ;; He is as tall as John.
+        ;; He is [modifier very much]
+        ;;       as
+        ;;       [classifier light]
+        ;;       [head blue]
+        ;;       [qualifier under heavy light]
+        ;;       [comparison as the sky].
+        (alt ap-comparison
+             (((comparison given)
+               (alt ap-comparison-comparative
+                    (((comparative yes)
+                      (alt ap-comparison-as
+                           (((polarity ((alt (positive #(under negative)))))
+                             (comparison
+                              ((cat pp)
+                               (prep
+                                ((lex ((alt (given "than")))))))))
+                            ((polarity #(under equal))
+                             (comparison
+                              ((cat pp)
+                               (prep ((lex "as")))))))))
+                     ((superlative yes)
+                      (comparison ((cat pp)
+                                   (prep ((lex ((alt (given "of")))))))))))
+               (pattern (modifier as the classifier intensifier
+                                  head qualifier comparison)))
+              ((comparison none)
+               (pattern (modifier as the classifier intensifier
+                                  head qualifier))))))
+
 
        ;; ==============================================================
        ;; 08 CAT PP : prepositional phrases ----------------------------
