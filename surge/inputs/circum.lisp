@@ -1712,8 +1712,6 @@
 			    (quantity ((value 10) (digit yes)))
                             (unit ((lex "foot")))))))))))
 
-;; Framenet sample on duration
-;; "For a short time, 100 hikers were trapped in the mountains and a boy scout camp was also threatened by the blaze."
 ;; @TODO: at least
 (def-test c49a
     "For a short time, 100 hikers were trapped in the mountains."
@@ -1740,7 +1738,6 @@
     "A boy scout camp was also threatened by the blaze."
   ((cat clause)
    (process ((type material) (lex "threaten")))
-   ;; (agentless no)
    (focus {^ partic affected})
    (tense past)
    (partic ((affected ((cat common)
@@ -1753,3 +1750,43 @@
    (adverb ((lex "also")))))
 
 (store-verbs '(("threaten" "threatens" "threatened" "threatening" "threatened")))
+
+;; Framenet sample on duration
+(def-test c49
+  "For a short time, 100 hikers were trapped in the mountains and a boy scout camp was also threatened by the blaze."
+  ((cat clause)
+   (complex conjunction)
+   (distinct
+    ~(
+      ((cat clause)
+       (process ((type material) (lex "trap")))
+       (tense past)
+       (partic ((affected ((cat common)
+                           (lex "hiker")
+                           (definite no)
+                           (cardinal ((value 100)))
+                           (degree +)))))
+       (pred-modif ((location ((cat pp)
+                               (prep ((lex "in")))
+                               (np ((cat common)
+                                    (lex "mountain")
+                                    (number plural)))))))
+       (circum ((duration ((cat pp)
+                           (np ((cat common)
+                                (definite no)
+                                (describer ((lex "short")))
+                                (lex "time"))))))))
+      ((cat clause)
+       (process ((type material) (lex "threaten")))
+       (focus {^ partic affected})
+       (tense past)
+       (partic ((affected ((cat common)
+                           (lex "camp")
+                           (definite no)
+                           (classifier ((lex "boy scout")))))
+                (agent ((cat common)
+                        (definite yes)
+                        (lex "blaze")))))
+       (adverb ((lex "also"))))
+
+      ))))
