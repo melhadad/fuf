@@ -1790,3 +1790,120 @@
        (adverb ((lex "also"))))
 
       ))))
+
+(def-test c50
+  ;;  "Woman reverses car for over a mile on highway after missing exit."
+  "Woman reverses car for one mile on highway after missing exit."
+  ((cat clause)
+   (proc ((type material) (lex "reverse")))
+   (partic ((agent ((cat common) (lex "woman") (definite no)
+                    (gender feminine)
+                    (determiner ((gap yes)))))
+            (affected ((cat common) (lex "car") (definite no)
+                       (determiner ((gap yes)))))))
+   (circum
+    ((distance ((cat pp)
+                (prep ((lex "for")))
+                (np ((cat measure)
+                     (unit ((lex "mile")))
+                     (quantity ((value 1)))))))
+     (location ((cat pp)
+                (position end)
+                (prep ((lex "on")))
+                (np ((cat common) (lex "highway")
+                     (countable no)))))
+     (time ((cat clause)
+            (mood present-participle)
+            (position end)
+            (binder ((lex "after")))
+            (proc ((type material) (lex "miss")))
+            (controlled {^ partic agent})
+            (partic
+             ((agent
+               ((semantics ((index {^6 partic agent semantics index})))))
+              (range ((cat common) (lex "exit")
+                      (definite yes) (determiner ((gap yes)))))))))
+     ))))
+
+(def-test c51
+  ;; "For over a year, he had been beating his way along the south shore."
+  ;; (The Great Gabsy, Chap 6).
+  "For one year, he had been beating his way along the south shore."
+  ((cat clause)
+   (proc ((type material) (lex "beat")))
+   (tense past-perfect-progressive)
+   (partic ((agent ((cat personal-pronoun) (gender masculine)))
+            (range ((cat common) (lex "way")
+                    (possessor
+                     ((cat pronoun)
+                      (semantics ((index {^4 agent semantics index})))))))))
+   (circum
+    ((duration ((cat pp)
+                (np ((cat measure)
+                     (unit ((lex "year")))
+                     (quantity ((value 1)))))))))
+   (pred-modif
+    ((path ((cat pp)
+            (prep ((lex "along")))
+            (np ((cat common) (lex "shore")
+                 (classifier ((lex "south")))
+                 (definite yes)))))))))
+
+(def-test c52
+  ;; "If the film lasts more than one hour, I can't stay."
+  ;; Encode stay with Framenet state_continue
+  "If the film lasts one hour, I can not stay."
+  ((cat clause)
+   (proc ((type lexical) (lex "stay")
+          (subcat ((1 ((cat np)))
+                   (1 {^3 lex-roles entity})))))
+   (polarity negative)
+   (epistemic-modality possible)
+   (lex-roles ((entity ((cat personal-pronoun) (person first)))))
+   (circum
+    ((condition
+      ((cat clause)
+       (then no)
+       (position front)
+       (proc ((type temporal) (lex "last")))
+       (partic ((carrier ((cat common) (lex "film") (definite yes)))
+                (time ((cat measure)
+                       (unit ((lex "hour")))
+                       (quantity ((value 1)))))))))))))
+
+(def-test c53
+  ;; "Woman missing for over a year found in Spain."
+  "Woman missing for one year found in Spain."
+  ;; Find as "Locating" frame in FrameNet:
+  ;; location / sought_entity / perceiver / ground
+  ((cat clause)
+   (proc ((lex "find") (type lexical)
+          (subcat ((1 ((cat np)))
+                   (2 ((cat np)))
+                   (1 {^3 lex-roles perceiver})
+                   (2 {^3 lex-roles sought_entity})))))
+   (mood past-participle)
+   (agentless yes)
+   (lex-roles
+    ((sought_entity
+      ((cat common) (lex "woman")
+       (definite no)
+       (determiner ((gap yes)))
+       (qualifier
+        ((cat clause)
+         (mood present-participle)
+         (proc ((type lexical) (lex "miss")
+                (subcat ((1 ((cat np)))
+                         (1 {^3 lex-roles entity})))))
+         (lex-roles ((entity ((cat personal-pronoun)))))
+         (controlled {^ lex-roles entity})
+         (circum
+          ((duration ((cat pp)
+                      (np ((cat measure)
+                           (unit ((lex "year")))
+                           (quantity ((value 1)))))))))))))))
+   (circum ((location ((cat pp)
+                       (prep ((lex "in")))
+                       (np ((cat trivial-proper)
+                            (lex "Spain")))))))
+   ))
