@@ -410,7 +410,7 @@
    ;; If you had trace on {affected possessor} and were not defining
    ;; possessive-relative as a separate mood, you would get:
    ;; "The man WHOSE I WASH [trace] CAR."
-   ((mood possessive-relative)
+   ((mood #(under possessive-relative))
     ;; @@Todo: clean up the dative-move vs. lexical-role story.
     ;; Must force dative-move to no
     ;; (dative-move no)
