@@ -3110,6 +3110,37 @@
    (fraction ((num 2) (den 5)))
    (definite yes)))
 
+(def-test t186bis
+  "Two-fifths of the at most 10 cars."
+  ((cat common)
+   (lex "car")
+   (cardinal ((value 10) (digit yes)
+              (comparative bound)
+              (orientation -)))
+   (fraction ((num 2) (den 5)))
+   (definite yes)))
+
+(def-test t186ter
+  "Two-fifths of the no more than 10 cars."
+  ((cat common)
+   (lex "car")
+   (cardinal ((value 10) (digit yes)
+              (comparative comparative)
+              (adverb ((lex "no")))
+              (orientation +)))
+   (fraction ((num 2) (den 5)))
+   (definite yes)))
+
+(def-test t186quad
+  "Two-fifths of over 10 cars."
+  ((cat common)
+   (lex "car")
+   (cardinal ((value 10) (digit yes)
+              (comparative comparative)
+              (adverb ((lex "no")))
+              (orientation +)))
+   (fraction ((num 2) (den 5)))
+   (definite yes)))
 
 (def-test t187
   "He cooks breakfast."
@@ -6975,3 +7006,127 @@
                                  (lex "boat")))
                          (affected ((cat personal-pronoun)
                                     (gender masculine)))))))))))))
+
+;; =========================
+;; Compound cardinals
+;;
+;; Key features:
+;; comparative [none/bound/comparative]
+;; orientation [none/+/-/=]
+;; adverb      [none/adv]
+
+(def-test t620
+  "Five meters."
+  ((cat measure)
+   (quantity ((value 5)))
+   (unit ((lex "meter")))))
+
+(def-test t620a
+  ("At least five meters."
+   "Over five meters.")
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (comparative bound)
+              (orientation +)))
+   (unit ((lex "meter")))))
+
+(def-test t620b
+  "Over five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (pre-comp ((lex "over")))))
+   (unit ((lex "meter")))))
+
+(def-test t620c
+  "About five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (adverb ((lex "about")))))
+   (unit ((lex "meter")))))
+
+(def-test t620d
+  "More than five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (comparative comparative)
+              (orientation +)))
+   (unit ((lex "meter")))))
+
+(def-test t620e
+  "Less than five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (comparative comparative)
+              (orientation -)))
+   (unit ((lex "meter")))))
+
+(def-test t620f
+  "As many as five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (comparative bound)
+              (orientation =)))
+   (unit ((lex "meter")))))
+
+(def-test t620g
+  "Much more than five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (adverb ((lex "much")))
+              (comparative comparative)
+              (orientation +)))
+   (unit ((lex "meter")))))
+
+(def-test t620h
+  "Not as many as five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (adverb ((lex "not")))
+              (comparative bound)
+              (orientation =)))
+   (unit ((lex "meter")))))
+
+(def-test t620i
+  "No more than five meters."
+  ((cat measure)
+   (quantity ((value 5)
+              (cat compound-cardinal)
+              (adverb ((lex "no")))
+              (comparative comparative)
+              (orientation +)))
+   (unit ((lex "meter")))))
+
+(def-test t620j
+  "No more than about five meters."
+  ((cat measure)
+   (quantity ((cat compound-cardinal)
+              (numeral ((cat compound-cardinal)
+                        (value 5)
+                        (adverb ((lex "about")))))
+              (adverb ((lex "no")))
+              (comparative comparative)
+              (orientation +)))
+   (unit ((lex "meter")))))
+
+(def-test t620j
+  "Not much more than approximately five meters."
+  ((cat measure)
+   (quantity ((cat compound-cardinal)
+              (numeral ((cat compound-cardinal)
+                        (adverb ((lex "not")))
+                        (numeral ((cat compound-cardinal)
+                                  (numeral ((cat compound-cardinal)
+                                            (value 5)
+                                            (adverb ((lex "approximately")))))
+                                  (adverb ((lex "much")))
+                                  (comparative comparative)
+                                  (orientation +)))))))
+   (unit ((lex "meter")))))

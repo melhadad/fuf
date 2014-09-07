@@ -70,7 +70,7 @@
     (:! time-pred-modif)
     (:! duration-pred-modif))))
 
-(def-alt circumstantials 
+(def-alt circumstantials
   (((circum none))
    ((circum given)
     (circum ((fset (location distance origin time duration frequency

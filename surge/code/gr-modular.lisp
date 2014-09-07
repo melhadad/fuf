@@ -509,6 +509,18 @@
 
        ((cat simple-cardinal)
         (complex none)
+        (adverb none)
+        (pre-comp none)
+        (comparative none)
+        (orientation none)
+        ;; Compute number if not specified in input.
+        (alt cardinal-number
+             (((number given))
+              ((value given)
+               (control (and (numberp #@{^ value})
+                             (/= #@{^ value} 1)))
+	       (number plural))
+              ((number singular))))
         ;; Stylistic rule: numbers less than 10 in letters, others in digits.
         (alt cardinal-value
              (((value given)
@@ -541,14 +553,76 @@
        ;; "in a row" complements of cardinals & ordinals
        ;; NOTE: Too complicated to do conjunctions of these
        ;; like "10 straight and 5 in a row"
+       ;;
+       ;; 07 Sep 14: comparative and approx cardinal
+       ;; (comparative [none/bound/comparative])
+       ;; (orientation [none/+/-/=])
+       ;; (adverb [none/adv])
+       ;; bound: at least/most 5
+       ;;        over/under 5
+       ;; comparative: [adv] more/less than 5
+       ;;              [adv] as many as 5
+       ;; approx: [adv] 5 (exactly 5, roughly 5)
+       ;;
+       ;; Recursive structure (must check cooccurrence restrictions)
+       ;; - Not much more than approximately 100
+       ;; - Vastly less than under 100
+       ;; - [At least more than 100 ?]
+       ;; - [Under more than 100 ?]
+       ;; - More than about 100
+       ;;   [About more than 100?]
+       ;;
        ((cat compound-cardinal)
         (value {^ numeral value})
-        (numeral ((cat cardinal)))
+        (digit {^ numeral digit})
+        (number {^ numeral number})
+        (numeral ((cat ((alt (cardinal compound-cardinal))))))
+        (alt cardinal-number
+             (((number given))
+              ((value given)
+               (control (and (numberp #@{^ value})
+                             (/= #@{^ value} 1)))
+               (number plural))
+              ((numeral ((cat compound-cardinal)))
+               (number {^ numeral number}))
+              ((number singular))))
+        (alt compound-cardinal-comp
+             (((comparative none)
+               (orientation none)
+               (pre-comp none))
+              ((pre-comp given)
+               (pre-comp ((cat phrase))))
+              ((comparative #(under bound))
+               (alt compound-comparative-bound
+                    (((orientation -)
+                      (pre-comp ((cat phrase)
+                                 (lex ((alt ("at most" "under")))))))
+                     ((orientation =)
+                      (pre-comp ((cat phrase)
+                                 (lex ((alt ("as many as" "as few as")))))))
+                     ((orientation +)
+                      (pre-comp ((cat phrase)
+                                 (lex ((alt ("at least" "over"))))))))))
+              ((comparative #(under comparative))
+               ;; comparative accept adverb
+               (alt compound-comparative-comparative
+                    (((orientation +)
+                      (pre-comp ((cat phrase)
+                                 (lex "more than"))))
+                     ((orientation -)
+                      (pre-comp ((cat phrase)
+                                 (lex "less than")))))))))
+        (alt compound-comparative-adv
+             (((adverb none))
+              ((adverb given)
+               (adverb ((cat adv))))))
         (alt compound-cardinal-cat
-             (((complement ((cat adj)))
-               (pattern (numeral complement)))
+             (((complement none)
+               (pattern (adverb pre-comp numeral)))
+              ((complement ((cat adj)))
+               (pattern (adverb pre-comp numeral complement)))
               ((complement ((cat pp)))
-               (pattern (numeral))
+               (pattern (adverb pre-comp numeral))
                ({^}
                 ((alt compound-cardinal-matrix-cat
                       (((cat #(under common))

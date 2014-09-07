@@ -101,8 +101,8 @@
 (def-conj measure
   (cat #(under measure))
   (quantity ((alt quantity-type (((cat cardinal))
-				 ((cat ordinal))
 				 ((cat compound-cardinal))
+				 ((cat ordinal))
 				 ((cat compound-ordinal))
 				 ((cat fraction))))))
   (unit ((alt (((cat noun))
@@ -115,22 +115,10 @@
 	((qualifier ((cat pp) (synt-funct qualifier)))
 	 (pattern (quantity unit dots qualifier)))))
 
-  ;; Compute number if not specified in input.
-  (opt ((alt (((quantity ((cat cardinal)
-			  (value given)
-			  (control (and (numberp #@{^ value})
-					(/= #@{^ value} 1)))))
-	       (number plural))
-	      ((quantity ((cat compound-cardinal)
-			  (numeral ((value given)))
-			  (control (and (numberp #@{^ numeral value})
-					(/= #@{^ numeral value} 1)))))
-	       (number plural))))))
-
   ;; Measure used as a classifier does not put an s on unit
   (alt measure-unit-number
     (((synt-funct ((:! np-functions)))
-      (unit ((number {^2 number}))))
+      (unit ((number {^2 quantity number}))))
      ((synt-funct #(under classifier))
       (unit ((number singular))))))
   )

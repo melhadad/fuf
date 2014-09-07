@@ -1712,16 +1712,18 @@
 			    (quantity ((value 10) (digit yes)))
                             (unit ((lex "foot")))))))))))
 
-;; @TODO: at least
 (def-test c49a
-    "For a short time, 100 hikers were trapped in the mountains."
+    "For a short time, at least 100 hikers were trapped in the mountains."
   ((cat clause)
    (process ((type material) (lex "trap")))
    (tense past)
    (partic ((affected ((cat common)
                        (lex "hiker")
                        (definite no)
-                       (cardinal ((value 100)))
+                       (cardinal ((cat compound-cardinal)
+                                  (comparative bound)
+                                  (orientation +)
+                                  (value 100)))
                        (degree +)))))
    (pred-modif ((location ((cat pp)
                            (prep ((lex "in")))
