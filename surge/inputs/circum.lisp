@@ -1909,3 +1909,33 @@
                        (np ((cat trivial-proper)
                             (lex "Spain")))))))
    ))
+
+(store-verbs '(("stir" "stirs" "stirred" "stirring" "stirred")))
+
+(def-test ofer
+  "Cook slowly until the eggs are thick and creamy, stirring consistently."
+  ((cat clause)
+        (mood imperative)
+        (proc ((lex "cook")(type material)))
+        (affective no)
+        (partic ((affected ((gap yes) (cat pronoun)))))
+        (circum
+         ((manner ((lex "slowly")))
+          (duration ((cat clause)
+                     (position end)
+                     (binder ((lex "until")))
+                     (proc ((type ascriptive)(mode attributive)))
+                     (partic ((carrier ((lex "egg")(number plural)))
+                              (attribute ((complex conjunction)
+                                          (distinct ~(
+                                                      ((lex "thick"))
+                                                      ((lex "creamy"))))))))))
+          (co-event ((cat clause)
+                     (position end)
+                     (controlled {^ partic agent})
+                     (proc ((lex "stir") (type material)))
+                     (partic ((affected
+                               ((index {^5 partic affected index})
+                                (gap yes)))))
+                     (circum ((manner ((lex "consistently")))))))
+          ))))

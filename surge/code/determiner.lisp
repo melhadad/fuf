@@ -60,7 +60,7 @@
 
 ;; TODO
 ;; partitive no/measure/typical/general/quantifier
-;; reference specific/non-specific
+;; reference-type specific/non-specific
 ;;   non-specific: quantifier/generic
 ;;     quantifier: universal/existential/negative/degree/evaluative
 ;;       features: total/partial/orientation/evaluation
@@ -606,7 +606,7 @@
     (selective none)
     (interrogative no)
     (distance none)
-    (reference specific)
+    (reference-type specific)
     (possessor {^ det})
     (:! possessive-det))
 
@@ -624,7 +624,7 @@
     (interrogative no)
     (possessive no)
     (distance given)
-    (reference specific)
+    (reference-type specific)
     (det ((cat article)))
     (:! demonstrative-det))
 
@@ -633,7 +633,7 @@
     (distance none)
     (possessive no)
     (definite no)
-    (reference non-specific)
+    (reference-type non-specific)
     (det ((cat article)))
     (:! quantifier-det)
     ;; Partitive?
@@ -767,7 +767,6 @@
 	   (cardinal none)
 	   (det ((lex "a"))))
 	  ((cardinal given)
-	   (number singular)
 	   (det ((lex ""))))
 	  ((number #(under plural))
 	   (partitive no)
@@ -820,7 +819,7 @@
 
 ;; If total is already expressed in pre-det, det is ""
 (def-alt quantifier-det (:index total)
-  (((total +)
+  (((total #(under +))
     (total-realized det)
     (countable yes)
     ;; all, each, both, every
@@ -850,7 +849,6 @@
     ;; one, either, some, any
     (alt quant-partial (:index selective)
       (((selective yes)
-	(reference-number plural)
 	(countable yes)
 	;; one, either, some, any
 	(alt quant-partial-sel (:index reference-number)
@@ -859,6 +857,7 @@
 	    (countable yes)
 	    (det ((lex "either"))))
 	   ((number singular)
+            (reference-number singular)
 	    (det ((lex "one"))))
 	   (;; number/countable unmarked
 	    (reference-number plural)

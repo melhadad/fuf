@@ -3049,6 +3049,7 @@
    (lex "car")
    (total none)
    (selective yes)
+   (reference-number singular)
    (number singular)))
 
 (def-test t180
@@ -3132,15 +3133,16 @@
    (definite yes)))
 
 (def-test t186quad
-  "Two-fifths of over 10 cars."
+  ("Two-fifths of over 10 cars."
+   "Two-fifths of at least 10 cars.")
   ((cat common)
    (lex "car")
-   (cardinal ((value 10) (digit yes)
-              (comparative comparative)
-              (adverb ((lex "no")))
+   (cardinal ((cat compound-cardinal)
+              (value 10) (digit yes)
+              (comparative bound)
               (orientation +)))
    (fraction ((num 2) (den 5)))
-   (definite yes)))
+   (definite no)))
 
 (def-test t187
   "He cooks breakfast."

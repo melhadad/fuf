@@ -152,6 +152,7 @@
 ;; Propagate all top-level features in an NP under their appropriate group
 ;; syntax, semantics, reference and head.
 (def-conj np-propagate
+  %TRACE-OFF%
   (syntax ((fset (animate gender case definite person partitive
 			  number a-an distance countable))
 	   (animate {^2 animate})
@@ -197,10 +198,10 @@
 	      (describer {^2 describer})
 	      (qualifier {^2 qualifier})
 	      (classifier {^2 classifier})))
-  (reference ((fset (type total selective possessive interrogative distance
-			  quantitative exact orientation evaluative status
-			  degree comparative superlative evaluation))
-	      (type {^2 reference-type})
+  (reference ((fset (reference-type total selective possessive interrogative
+                     distance quantitative exact orientation evaluative status
+                     degree comparative superlative evaluation))
+	      (reference-type {^2 reference-type})
 	      (status {^2 status})
 	      (degree {^2 degree})
 	      (total {^2 total})
@@ -215,6 +216,7 @@
 	      (evaluation {^2 evaluation})
 	      (orientation {^2 orientation})
 	      (evaluative {^2 evaluative})))
+  %TRACE-ON%
   (head ((lex {^2 lex}))))
 
 ;; If we have reason to believe a det is needed - propagate
@@ -224,10 +226,12 @@
     (((determiner ((lex given)))
       (cset ((- determiner))))
      ((determiner ((cat det)
+                   %TRACE-OFF%
                    (definite  {^2 syntax definite})
                    (countable {^2 syntax countable})
                    (number    {^2 syntax number})
                    (quantitative {^2 reference quantitative})
+                   (reference-type {^2 reference reference-type})
                    (status {^2 reference status})
                    (degree {^2 reference degree})
                    (exact {^2 reference exact})
@@ -242,7 +246,9 @@
                    (orientation {^2 reference orientation})
                    (head-denotation {^2 semantics index denotation})
                    (reference-number {^2 semantics index reference-number})
-                   (partitive {^2 partitive}))))
+                   (partitive {^2 partitive})
+                   %TRACE-ON%
+                   )))
      ((determiner none))))
 
 
@@ -389,13 +395,16 @@
     (head ((cat pronoun)     ;; known to morphology plus its args.
 	   ;; (fset (cat pronoun-type case gender animate feature semr kind
 	   ;;        syntax lex number distance person restrictive))
+           %TRACE-OFF%
 	   (gender {^2 syntax gender})
 	   (number {^2 syntax number})
 	   (animate {^2 syntax animate})
 	   (pronoun-type {^2 pronoun-type})
 	   (distance {^2 syntax distance})
 	   (person {^2 syntax person})
-	   (restrictive {^2 restrictive})))
+	   (restrictive {^2 restrictive})
+           %TRACE-ON%
+           ))
     ;; can have determiner put after head: they all, them all.
     ;; Check in determiner.l how the new order is enforced.
     ;; (pattern (determiner head dots))
