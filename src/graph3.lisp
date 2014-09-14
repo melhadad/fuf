@@ -427,7 +427,7 @@
 	 (or (and *any-at-unification* (eq 'any val2))
 	     (and *use-given* (eq 'given val2))))
 	(*fail* fail frame path1 path2 pair1
-		"fail in trying ~s with ~s at level ~s"
+		"Fail in trying ~s with ~s at level ~s"
 		val1 val2 (path-extend path1 att)))
 
        ;; If val2 is a path - check for type conflict
@@ -487,7 +487,7 @@
 	       (or (and *use-given* (eq val2 'given))
 		   (and *any-at-unification* (eq val2 'any))))
 	  (*fail* fail frame path1 path2 pair1
-		  "fail in trying ~s with ~s at level ~s"
+		  "Fail in trying ~s with ~s at level ~s"
 		  val1 val2 (path-extend path1 att)))
 	 (t
 	  (pattern-unify fd1 fd2 pair1 pair2 path1 path2 frame fail success

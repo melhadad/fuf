@@ -200,8 +200,10 @@
 	      (classifier {^2 classifier})))
   (reference ((fset (reference-type total selective possessive interrogative
                      distance quantitative exact orientation evaluative status
-                     degree comparative superlative evaluation))
+                     reference-polarity degree comparative superlative
+                     evaluation))
 	      (reference-type {^2 reference-type})
+              (reference-polarity {^2 reference-polarity})
 	      (status {^2 status})
 	      (degree {^2 degree})
 	      (total {^2 total})
@@ -232,6 +234,7 @@
                    (number    {^2 syntax number})
                    (quantitative {^2 reference quantitative})
                    (reference-type {^2 reference reference-type})
+                   (reference-polarity {^2 reference reference-polarity})
                    (status {^2 reference status})
                    (degree {^2 reference degree})
                    (exact {^2 reference exact})
@@ -494,6 +497,7 @@
           ;; number plural requires det for proper
           ;; The Smiths
           (number singular)
+          (denotation none)
 	  (pattern (head)))
 	((determiner ((head-cat proper)))
          (:! np-determiner)
@@ -557,27 +561,29 @@
 	(determiner ((ordinal {^2 ordinal})))))
 
   ;; If cardinal is given, use its value to determine number.
-  (alt cardinal-number ;; (:wait {^ cardinal value})
-    (((cardinal ((value given)))
-      (control (and (numberp #@{^ cardinal value})
-		    (= #@{^ cardinal value} 1)))
-      (syntax ((number singular))))
-     ((cardinal ((numeral ((value given)))))
-      (control (and (numberp #@{^ cardinal numeral value})
-		    (= #@{^ cardinal numeral value} 1)))
-      (syntax ((number singular))))
+  (alt number
+       (((cardinal given)
+         (alt cardinal-number ;; (:wait {^ cardinal value})
+              (((cardinal ((value given)))
+                (control (and (numberp #@{^ cardinal value})
+                              (= #@{^ cardinal value} 1)))
+                (syntax ((number singular))))
+               ((cardinal ((numeral ((value given)))))
+                (control (and (numberp #@{^ cardinal numeral value})
+                              (= #@{^ cardinal numeral value} 1)))
+                (syntax ((number singular))))
 
-     ;; any other number is plural
-     ((cardinal ((value given)))
-      (control (numberp #@{^ cardinal value}))
-      (syntax ((number plural))))
-     ((cardinal ((numeral ((value given)))))
-      (control (numberp #@{^ cardinal numeral value}))
-      (syntax ((number plural))))
+               ;; any other number is plural
+               ((cardinal ((value given)))
+                (control (numberp #@{^ cardinal value}))
+                (syntax ((number plural))))
+               ((cardinal ((numeral ((value given)))))
+                (control (numberp #@{^ cardinal numeral value}))
+                (syntax ((number plural)))))))
 
-     ((syntax ((number singular))))
-     ((syntax ((number #(under dual)))))
-     ((syntax ((number #(under plural))))))))
+        ((syntax ((number singular))))
+        ((syntax ((number #(under dual)))))
+        ((syntax ((number #(under plural))))))))
 
 
 (def-conj np-pre-det

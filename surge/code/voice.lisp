@@ -398,6 +398,8 @@
 	    (((process ((passive-prep given)))
 	      (synt-roles ((by-obj ((prep {^3 process passive-prep}))))))
 	     ((synt-roles ((by-obj ((prep ((lex "by")))))))))))
+       ((partic ((agent none)))
+        (agentless yes))
        ((agentless yes)
 	(scoped no)
 	(cset ((- {^ synt-roles by-obj})))

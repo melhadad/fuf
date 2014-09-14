@@ -7118,7 +7118,7 @@
               (orientation +)))
    (unit ((lex "meter")))))
 
-(def-test t620j
+(def-test t620k
   "Not much more than approximately five meters."
   ((cat measure)
    (quantity ((cat compound-cardinal)

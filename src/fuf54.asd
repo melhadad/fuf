@@ -44,7 +44,7 @@
 		      :depends-on ("define"))
 	       (:file "findcset"
 		      :depends-on ("define"))
-	       (:file "graph"
+	       (:file "graph3"
 		      :depends-on ("define"))
 	       (:file "top"
 		      :depends-on ("define"))

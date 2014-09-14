@@ -22,15 +22,13 @@
 		    (classifier ((lex "NP")))))))))
 
 (def-test np2
-  ;; Such: not covered in syntax
   ;; ones: faked as a common noun instead of pronoun
-  ;; "[Such] examples just like the unary ones."
-  "Examples just like the unary ones."
+  "Such examples just like the unary ones."
   ((cat np)
    (head ((lex example)))
+   (status "such")
    (number plural)
    (definite no)
-   ;; (pre-det ((lex "such")))
    (qualifier ((cat pp)
 	       (prep ((lex "like") (adverb ((lex "just")))))
 	       (np ((definite yes)

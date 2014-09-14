@@ -100,10 +100,10 @@
 
   ;; Decide whether to use a quantifier
   ;; If quantitative is yes, can still be expressed in the det part, with
-  ;; things like "many"? Aha! No, if we adopt Halliday's view: when you
-  ;; have "many cars" many is not like "the cars" it is like "three cars".
+  ;; things like "many"? Aha! No, if we adopt Halliday's view:
+  ;; in "many cars" many is not like "the cars" it is like "three cars".
   ;; That is, it is still a quantifier, not a det.
-  ;; Note that quantifier-det remains useful for each/every/some/any.
+  ;; quantifier-det remains useful for each/every/some/any.
   ;; NOTE: the list of none enforces the implication that if any of the
   ;; feature is given then quantitative is yes.
   (alt quantitative (:index quantitative)
@@ -116,13 +116,29 @@
       (quantifier none)
       (cardinal none))
      ((quantitative yes)
+      ;; Should be reviewed with approx adverbs in cardinal
+      ;; About 3 men.
       (alt quant-yes (:index exact)
-	(((exact yes)
-	  (cardinal given)
-	  (quantifier none))
-	 ((exact no)
-	  (cardinal none)
-	  (quantifier ((cat phrase)))))))))
+           (((exact yes)
+             (cardinal given)
+             (quantifier none))
+            ((exact no)
+             (cardinal none)
+             (quantifier ((cat phrase)))))))))
+
+  ;; Defaults:
+  ;; - countable yes / definite yes
+  ;; - countable no / definite no
+  ;; The order of the branches sets the defaults
+  (alt countable-definite-default
+       (((countable yes)
+         (definite yes))
+        ((countable no)
+         (definite no))
+        ((countable yes)
+         (definite no))
+        ((countable no)
+         (definite yes))))
 
   ;; Next choice is whether total is expressed through pre-det or within
   ;; det (all is definitely a det in "all cars").  Basically, it looks safe
@@ -135,7 +151,7 @@
   (alt pre-det-total (:index total)
     (((total #(under +))
       (alt (((number plural))
-	    ((countable no))))
+            ((countable no))))
       (total-realized pre-det)
       (pre-det ((type total))))
      ((total #(under +))
@@ -162,9 +178,9 @@
   (alt cardinal-quantifier
       (((cardinal none))
        ((cardinal given)
-	(quantifier none)
-	(pattern (dots det dots cardinal))
-	(cardinal ((cat ((alt (cardinal compound-cardinal)))))))))
+        (quantifier none)
+        (pattern (dots det dots cardinal))
+        (cardinal ((cat ((alt (cardinal compound-cardinal)))))))))
 
   ;; Quantifier system
   (:! quantifier)
@@ -214,13 +230,18 @@
 		(pattern (pre-det of det dots))
 		(deictic2 none)))))
 	   ((head-cat ((alt (common proper))))
-	    (alt (((alt (((quantifier given))
-			 ((cardinal given))
-			 ((partitive #(under yes)))))
-		   (of ((cat prep) (lex "of")))
-		   (partitive yes)
-		   (cset ((- of)))
-		   (pattern (pre-det of det dots)))
+	    (alt (((alt total-of-non-pro
+                        (((quantifier given))
+			 ((cardinal given))))
+                   (alt total-of-non-pro-partitive
+                        (((partitive no)
+                          ;; both the last 2 days
+                          (pattern (pre-det det dots)))
+                         ((partitive yes)
+                          ;; both of the last 2 days
+                          (of ((cat prep) (lex "of")))
+                          (cset ((- of)))
+                          (pattern (pre-det of det dots))))))
 		  ((quantifier none)
 		   (cardinal none)
 		   (pattern (pre-det det dots)))))))))
@@ -302,7 +323,7 @@
    ((ordinal given)
     (ordinal ((cat ((alt (ordinal compound-ordinal))))))
     ;; Cf Winograd p.514
-    (definite yes)
+    ;; (definite yes) - another, a first option, a last option
     ;; Cf Quirk p.143 4.22
     (alt (((ordinal ((value ((alt (1 + last <>))))))
 	   (number plural)
@@ -318,6 +339,7 @@
   (((quantifier none))
    ((quantifier any)
     (cardinal none)
+    %TRACE-OFF%
     (quantifier ((cat phrase)
 		 (countable {^ ^ countable})
 		 (orientation {^ ^ orientation})
@@ -327,6 +349,7 @@
 		 (superlative {^ ^ superlative})
 		 (evaluative {^ ^ evaluative})
 		 (evaluation {^ ^ evaluation})))
+    %TRACE-ON%
     ;; Make it a ralt to allow going to the 3rd branch
     (alt quantifier1 (:index countable) (:order :random)
       (((countable yes)
@@ -602,7 +625,7 @@
    ((cat possessive-det)
     (possessive #(under yes))
     (definite yes)
-    ;; (total none)   ;; c35 was failing (all their holes)
+    ;; (total none)   ;; c35 (all their holes)
     (selective none)
     (interrogative no)
     (distance none)
@@ -614,7 +637,9 @@
     (interrogative #(under yes))
     (total none)
     (distance none)
-    ;; can be possessive question
+    ;; can be possessive question: "whose bag"
+    ;; reference-type ?
+    ;; selective / definite determined by question
     (:! question-det))
 
    ((cat demonstrative-det)
@@ -632,7 +657,7 @@
     (interrogative no)
     (distance none)
     (possessive no)
-    (definite no)
+    ;; (definite no)
     (reference-type non-specific)
     (det ((cat article)))
     (:! quantifier-det)
@@ -718,6 +743,8 @@
     (alt article-det-definite
 	 (((head-denotation #(under zero-article-thing))
 	   (det ((lex ""))))
+          ((head-denotation #(under article-thing))
+	   (det ((lex "the"))))
 	  ((head-cat proper)
 	   (alt number-proper (:index number)
 	     (((number singular)
@@ -744,7 +771,8 @@
 		  (det ((lex "the"))))
 		 ((pre-det ((type #(under fraction))))
 		  (det ((lex "the"))))
-		 ((det ((lex "")))))))
+                 ;; definite uncountable - the?
+		 ((det ((lex "the")))))))
 	  ((head-cat common)
 	   (countable yes)
 	   (head-denotation article-thing)
@@ -825,7 +853,17 @@
     ;; all, each, both, every
     (alt quant-total-number+ (:index number)
       (((number singular)
-	(reference-number plural)
+	(reference-number #(under dual))
+        (det ((lex "each"))))
+       ((number singular)
+        (reference-number plural)
+        ;; Every vs. Each:
+        ;; http://www.bbc.co.uk/worldservice/learningenglish/grammar/learnit/learnitv110.shtml
+        ;; Adv/Every: "Almost, nearly, practically every person in the room."
+        ;; Reference-number dual/Each: "On each leg" / "*On every leg"
+        ;; Each distributive / Every collective
+        ;; @todo
+        (alt each-every)
 	(det ((lex ((alt ("each" "every")))))))
        ((number #(under dual))
 	(quantifier none)
@@ -849,7 +887,6 @@
     ;; one, either, some, any
     (alt quant-partial (:index selective)
       (((selective yes)
-	(countable yes)
 	;; one, either, some, any
 	(alt quant-partial-sel (:index reference-number)
 	  (((number singular)
@@ -858,6 +895,7 @@
 	    (det ((lex "either"))))
 	   ((number singular)
             (reference-number singular)
+            (countable yes)
 	    (det ((lex "one"))))
 	   (;; number/countable unmarked
 	    (reference-number plural)
@@ -866,7 +904,11 @@
 	    ;; and in Robin Lakoff's paper.  Basically use some in positive
 	    ;; clauses, any in any "negative" context.  Check out influence
 	    ;; of Argumentation on this definition of negative.
-	    (det ((lex ((alt ("some" "any"))))))))))
+            (alt any-some
+                 (((reference-polarity +)
+                   (det ((lex "some"))))
+                  ((reference-polarity #(under -))
+                   (det ((lex "any"))))))))))
        ((selective no)
 	(alt quant-partial-non-sel (:index countable)
 	  (((countable yes)
