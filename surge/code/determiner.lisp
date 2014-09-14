@@ -221,9 +221,12 @@
 	    (ordinal none)
 	    (cardinal none)
 	    (alt pre-det-post-head (:index partitive)
-	      (((pattern (det dots))
+              (
+               ;; them all
+               ((pattern (det dots))
 		(partitive no)
 		({^ pattern} (determiner head {^ determiner pre-det} dots)))
+               ;; all of them
 	       ((of ((cat prep) (lex "of")))
 		(partitive yes)
 		(cset ((- of)))
@@ -244,7 +247,15 @@
                           (pattern (pre-det of det dots))))))
 		  ((quantifier none)
 		   (cardinal none)
-		   (pattern (pre-det det dots)))))))))
+                   (alt total-of-non-pro-partitive2
+                        (((partitive no)
+                          ;; all the ships
+                          (pattern (pre-det det dots)))
+                         ((partitive yes)
+                          ;; all of the ships
+                          (of ((cat prep) (lex "of")))
+                          (cset ((- of)))
+                          (pattern (pre-det of det dots))))))))))))
 
        ;; type multiplier: Quirk p.142 4.20
        ((pre-det ((type multiplier)))
@@ -380,7 +391,13 @@
 	  (quant-head ((cat phrase)
 		       (lex ((ralt ("a lot" "lots" "plenty"))))))
 	  (of ((cat prep) (lex "of"))))))))
-    (pattern (dots det dots quantifier)))))
+    (alt quantifier-position
+         (
+          ;; some of the last butter
+          ((partitive #(under yes))
+           (pattern (dots quantifier dots det dots)))
+          ;; the first many parts
+          ((pattern (dots det dots quantifier))))))))
 
 
 (def-alt quant-count-plural (:index orientation)
@@ -424,7 +441,7 @@
 		({^ distance} none)
 		({^ full-quantifier} indef)
 		(lex "most")))))
-	   ((evaluative #(under yes))
+-	   ((evaluative #(under yes))
 	    (alt quant-cppos-eval-dir (:index evaluation)
 	      (((evaluation +)
 		({^ definite} no)
@@ -491,6 +508,7 @@
 	(evaluation none)
 	(superlative no)
 	(comparative no)
+        ({^ partitive} yes)
 	(pattern (quant-mod quant-head of))
 	(cset ((- quant-mod quant-head of)))
 	(quant-head ((cat noun) (lex "number")))
@@ -507,10 +525,11 @@
 (def-alt quant-partitive (:index partitive)
   ;; Under quantifier - for closed system, of required for pronouns
   ;; many of them // * many of cars // much of him // * much of butter
+  ;; much of the butter // some of the butter
   (((partitive yes)
-    ({^ head-cat} pronoun)
     ({^ interrogative} no)
     ({^ pre-det} none)
+    ({^ definite} yes)
     (pattern (quant-head of))
     (quant-head ((lex {^ ^ lex}) (cat article)))
     (of ((cat prep) (lex "of")))
@@ -532,7 +551,6 @@
 	    ({^ ordinal} none)
 	    (alt quant-mass-closed1 (:index orientation)
 	      (((orientation +)
-		({^ definite} no)
 		({^ full-quantifier} yes)
 		(alt quant-mass+ (:index degree)
 		  (((degree none)
@@ -548,7 +566,6 @@
 	    (superlative no)
 	    ({^ pre-det} none)
 	    ({^ ordinal} none)
-	    ({^ definite} no)
 	    (alt quant-mass-closed2 (:index orientation)
 	      (((orientation +)
 		({^ full-quantifier} indef)
@@ -596,7 +613,6 @@
       (((orientation +)
 	({^ full-quantifier} yes)
 	(quant-head ((cat noun) (lex "deal")))
-	({^ definite} no)
 	(quant-mod ((cat adj) (lex ((alt (given
 					  ((ralt ("a great" "a good"))))))))))
        ((quant-head ((cat noun) (lex ((ralt ("quantity" "amount"))))))
@@ -622,10 +638,19 @@
     (det ((cat article)))
     (:! article-det))
 
+   ;; if quantification is realized by full quantifier
+   ;; - then det is article-det
+   ;; some of the butter / several of the cars
+   ;; but * several of cars
+   ;; @TODO: Seems to be a recursive issue in partitives - not flat.
+   ;; several of the many first issues
+   ((full-quantifier given)
+    (det ((cat article)))
+    (:! article-det))
+
    ((cat possessive-det)
     (possessive #(under yes))
     (definite yes)
-    ;; (total none)   ;; c35 (all their holes)
     (selective none)
     (interrogative no)
     (distance none)
@@ -657,21 +682,9 @@
     (interrogative no)
     (distance none)
     (possessive no)
-    ;; (definite no)
     (reference-type non-specific)
     (det ((cat article)))
-    (:! quantifier-det)
-    ;; Partitive?
-    (alt quant-det-partitive (:index partitive)
-      (((partitive no)
-	(head-cat ((alt (common proper))))
-	(quantifier none))
-       ((partitive yes)
-	(head-cat pronoun)
-	(countable no)
-	(of ((cat prep) (lex "of")))
-	(pattern (dots det of dots))
-	(cset ((- of)))))))))
+    (:! quantifier-det))))
 
 
 (def-alt demonstrative-det (:index distance)

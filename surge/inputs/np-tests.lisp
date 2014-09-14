@@ -1,6 +1,6 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package: FUG5 -*-
 ;;; -----------------------------------------------------------------------
-;;; File:         np-tests.l
+;;; File:         np-tests.lisp
 ;;; Description:  Inputs for noun phrases as requested by Henschel Renate
 ;;; Author:       Yael Dahan
 ;;; Created:      June 99
@@ -12,9 +12,7 @@
 
 ;; The following tests are incorrect: (NP-DET-10-ADV
 ;;                                     NP-DET-10-DISTRIBUTIVE
-;;                                     NP-DET-18A
-;;                                     NP-DET-31A
-;;                                     TEST)
+;;                                     NP-DET-18A)
 
 ;; @TODO:
 ;; - Adv: practically every boy np-det-10-adv
@@ -58,7 +56,7 @@
    (lex "ship")
    (definite no)))
 
-(def-test np-det-02
+ (def-test np-det-02
   "The ship."
   ((cat np)
    (lex "ship")))
@@ -159,7 +157,7 @@
    (lex "ship")))
 
 ;; @todo
-(def-test np-det-10-adv
+#+ignore(def-test np-det-10-adv
   "Practically every ship."
   ((cat np)
    (determiner ((total +)
@@ -184,7 +182,7 @@
    (lex "ship")))
 
 ;; @todo
-(def-test np-det-10-distributive
+#+ignore(def-test np-det-10-distributive
   "Each ship."
   ((cat np)
    (total +)
@@ -256,9 +254,9 @@
    (reference-number plural)
    (selective yes)))
 
-;;; @TODO
+;;; @TODO partitive
 ;;; some of the ships (unstressed)
-(def-test np-det-18a
+#+ignore(def-test np-det-18a
   "Some of the ships."
   ((cat common)
    (lex "ship")
@@ -332,6 +330,20 @@
    (lex "fuel")
    (orientation +)
    (degree +)
+   (partitive no)
+   (countable no)))
+
+(def-test np-det-26p
+  ("Plenty of fuel."
+   "A good deal of fuel."
+   "A great deal of fuel."
+   "Lots of fuel."
+   "A lot of fuel.")
+  ((cat np)
+   (lex "fuel")
+   (orientation +)
+   (degree +)
+   (partitive yes)
    (countable no)))
 
 (def-test np-det-27
@@ -617,6 +629,7 @@
    (lex "ship")
    (definite yes)
    (number plural)
+   (partitive no)
    (superlative yes)
    (orientation -)))
 
@@ -702,7 +715,7 @@
 (def-test np-name-2
   "The Britannia."
   ((cat proper)
-   (denotation the-article-thing)
+   (denotation article-thing)
    (lex "Britannia")))
 
 
@@ -816,7 +829,7 @@
 			 (lex "ship")
 			 (definite no)))
 	    (identified ((cat proper)
-			 (denotation the-article-thing)
+			 (denotation article-thing)
 			 (lex "Britannia")))))))
 
 
@@ -1229,37 +1242,6 @@
 			       (prep ((lex "in")))
 			       (np ((cat date)
 				    (year  ((value "1661")))))))))))))
-
-(def-test test
-  "The man crushed by love, now knowing what love is and happy about it."
-  ((cat np)
-   (lex "man")
-   (qualifier ((cat clause)
-	       (complex conjunction)
-	       (common ((mood be-deleted-relative)))
-	       (distinct ~((
-			    (proc ((type material)
-				   (lex "crush")
-				   (agentless no)
-				   (voice passive)))
-			    (partic ((agent ((lex "love"))))))
-			   ((proc ((type mental)
-				   (lex "know")
-				   (voice active)))
-			    (partic ((phenomenon ((cat phrase)
-						  (lex "what love is")))))
-			    (circum ((time ((cat adv)
-					    (lex "now")
-					    (position front))))))
-			   ((proc ((type ascriptive)
-				   (mode attributive)))
-			    (partic ((attribute ((cat phrase)
-						 (lex "about it"))))))))))))
-
-
-
-
-
 
 ;;;=============================================
 ;;; Coordination

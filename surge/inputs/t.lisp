@@ -51,3 +51,37 @@
 	     (voice passive)
 	     (lex "control")))
    (partic ((affected ((cat np) (head === "TPR") (countable no)))))))
+
+;; be-deleted -- should be reworked
+#+ignore(def-test be-deleted-1
+  "The man crushed by love, now knowing what love is and happy about it."
+  ((cat np)
+   (lex "man")
+   (qualifier ((cat clause)
+	       (complex conjunction)
+	       (common ((mood be-deleted-relative)))
+	       (distinct ~((
+			    (proc ((type material)
+				   (lex "crush")
+				   (agentless no)
+				   (voice passive)))
+                            (controlled {^ partic affected})
+			    (partic ((agent ((lex "love"))))))
+			   ((proc ((type mental)
+				   (lex "know")
+				   (voice active)))
+			    (partic ((phenomenon ((cat phrase)
+						  (lex "what love is")))))
+			    (circum ((time ((cat adv)
+					    (lex "now")
+					    (position front))))))
+			   ((proc ((type ascriptive)
+				   (mode attributive)))
+			    (partic ((attribute ((cat phrase)
+						 (lex "about it"))))))))))))
+
+
+
+
+
+

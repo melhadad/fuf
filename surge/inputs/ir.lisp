@@ -3212,6 +3212,18 @@
    (number plural)
    (definite yes)
    (degree +)
+   (partitive no)
+   (orientation +)))
+
+(def-test t193a
+    ("Several of the cars."
+     "Many of the cars.")
+  ((cat common)
+   (lex "car")
+   (exact no)
+   (number plural)
+   (definite yes)
+   (degree +)
    (orientation +)))
 
 (def-test t194
@@ -3221,6 +3233,17 @@
    (exact no)
    (definite yes)
    (number plural)
+   (partitive no)
+   (orientation -)))
+
+(def-test t194a
+  "Few of the cars."
+  ((cat common)
+   (lex "car")
+   (exact no)
+   (definite yes)
+   (number plural)
+   (partitive yes)
    (orientation -)))
 
 (def-test t195
@@ -3235,11 +3258,25 @@
    (lex "car")
    (definite no)
    (number plural)
+   (partitive no)
+   (degree +)
+   (orientation +)))
+
+;; @todo: Partitive
+#+ignore(def-test t195a
+    ("A large number of cars."
+     "A lot of cars."
+     "Plenty of cars.")
+  ((cat common)
+   (lex "car")
+   (definite no)
+   (number plural)
+   (partitive yes)
    (degree +)
    (orientation +)))
 
 (def-test t196
-  "The more cars."
+  "More of the cars."
   ((cat common)
    (lex "car")
    (definite yes)
@@ -3247,13 +3284,33 @@
    (orientation +)
    (comparative yes)))
 
+(def-test t196a
+  "The more cars."
+  ((cat common)
+   (lex "car")
+   (definite yes)
+   (number plural)
+   (orientation +)
+   (partitive no)
+   (comparative yes)))
+
 (def-test t197
+  "Most of the cars."
+  ((cat common)
+   (lex "car")
+   (definite yes)
+   (number plural)
+   (orientation +)
+   (superlative yes)))
+
+(def-test t197a
   "The most cars."
   ((cat common)
    (lex "car")
    (definite yes)
    (number plural)
    (orientation +)
+   (partitive no)
    (superlative yes)))
 
 (def-test t198
@@ -3264,6 +3321,17 @@
    (number plural)
    (evaluative yes)
    (evaluation +)
+   (orientation +)))
+
+#+ignore(def-test t198a
+  "Enough of the cars."
+  ((cat common)
+   (lex "car")
+   (definite no)
+   (number plural)
+   (evaluative yes)
+   (evaluation +)
+   (partitive yes)
    (orientation +)))
 
 (def-test t199
@@ -3282,6 +3350,7 @@
    (countable no)
    (lex "butter")
    (definite no)
+   (partitive no)
    (orientation +)))
 
 (def-test t200bis
