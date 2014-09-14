@@ -139,7 +139,7 @@
 
 
 (defun extract-list (from to list)
-  ;; Deal with the reversing of the list (since ordered-tests is kepts in
+  ;; Deal with the reversing of the list (since ordered-tests is kept in
   ;; reversed order)
   (let* ((list (reverse list))
 	 (start (if from (position from list) 0))
@@ -182,6 +182,9 @@
 ;; --------------------------------------------------
 ;; DO-TENSES: iterate on all tenses, with negation, passive
 ;; --------------------------------------------------
+;; @TODO:
+;; - Extract tense, voice, polarity from all legal positions
+;;   and override as needed.
 (defun do-tenses (fd &key (from 1) (to 36)
 		     (passive t)  (polarity t) (question t))
   "Take a clause fd and generate it at all tenses between from and to.
@@ -192,6 +195,10 @@
       (if found
 	(setf fd (second val))
 	(return-from do-tenses (values)))))
+  ;; Check fd is a clause
+  (let ((cat (top-gdc fd {cat})))
+    (if (not (eq cat 'clause))
+        (return-from do-tenses (values))))
   (do* ((i from (1+ i))
 	(tense (or (find-symbol (format nil "TENSE-~s" i))
 		   (find-symbol (format nil "tense-~s" i)))
@@ -201,25 +208,91 @@
 	(values))
        (format t "~%=======================~%")
        (format t "~s~%" tense)
-       (let ((tfd (cons `(tense ,tense) fd)))
+       (let* (
+              ;; Make sure there is no tense with REMOVE
+              (cfd (filter-flags (u fd `((tense remove)
+                                         (proc ((tense remove)))
+                                         (process ((tense remove)))))))
+              (tfd (cons `(tense ,tense) cfd)))
 	 (uni tfd :limit *test-limit*)
 	 (when passive
+           (format t "~%-----------------------~%")
+           (format t "Passive~%")
 	   (uni (u '((proc ((voice passive)))) tfd) :limit *test-limit*))
 	 (when polarity
+           (format t "~%-----------------------~%")
+           (format t "Negative~%")
 	   (uni (cons '(polarity negative) tfd) :limit *test-limit*))
 	 (when question
+           (format t "~%-----------------------~%")
+           (format t "Yes-no~%")
 	   (uni (cons '(mood yes-no) tfd) :limit *test-limit*))
 	 (when (and polarity passive)
+           (format t "~%-----------------------~%")
+           (format t "Yes-no Passive~%")
 	   (uni (u '((proc ((voice passive))) (polarity negative)) tfd)
 		:limit *test-limit*))
 	 (when (and polarity question)
+           (format t "~%-----------------------~%")
+           (format t "Yes-no Negative~%")
 	   (uni (cons '(mood yes-no)
 		      (cons '(polarity negative) tfd)) :limit *test-limit*))
 	 (when (and polarity passive question)
+           (format t "~%-----------------------~%")
+           (format t "Yes-no Passive Negative~%")
 	   (uni (u '((mood yes-no) (polarity negative)
 		     (proc ((voice passive)))) tfd)
 		:limit *test-limit*)))))
 
+;; --------------------------------------------------
+;; DO-WH-CONSTITUENTS: iterate on all constituents
+;;    in a clause, and ask a WH question on each.
+;;    partic, lex-roles, pred-modif, circum.
+;; --------------------------------------------------
+;; @TODO: Recurse on constituents within constituents
+;;        for long-distance wh.
+
+(defun get-attrs (fd)
+  (mapcar #'car fd))
+
+(defun get-attrs-under (fd path)
+  (get-attrs (top-gdc fd path)))
+
+;; Extract a list of constituents and return them
+;; as paths: {^ partic agent} {^ pred-modif location} ...
+(defun get-constituents (fd)
+  (let ((partic (get-attrs-under fd {partic}))
+        (lex-roles (get-attrs-under fd {lex-roles}))
+        (pred-modif (get-attrs-under fd {pred-modif}))
+        (circum (get-attrs-under fd {circum})))
+    (append
+     (loop for p in partic collect (make-path :l `(^ partic ,p)))
+     (loop for l in lex-roles collect (make-path :l `(^ lex-roles ,l)))
+     (loop for p in pred-modif collect (make-path :l `(^ pred-modif ,p)))
+     (loop for c in circum collect (make-path :l `(^ circum ,c))))))
+
+(defun do-wh-constituents (fd)
+  "Take a clause fd and generate a wh-question on each constituent."
+  (when (symbolp fd)
+    (multiple-value-bind (val found) (gethash fd *tests*)
+      (if found
+          (setf fd (second val))
+          (return-from do-wh-constituents (values)))))
+  ;; Check fd is a clause
+  (let ((cat (top-gdc fd {cat})))
+    (if (not (eq cat 'clause))
+        (return-from do-wh-constituents (values))))
+  (let (;; remove mood and scope
+        (cfd (filter-flags (u fd `((scope remove)
+                                   (mood remove)
+                                   (proc ((mood remove)))
+                                   (process ((mood remove))))))))
+    (format t "~%=======================~%")
+    (loop for c in (get-constituents cfd)
+         do (let ((wfd (append `((mood wh) (scope ,c)) cfd)))
+              (format t "~%-----------------------~%")
+              (format t "~s~%" c)
+              (uni wfd :limit *test-limit*)))))
 
 ;; ============================================================
 (provide "$fug5/test")

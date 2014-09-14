@@ -36,6 +36,7 @@
 ;;;               11 Apr 95: Replaced {^} with (make-path :l '(^)) (ME)
 ;;;               03 Sep 95: Removed relocate and insert-fd (defined in
 ;;;               fd-graph).
+;;;               14 Sep 14: Filter-nils / Filter-flags filters 'remove
 ;;; Package:      FUG5
 ;;; Status:       Experimental
 ;;; -----------------------------------------------------------------------
@@ -312,7 +313,10 @@
 	((leaf-p fd) fd)
 	((path-p fd) fd)
 	((leaf-p (car fd)) (error "Ill-formed fd in filter-nils"))
-	((eq nil (cadar fd)) (filter-nils (cdr fd)))
+	((or
+          (eq nil (cadar fd))
+          (eq 'remove (cadar fd)))
+         (filter-nils (cdr fd)))
 	((or (leaf-p (cadar fd))
 	     (member (caar fd) *special-attributes*)
 	     (path-p (cadar fd)))
@@ -324,13 +328,15 @@
 	       (cons (list (caar fd) sub-fd) rest-fd)
 	     rest-fd)))))
 
-(defun filter-flags (fd &optional keep-nil)
+(defun filter-flags (fd &optional keep-nil keep-remove)
   "Remove all :i and :e from an fd at all levels."
   (cond ((null fd) fd)
 	((leaf-p fd) fd)
 	((path-p fd) fd)
 	((leaf-p (car fd)) (error "Ill-formed fd in filter-nils"))
-	((and (null keep-nil) (eq nil (cadar fd))) (filter-flags (cdr fd)))
+	((or (and (null keep-nil) (eq nil (cadar fd)))
+             (and (null keep-remove) (eq 'remove (cadar fd))))
+         (filter-flags (cdr fd)))
 	((or (leaf-p (cadar fd))
 	     (member (caar fd) *special-attributes*)
 	     (path-p (cadar fd)))
