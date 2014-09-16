@@ -249,29 +249,41 @@
 ;;    in a clause, and ask a WH question on each.
 ;;    partic, lex-roles, pred-modif, circum.
 ;; --------------------------------------------------
-;; @TODO: Recurse on constituents within constituents
-;;        for long-distance wh.
 
 (defun get-attrs (fd)
   (mapcar #'car fd))
 
-(defun get-attrs-under (fd path)
-  (get-attrs (top-gdc fd path)))
+(defun get-attrs-under (fd path base)
+  (get-attrs (top-gdc fd (path-extend base path))))
 
-;; Extract a list of constituents and return them
-;; as paths: {^ partic agent} {^ pred-modif location} ...
-(defun get-constituents (fd)
-  (let ((partic (get-attrs-under fd {partic}))
-        (lex-roles (get-attrs-under fd {lex-roles}))
-        (pred-modif (get-attrs-under fd {pred-modif}))
-        (circum (get-attrs-under fd {circum})))
-    (append
-     (loop for p in partic collect (make-path :l `(^ partic ,p)))
-     (loop for l in lex-roles collect (make-path :l `(^ lex-roles ,l)))
-     (loop for p in pred-modif collect (make-path :l `(^ pred-modif ,p)))
-     (loop for c in circum collect (make-path :l `(^ circum ,c))))))
+(defun path-add-prefix (prefix p)
+  (make-path :l (append prefix (path-l p))))
 
-(defun do-wh-constituents (fd)
+(defun is-clause? (fd p)
+  (let ((cat (top-gdc fd (path-extend p 'cat))))
+    (eq cat 'clause)))
+
+(defun get-constituents (fd &key (base {}) (prefix '(^))
+                              (attrs '(partic lex-roles pred-modif circum)))
+  "Extract a list of constituents and return them
+   as paths: {^ partic agent} {^ pred-modif location} ..."
+  (loop for attr in attrs
+       append
+       (loop for p in (get-attrs-under fd attr base)
+          collect (make-path :l `(,@prefix ,@(path-l base) ,attr ,p)))))
+
+(defun get-constituents-rec (fd &key (prefix '(^)) (base {})
+                                  (attrs '(partic lex-roles)))
+  "Extract a list of all clause constituents within an FD.
+   Recursively iterate over clausal constituents."
+  (let* ((ps (get-constituents fd :base base :prefix nil :attrs attrs)))
+    (loop
+       for p in ps
+       collect (path-add-prefix prefix p)
+       if (is-clause? fd p)
+       append (get-constituents-rec fd :prefix prefix :base p :attrs attrs))))
+
+(defun do-wh-constituents (fd &key (attrs '(partic lex-roles)))
   "Take a clause fd and generate a wh-question on each constituent."
   (when (symbolp fd)
     (multiple-value-bind (val found) (gethash fd *tests*)
@@ -288,7 +300,7 @@
                                    (proc ((mood remove)))
                                    (process ((mood remove))))))))
     (format t "~%=======================~%")
-    (loop for c in (get-constituents cfd)
+    (loop for c in (get-constituents-rec cfd :attrs attrs)
          do (let ((wfd (append `((mood wh) (scope ,c)) cfd)))
               (format t "~%-----------------------~%")
               (format t "~s~%" c)

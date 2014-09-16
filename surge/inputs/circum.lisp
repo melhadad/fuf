@@ -217,7 +217,7 @@
   ((cat clause)
    (tense past)
    (process ((type material) (effective no) (lex "bike")))
-   (partic ((agent ((cat basic-proper) (lex "Tony")))))
+   (partic ((agent ((cat basic-proper) (gender masculine) (lex "Tony")))))
    (pred-modif ((direction ((cat pp)
 			    (prep ((lex "up")))
 			    (np ((cat common) (lex "mountain")))))
