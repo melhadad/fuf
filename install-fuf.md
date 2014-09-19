@@ -35,10 +35,10 @@ Download the [SBCL Common Lisp compiler](http://www.sbcl.org/platform-table.html
     folder, e.g.: `C:\Home\sbcl-1.2.1\`
   * Create a batch file to execute SBCL simply -- in a file sbcl.cmd
     under c:\Home:
-    ```
+```
 @set HOME=c:\home
 @"%HOME%\sbcl-1.2.1\sbcl.exe" --core "%HOME%\sbcl-1.2.1\sbcl.core" %*
-    ```
+```
 
 ### Emacs
 
@@ -51,10 +51,10 @@ Download the [SBCL Common Lisp compiler](http://www.sbcl.org/platform-table.html
   * Unzip this folder under c:\home\emacs-24.3
 * If you are on MacOS or Linux, Emacs is most probably already installed.
 * Create a batch file c:\home\emacs.cmd with the following content:
-  ```
-  @set HOME=c:\home
-  @%HOME%\emacs-24.3\bin\runemacs %*
-  ```
+```
+@set HOME=c:\home
+@%HOME%\emacs-24.3\bin\runemacs %*
+```
   This causes the ~/ variable under Emacs to be bound to c:\home.
 
 ### Install EliEmacs Mode
@@ -83,9 +83,9 @@ Eliemacs from Eli Barzilay is a very good configuration package for Emacs.
 
 * Install the SLIME Emacs mode to interact between Emacs and Common Lisp:
   * If you use git, do:
-    ```
+```
     git clone https://github.com/slime/slime.git
-    ```
+```
   * Else download [Slime](http://common-lisp.net/project/slime/)
 
   * Uncompress the contents of the slime.tgz file into "C:\home\slime".
@@ -119,7 +119,7 @@ sbcl --load quicklisp.lisp
 
 * Add to your .emacs file the following line:
 ```
-  (load (expand-file-name "~/quicklisp/slime-helper.el"))
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
 ```
 
 ## Installing FUF and SURGE
