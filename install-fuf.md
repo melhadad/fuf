@@ -62,13 +62,14 @@ Download the [SBCL Common Lisp compiler](http://www.sbcl.org/platform-table.html
 Eliemacs from Eli Barzilay is a very good configuration package for Emacs.
 
 * In a command shell, do:
-  ```
+```
   cd c:\home
   git clone https://github.com/elibarzilay/eliemacs.git
   copy eliemacs\eliemacs.elc
-  ```
+```
+
 * Edit the file ~/.emacs with the following line:
-  ```
+```
 ;; Adjust this based on the size of your screen
 (setq window-configurations
       (lambda (frame)
@@ -77,7 +78,7 @@ Eliemacs from Eli Barzilay is a very good configuration package for Emacs.
 ;; No welcome screen
 (setq fake-initial-key 27)
 (load "~/eliemacs.elc")
-  ```
+```
 
 ### Slime Emacs Mode
 
