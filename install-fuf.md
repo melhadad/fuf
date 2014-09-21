@@ -14,9 +14,9 @@ The tree of main folders eventually present will be:
 C:\home\
                 .emacs
                 .sbclrc
-		sbcl.cmd
-		emacs.cmd
-		quicklisp.lisp
+                sbcl.cmd
+                emacs.cmd
+                quicklisp.lisp
         \emacs
         \sbcl
         \slime
