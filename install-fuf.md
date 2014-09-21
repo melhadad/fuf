@@ -12,7 +12,8 @@ If you need to install it - check [git install](http://git-scm.com/book/en/Getti
 The tree of main folders eventually present will be:
 ```
 C:\home\
-    .emacs
+                .emacs
+                .sbclrc
 		sbcl.cmd
 		emacs.cmd
 		quicklisp.lisp
@@ -136,15 +137,15 @@ git clone https://github.com/melhadad/fuf.git
 * Start emacs
 * Start lisp inside emacs: invoke the command "M-x slime"
   (that is, type "escape x slime enter")
-* Load FUF: (ql:quickload :fuf54)
-* Load FUF tests: (ql:quickload :fuf54-test)
-* Go into the FUF package: (in-package :fug5)
+* Load FUF: `(ql:quickload :fuf54)`
+* Load FUF tests: `(ql:quickload :fuf54-test)`
+* Go into the FUF package: `(in-package :fug5)`
 
 ## Loading and Testing SURGE
 
-* Load SURGE: (ql:quickload :surge22)
-* Load FUF tests: (ql:quickload :surge22-test)
-* Go into the FUF package: (in-package :fug5)
+* Load SURGE: `(ql:quickload :surge22)`
+* Load FUF tests: `(ql:quickload :surge22-test)`
+* Go into the FUF package: `(in-package :fug5)`
 
 ## Start Up with SURGE pre-loaded
 
@@ -178,10 +179,10 @@ input specifications:
    (proc ((type ascriptive)
 	  (mode attributive)))        ;; default
    (partic ((carrier ((lex "car")
-		      (cat common)
-		      (distance near)))
+                      (cat common)
+                      (distance near)))
 	    (attribute ((lex "expensive")
-			(cat ap)))))))
+	                (cat ap)))))))
 ```
 
 Keep your test pairs in a development file and add the line
@@ -221,7 +222,7 @@ D1 --> NIL
 
 [Used 1 backtracking points - 0 wrong branches - 0 undos]
 Expected NIL
-Instead  "&lt;fail&gt;"
+Instead  "<fail>"
 ====================
 
 1 test run - 0 correct.
