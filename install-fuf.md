@@ -8,19 +8,31 @@ with special attention to a Windows platform.
 The easiest way to install this software is to use Docker containers.
 A Dockerfile is provided in the package.
 
-If you have docker installed on your platform - assuming you cloned this git repository in a folder named fuf:
+If you have docker installed on your platform - assuming you cloned this git repository in a folder named fuf.
+
+If you use git - then just clone this repository into a folder fuf.
+Else download this repository as a [zip file](https://github.com/melhadad/fuf/archive/master.zip) - and extract it to a folder fuf.
+
+Then build the docker container:
 ```
 $ docker build fuf -tag fuf:5.4
 ....
+```
+The container build is a one-time operation - it takes about 5 minutes.
+
+Once the container is built - you can start it using this command:
+
+```
 $ docker run -it -p 8888:8888 -v /user/me/notebooks:/root/notebooks fuf:5.4 jupyter notebook --no-browser --NotebookApp.token='' --ip '*' --port 8888
 ```
+
 This will run a Jupyter container on http://localhost:8888 without any password (you can choose a different port by changing the port mapping parameter -p 8888:8888 to -p anotherport:8888).  
 
 The Jupyter notebook runs a CommonLisp kernel (using sbcl 1.3.13) that comes pre-loaded with FUF and SURGE.
 
-Once the container is running - connect your browser to: http://localhost:8888 and start a new SBCL Lisp kernel.
+Once the container is running - connect your browser to: [http://localhost:8888](http://localhost:8888) and start a new SBCL Lisp kernel.
 
-An example notebook is available on http://localhost:8888/tree/quicklisp/local-projects/fuf/SURGE-2.2.ipynb 
+An example notebook is available on [http://localhost:8888/tree/quicklisp/local-projects/fuf/SURGE-2.2.ipynb](http://localhost:8888/tree/quicklisp/local-projects/fuf/SURGE-2.2.ipynb).
 
 
 ## Manual Installation
