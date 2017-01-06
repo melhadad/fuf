@@ -3,6 +3,30 @@
 This page explains how to install the FUF and SURGE text generation system (syntactic realization),
 with special attention to a Windows platform.
 
+## Docker Installation
+
+The easiest way to install this software is to use Docker containers.
+A Dockerfile is provided in the package.
+
+If you have docker installed on your platform - assuming you cloned this git repository in a folder named fuf:
+```
+$ docker build fuf -tag fuf:5.4
+....
+$ docker run -it -p 8888:8888 -v /user/me/notebooks:/root/notebooks fuf:5.4 jupyter notebook --no-browser --NotebookApp.token='' --ip '*' --port 8888
+```
+This will run a Jupyter container on http://localhost:8888 without any password (you can choose a different port by changing the port mapping parameter -p 8888:8888 to -p anotherport:8888).  
+
+The Jupyter notebook runs a CommonLisp kernel (using sbcl 1.3.13) that comes pre-loaded with FUF and SURGE.
+
+Once the container is running - connect your browser to: http://localhost:8888 and start a new SBCL Lisp kernel.
+
+An example notebook is available on http://localhost:8888/tree/quicklisp/local-projects/fuf/SURGE-2.2.ipynb 
+
+
+## Manual Installation
+
+If you cannot use Docker, the following steps explain how to install Lisp, Emacs, FUF and SURGE.
+
 To make things portable and easy, all the instructions are given so that the whole installation of Lisp, Emacs, Slime, Quicklisp
 and FUF/SURGE are all put in a single folder.  We will call this folder c:\home\ for illustration.
 
