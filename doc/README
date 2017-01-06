@@ -10,7 +10,7 @@ following parts:
 -                 update.5.3 [New features in FUF 5.3]
 -                 update.5.4 [New features in FUF 5.4]
 
-[NOTE: The user manual has not been updated since 5.2]
+  [NOTE: The user manual has not been updated since 5.2]
 - User manual: fuf5.2.ps [~150pp]
   Source files in Scribe Format: fuf5.2.mss
                                  fuf5.bib
@@ -23,3 +23,6 @@ following parts:
                                  stack2.ps
 
 - Article on bk-class usage: bk-class.ps
+
+- The ps files have been converted to pdf.
+- The user manual has been converted to LaTeX and recompiled into fuf5.2.pdf.
