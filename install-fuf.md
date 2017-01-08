@@ -15,10 +15,10 @@ Else download this repository as a [zip file](https://github.com/melhadad/fuf/ar
 
 Then build the docker container:
 ```
-$ docker build fuf -tag fuf:5.4
+$ docker build fuf --tag fuf:5.4
 ....
 ```
-The container build is a one-time operation - it takes about 5 minutes.
+The container build is a one-time operation - it takes about 15 minutes.
 
 Once the container is built - you can start it using this command:
 
